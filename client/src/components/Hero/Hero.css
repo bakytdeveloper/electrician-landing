@@ -156,6 +156,8 @@
     align-items: center;
     justify-content: center;
     gap: 10px;
+    color: whitesmoke;
+    border: solid white;
 }
 
 /* Контактная карточка */
