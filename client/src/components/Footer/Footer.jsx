@@ -190,7 +190,7 @@ const Footer = () => {
                 </a>
                 <button
                     className="footer-floating-button footer-callback-button"
-                    onClick={() => document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' })}
+                    onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                     aria-label="Заказать звонок"
                 >
                     <FaEnvelope />
