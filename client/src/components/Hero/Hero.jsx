@@ -94,15 +94,15 @@ const Hero = ({ openModal }) => {
                         </p>
 
                         <div className="hero-features-list">
-                            <div className="feature-item">
+                            <div className="hero-feature-item">
                                 <FaCheckCircle className="feature-icon" />
                                 <span>Бесплатный выезд и диагностика</span>
                             </div>
-                            <div className="feature-item">
+                            <div className="hero-feature-item">
                                 <FaCheckCircle className="feature-icon" />
                                 <span>Опыт работы более 10 лет</span>
                             </div>
-                            <div className="feature-item">
+                            <div className="hero-feature-item">
                                 <FaCheckCircle className="feature-icon" />
                                 <span>Официальная гарантия</span>
                             </div>
