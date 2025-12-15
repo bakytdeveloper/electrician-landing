@@ -51,13 +51,19 @@
 
 .work-hours {
     display: flex;
-    flex-direction: column;
+    /*flex-direction: column;*/
     font-size: 0.85rem;
     color: var(--light-gray);
 }
 
 .work-hours span:first-child {
     margin-bottom: 2px;
+    margin-left: 30px;
+}
+
+.work-hours-span-slash {
+    margin-left: 10px;
+    margin-right: 10px;
 }
 
 .social-links {

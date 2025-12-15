@@ -67,6 +67,7 @@ const Header = ({ openModal }) => {
                             </a>
                             <div className="work-hours">
                                 <span>Пн-Пт: 8:00-20:00</span>
+                                <span className="work-hours-span-slash">/</span>
                                 <span>Сб-Вс: 9:00-18:00</span>
                             </div>
                         </div>
