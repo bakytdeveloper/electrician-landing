@@ -273,7 +273,7 @@ const About = () => {
                                 <FaUser />
                             </div>
                             <div className="about-greeting-text">
-                                <h3>Привет, я Алексей - ваш электрик</h3>
+                                <h3>Привет, я Антон - ваш электрик</h3>
                                 <p className="about-tagline">Профессионал с многолетним опытом</p>
                             </div>
                         </div>
