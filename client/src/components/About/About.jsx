@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     FaUser,
     FaAward,
@@ -11,7 +11,10 @@ import {
     FaBriefcase,
     FaStar,
     FaQuoteLeft,
-    FaQuoteRight
+    FaQuoteRight,
+    FaChevronLeft,
+    FaChevronRight,
+    FaPhone
 } from 'react-icons/fa';
 import { MdElectricalServices, MdEngineering, MdSupportAgent } from 'react-icons/md';
 import './About.css';
@@ -25,6 +28,9 @@ const About = () => {
         years: 0,
         warranty: 0
     });
+    const [touchStart, setTouchStart] = useState(null);
+    const [touchEnd, setTouchEnd] = useState(null);
+    const testimonialsRef = useRef(null);
 
     useEffect(() => {
         const targetStats = {
@@ -34,7 +40,7 @@ const About = () => {
             warranty: 36
         };
 
-        const duration = 2000; // 2 секунды
+        const duration = 2000;
         const steps = 60;
         const increment = targetStats.projects / steps;
         let currentStep = 0;
@@ -149,21 +155,48 @@ const About = () => {
             role: 'Владелец квартиры',
             text: 'Заменяли проводку в хрущевке. Работа выполнена быстро, аккуратно, все спрятали в штробы. Прошло уже 2 года - никаких проблем.',
             rating: 5,
-            date: '15.03.2023'
+            date: '15.03.2023',
+            project: 'Замена проводки в 3-комнатной квартире'
         },
         {
             name: 'Игорь Семенов',
             role: 'Директор офиса',
             text: 'Делали электрику в новом офисе. Учли все пожелания по розеткам и освещению. Работали даже в выходные, чтобы успеть к открытию.',
             rating: 5,
-            date: '22.11.2022'
+            date: '22.11.2022',
+            project: 'Электромонтаж в офисе 120 м²'
         },
         {
             name: 'Мария Козлова',
             role: 'Владелец коттеджа',
             text: 'Полный монтаж электрики в доме 150 м². Сделали все от щитка до розеток. Отдельное спасибо за уличное освещение - очень красиво.',
             rating: 5,
-            date: '08.06.2023'
+            date: '08.06.2023',
+            project: 'Электрика в частном доме'
+        },
+        {
+            name: 'Сергей Иванов',
+            role: 'Владелец магазина',
+            text: 'Установили освещение витрин и систему резервного питания. Всё работает идеально, даже при отключениях электричества.',
+            rating: 5,
+            date: '30.01.2023',
+            project: 'Освещение торгового зала'
+        },
+        {
+            name: 'Ольга Смирнова',
+            role: 'Владелец ресторана',
+            text: 'Проектирование и монтаж декоративного освещения. Создали уникальную атмосферу. Клиенты отмечают уютную обстановку.',
+            rating: 5,
+            date: '14.09.2022',
+            project: 'Освещение в ресторане'
+        },
+        {
+            name: 'Дмитрий Волков',
+            role: 'Директор производства',
+            text: 'Монтаж промышленной электропроводки в цеху. Учтены все требования безопасности. Работа выполнена в срок.',
+            rating: 5,
+            date: '05.04.2023',
+            project: 'Промышленная электропроводка'
         }
     ];
 
@@ -178,286 +211,361 @@ const About = () => {
         'Аварийные работы 24/7'
     ];
 
+    const scrollTestimonials = (direction) => {
+        if (testimonialsRef.current) {
+            const scrollAmount = 400;
+            const currentScroll = testimonialsRef.current.scrollLeft;
+            const newScroll = direction === 'left'
+                ? currentScroll - scrollAmount
+                : currentScroll + scrollAmount;
+
+            testimonialsRef.current.scrollTo({
+                left: newScroll,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const handleTouchStart = (e) => {
+        setTouchStart(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchMove = (e) => {
+        setTouchEnd(e.targetTouches[0].clientX);
+    };
+
+    const handleTouchEnd = () => {
+        if (!touchStart || !touchEnd) return;
+
+        const distance = touchStart - touchEnd;
+        const isLeftSwipe = distance > 50;
+        const isRightSwipe = distance < -50;
+
+        if (isLeftSwipe) {
+            scrollTestimonials('right');
+        }
+
+        if (isRightSwipe) {
+            scrollTestimonials('left');
+        }
+
+        setTouchStart(null);
+        setTouchEnd(null);
+    };
+
     return (
-        <section id="about" className="about">
-            <div className="container">
+        <section id="about" className="about-section">
+            <div className="about-container">
                 {/* Заголовок секции */}
-                <div className="section-header">
-                    <h2 className="section-title">О нас</h2>
-                    <p className="section-subtitle">
+                <div className="about-section-header">
+                    <h2 className="about-section-title">О нас</h2>
+                    <p className="about-section-subtitle">
                         Профессиональный электрик с 12-летним опытом работы. Гарантирую качество, надежность и безопасность всех работ.
                     </p>
                 </div>
 
+                {/* Основная информация - теперь всё в одну колонку */}
                 <div className="about-content">
-                    {/* Основная информация */}
-                    <div className="about-main">
-                        {/* Приветствие */}
-                        <div className="greeting-card">
-                            <div className="greeting-header">
-                                <div className="avatar">
-                                    <FaUser />
-                                </div>
-                                <div className="greeting-text">
-                                    <h3>Привет, я Алексей - ваш электрик</h3>
-                                    <p className="tagline">Профессионал с многолетним опытом</p>
-                                </div>
+                    {/* Приветствие */}
+                    <div className="about-greeting-card">
+                        <div className="about-greeting-header">
+                            <div className="about-avatar">
+                                <FaUser />
                             </div>
-
-                            <div className="greeting-body">
-                                <p>
-                                    Я занимаюсь электромонтажными работами уже более {stats.years} лет.
-                                    За это время я выполнил более {stats.projects} проектов различной сложности -
-                                    от замены розетки до полного монтажа электрики в коттеджах и офисах.
-                                </p>
-                                <p>
-                                    Моя философия проста: качественная работа, надежные материалы и индивидуальный
-                                    подход к каждому клиенту. Я гарантирую безопасность всех выполненных работ
-                                    и предоставляю официальную гарантию до {stats.warranty} месяцев.
-                                </p>
+                            <div className="about-greeting-text">
+                                <h3>Привет, я Алексей - ваш электрик</h3>
+                                <p className="about-tagline">Профессионал с многолетним опытом</p>
                             </div>
                         </div>
 
-                        {/* Статистика */}
-                        <div className="stats-grid">
-                            <div className="stat-card">
-                                <div className="stat-icon">
-                                    <MdElectricalServices />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-number">{stats.projects}+</div>
-                                    <div className="stat-label">Выполненных проектов</div>
-                                </div>
-                            </div>
+                        <div className="about-greeting-body">
+                            <p>
+                                Я занимаюсь электромонтажными работами уже более {stats.years} лет.
+                                За это время я выполнил более {stats.projects} проектов различной сложности -
+                                от замены розетки до полного монтажа электрики в коттеджах и офисах.
+                            </p>
+                            <p>
+                                Моя философия проста: качественная работа, надежные материалы и индивидуальный
+                                подход к каждому клиенту. Я гарантирую безопасность всех выполненных работ
+                                и предоставляю официальную гарантию до {stats.warranty} месяцев.
+                            </p>
+                        </div>
+                    </div>
 
-                            <div className="stat-card">
-                                <div className="stat-icon">
-                                    <FaUser />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-number">{stats.clients}+</div>
-                                    <div className="stat-label">Довольных клиентов</div>
-                                </div>
+                    {/* Статистика */}
+                    <div className="about-stats-grid">
+                        <div className="about-stat-card">
+                            <div className="about-stat-icon">
+                                <MdElectricalServices />
                             </div>
-
-                            <div className="stat-card">
-                                <div className="stat-icon">
-                                    <FaBriefcase />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-number">{stats.years}</div>
-                                    <div className="stat-label">Лет опыта</div>
-                                </div>
-                            </div>
-
-                            <div className="stat-card">
-                                <div className="stat-icon">
-                                    <FaShieldAlt />
-                                </div>
-                                <div className="stat-content">
-                                    <div className="stat-number">{stats.warranty}</div>
-                                    <div className="stat-label">Месяцев гарантии</div>
-                                </div>
+                            <div className="about-stat-content">
+                                <div className="about-stat-number">{stats.projects}+</div>
+                                <div className="about-stat-label">Выполненных проектов</div>
                             </div>
                         </div>
 
-                        {/* Принципы работы */}
-                        <div className="principles-section">
-                            <h3>Мои принципы работы</h3>
-                            <div className="principles-grid">
-                                {principles.map((principle, index) => (
-                                    <div key={index} className="principle-card">
-                                        <div className="principle-icon">
-                                            {principle.icon}
-                                        </div>
-                                        <div className="principle-content">
-                                            <h4>{principle.title}</h4>
-                                            <p>{principle.description}</p>
-                                        </div>
-                                    </div>
-                                ))}
+                        <div className="about-stat-card">
+                            <div className="about-stat-icon">
+                                <FaUser />
+                            </div>
+                            <div className="about-stat-content">
+                                <div className="about-stat-number">{stats.clients}+</div>
+                                <div className="about-stat-label">Довольных клиентов</div>
+                            </div>
+                        </div>
+
+                        <div className="about-stat-card">
+                            <div className="about-stat-icon">
+                                <FaBriefcase />
+                            </div>
+                            <div className="about-stat-content">
+                                <div className="about-stat-number">{stats.years}</div>
+                                <div className="about-stat-label">Лет опыта</div>
+                            </div>
+                        </div>
+
+                        <div className="about-stat-card">
+                            <div className="about-stat-icon">
+                                <FaShieldAlt />
+                            </div>
+                            <div className="about-stat-content">
+                                <div className="about-stat-number">{stats.warranty}</div>
+                                <div className="about-stat-label">Месяцев гарантии</div>
                             </div>
                         </div>
                     </div>
 
-                    {/* Боковая панель */}
-                    <div className="about-sidebar">
-                        {/* Вкладки */}
-                        <div className="tabs-section">
-                            <div className="tabs-header">
-                                <button
-                                    className={`tab-button ${activeTab === 'experience' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('experience')}
-                                >
-                                    Опыт
-                                </button>
-                                <button
-                                    className={`tab-button ${activeTab === 'services' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('services')}
-                                >
-                                    Услуги
-                                </button>
-                                <button
-                                    className={`tab-button ${activeTab === 'certificates' ? 'active' : ''}`}
-                                    onClick={() => setActiveTab('certificates')}
-                                >
-                                    Сертификаты
-                                </button>
-                            </div>
+                    {/*/!* Принципы работы *!/*/}
+                    {/*<div className="about-principles-section">*/}
+                    {/*    <h3>Мои принципы работы</h3>*/}
+                    {/*    <div className="about-principles-grid">*/}
+                    {/*        {principles.map((principle, index) => (*/}
+                    {/*            <div key={index} className="about-principle-card">*/}
+                    {/*                <div className="about-principle-icon">*/}
+                    {/*                    {principle.icon}*/}
+                    {/*                </div>*/}
+                    {/*                <div className="about-principle-content">*/}
+                    {/*                    <h4>{principle.title}</h4>*/}
+                    {/*                    <p>{principle.description}</p>*/}
+                    {/*                </div>*/}
+                    {/*            </div>*/}
+                    {/*        ))}*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
-                            <div className="tabs-content">
-                                {activeTab === 'experience' && (
-                                    <div className="timeline">
-                                        {timeline.map((item, index) => (
-                                            <div key={index} className="timeline-item">
-                                                <div className="timeline-year">{item.year}</div>
-                                                <div className="timeline-content">
-                                                    <div className="timeline-icon">
-                                                        {item.icon}
-                                                    </div>
-                                                    <div className="timeline-text">
-                                                        <h4>{item.title}</h4>
-                                                        <p>{item.description}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        ))}
-                                    </div>
-                                )}
+                    {/* Вкладки */}
+                    <div className="about-tabs-section">
+                        <div className="about-tabs-header">
+                            <button
+                                className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}
+                                onClick={() => setActiveTab('experience')}
+                            >
+                                Опыт работы
+                            </button>
+                            <button
+                                className={`about-tab-button ${activeTab === 'services' ? 'about-active' : ''}`}
+                                onClick={() => setActiveTab('services')}
+                            >
+                                Услуги
+                            </button>
+                            <button
+                                className={`about-tab-button ${activeTab === 'certificates' ? 'about-active' : ''}`}
+                                onClick={() => setActiveTab('certificates')}
+                            >
+                                Сертификаты
+                            </button>
+                        </div>
 
-                                {activeTab === 'services' && (
-                                    <div className="services-list">
-                                        <h4>Полный перечень услуг</h4>
-                                        <ul>
-                                            {servicesList.map((service, index) => (
-                                                <li key={index} className="service-item">
-                                                    <FaCheckCircle className="check-icon" />
-                                                    <span>{service}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-                                )}
-
-                                {activeTab === 'certificates' && (
-                                    <div className="certificates-section">
-                                        <div className="certificates-slider">
-                                            <div className="certificate-active">
-                                                <div className="certificate-header">
-                                                    <FaCertificate className="cert-icon" />
-                                                    <div className="cert-title">
-                                                        <h4>{certificates[activeCert].title}</h4>
-                                                        <p className="cert-issuer">{certificates[activeCert].issuer}</p>
-                                                    </div>
+                        <div className="about-tabs-content">
+                            {activeTab === 'experience' && (
+                                <div className="about-timeline">
+                                    {timeline.map((item, index) => (
+                                        <div key={index} className="about-timeline-item">
+                                            <div className="about-timeline-year">{item.year}</div>
+                                            <div className="about-timeline-content">
+                                                <div className="about-timeline-icon">
+                                                    {item.icon}
                                                 </div>
-                                                <div className="certificate-details">
-                                                    <div className="detail">
-                                                        <span className="label">Год выдачи:</span>
-                                                        <span className="value">{certificates[activeCert].year}</span>
-                                                    </div>
-                                                    <div className="detail">
-                                                        <span className="label">Номер:</span>
-                                                        <span className="value">{certificates[activeCert].number}</span>
-                                                    </div>
+                                                <div className="about-timeline-text">
+                                                    <h4>{item.title}</h4>
+                                                    <p>{item.description}</p>
                                                 </div>
-                                                <div className="certificate-preview">
-                                                    {/* Заглушка для изображения сертификата */}
-                                                    <div className="certificate-placeholder">
-                                                        <FaAward className="preview-icon" />
-                                                        <span>Сертификат {activeCert + 1}</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-
-                                            <div className="certificates-nav">
-                                                <button
-                                                    className="nav-button prev"
-                                                    onClick={() => setActiveCert(activeCert > 0 ? activeCert - 1 : certificates.length - 1)}
-                                                >
-                                                    ←
-                                                </button>
-                                                <div className="certificates-dots">
-                                                    {certificates.map((_, index) => (
-                                                        <button
-                                                            key={index}
-                                                            className={`dot ${index === activeCert ? 'active' : ''}`}
-                                                            onClick={() => setActiveCert(index)}
-                                                        />
-                                                    ))}
-                                                </div>
-                                                <button
-                                                    className="nav-button next"
-                                                    onClick={() => setActiveCert(activeCert < certificates.length - 1 ? activeCert + 1 : 0)}
-                                                >
-                                                    →
-                                                </button>
                                             </div>
                                         </div>
+                                    ))}
+                                </div>
+                            )}
+
+                            {activeTab === 'services' && (
+                                <div className="about-services-list">
+                                    <h4>Полный перечень услуг</h4>
+                                    <ul className="about-services-ul">
+                                        {servicesList.map((service, index) => (
+                                            <li key={index} className="about-service-item">
+                                                <FaCheckCircle className="about-check-icon" />
+                                                <span>{service}</span>
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+                            )}
+
+                            {activeTab === 'certificates' && (
+                                <div className="about-certificates-section">
+                                    <div className="about-certificates-slider">
+                                        <div className="about-certificate-active">
+                                            <div className="about-certificate-header">
+                                                <FaCertificate className="about-cert-icon" />
+                                                <div className="about-cert-title">
+                                                    <h4>{certificates[activeCert].title}</h4>
+                                                    <p className="about-cert-issuer">{certificates[activeCert].issuer}</p>
+                                                </div>
+                                            </div>
+                                            <div className="about-certificate-details">
+                                                <div className="about-detail">
+                                                    <span className="about-label">Год выдачи:</span>
+                                                    <span className="about-value">{certificates[activeCert].year}</span>
+                                                </div>
+                                                <div className="about-detail">
+                                                    <span className="about-label">Номер:</span>
+                                                    <span className="about-value">{certificates[activeCert].number}</span>
+                                                </div>
+                                            </div>
+                                            <div className="about-certificate-preview">
+                                                <div className="about-certificate-placeholder">
+                                                    <FaAward className="about-preview-icon" />
+                                                    <span>Сертификат {activeCert + 1}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="about-certificates-nav">
+                                            <button
+                                                className="about-nav-button about-prev"
+                                                onClick={() => setActiveCert(activeCert > 0 ? activeCert - 1 : certificates.length - 1)}
+                                            >
+                                                <FaChevronLeft />
+                                            </button>
+                                            <div className="about-certificates-dots">
+                                                {certificates.map((_, index) => (
+                                                    <button
+                                                        key={index}
+                                                        className={`about-dot ${index === activeCert ? 'about-active' : ''}`}
+                                                        onClick={() => setActiveCert(index)}
+                                                    />
+                                                ))}
+                                            </div>
+                                            <button
+                                                className="about-nav-button about-next"
+                                                onClick={() => setActiveCert(activeCert < certificates.length - 1 ? activeCert + 1 : 0)}
+                                            >
+                                                <FaChevronRight />
+                                            </button>
+                                        </div>
                                     </div>
-                                )}
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
+                    {/* Отзывы - горизонтальный скролл */}
+                    <div className="about-testimonials-section">
+                        <div className="about-testimonials-header">
+                            <h3>Отзывы клиентов</h3>
+                            <div className="about-testimonials-controls">
+                                <button
+                                    className="about-scroll-button about-scroll-left"
+                                    onClick={() => scrollTestimonials('left')}
+                                    aria-label="Предыдущие отзывы"
+                                >
+                                    <FaChevronLeft />
+                                </button>
+                                <button
+                                    className="about-scroll-button about-scroll-right"
+                                    onClick={() => scrollTestimonials('right')}
+                                    aria-label="Следующие отзывы"
+                                >
+                                    <FaChevronRight />
+                                </button>
                             </div>
                         </div>
 
-                        {/* Отзывы */}
-                        <div className="testimonials-section">
-                            <h3>Отзывы клиентов</h3>
-                            <div className="testimonials-slider">
+                        <div
+                            className="about-testimonials-container"
+                            ref={testimonialsRef}
+                            onTouchStart={handleTouchStart}
+                            onTouchMove={handleTouchMove}
+                            onTouchEnd={handleTouchEnd}
+                        >
+                            <div className="about-testimonials-track">
                                 {testimonials.map((testimonial, index) => (
-                                    <div key={index} className="testimonial-card">
-                                        <div className="testimonial-header">
-                                            <div className="client-info">
-                                                <div className="client-avatar">
+                                    <div key={index} className="about-testimonial-card">
+                                        <div className="about-testimonial-header">
+                                            <div className="about-client-info">
+                                                <div className="about-client-avatar">
                                                     {testimonial.name.charAt(0)}
                                                 </div>
-                                                <div className="client-details">
+                                                <div className="about-client-details">
                                                     <h4>{testimonial.name}</h4>
-                                                    <p className="client-role">{testimonial.role}</p>
+                                                    <p className="about-client-role">{testimonial.role}</p>
+                                                    <p className="about-client-project">{testimonial.project}</p>
                                                 </div>
                                             </div>
-                                            <div className="testimonial-rating">
+                                            <div className="about-testimonial-rating">
                                                 {[...Array(5)].map((_, i) => (
                                                     <FaStar
                                                         key={i}
-                                                        className={`star ${i < testimonial.rating ? 'filled' : ''}`}
+                                                        className={`about-star ${i < testimonial.rating ? 'about-filled' : ''}`}
                                                     />
                                                 ))}
                                             </div>
                                         </div>
 
-                                        <div className="testimonial-body">
-                                            <FaQuoteLeft className="quote-left" />
-                                            <p className="testimonial-text">{testimonial.text}</p>
-                                            <FaQuoteRight className="quote-right" />
+                                        <div className="about-testimonial-body">
+                                            <FaQuoteLeft className="about-quote-left" />
+                                            <p className="about-testimonial-text">{testimonial.text}</p>
+                                            <FaQuoteRight className="about-quote-right" />
                                         </div>
 
-                                        <div className="testimonial-footer">
-                                            <span className="testimonial-date">{testimonial.date}</span>
+                                        <div className="about-testimonial-footer">
+                                            <span className="about-testimonial-date">{testimonial.date}</span>
                                         </div>
                                     </div>
                                 ))}
                             </div>
                         </div>
-                    </div>
-                </div>
 
-                {/* CTA секция */}
-                <div className="about-cta">
-                    <div className="cta-content">
-                        <div className="cta-text">
-                            <h3>Готовы начать проект?</h3>
-                            <p>Свяжитесь со мной для бесплатной консультации и расчета стоимости работ</p>
-                        </div>
-                        <div className="cta-buttons">
-                            <button
-                                className="cta-btn primary"
-                                onClick={() => document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' })}
-                            >
-                                Получить консультацию
-                            </button>
-                            <a href="tel:+79991234567" className="cta-btn secondary">
-                                <FaUser />
-                                Позвонить сейчас
-                            </a>
+                        {/*<div className="about-testimonials-progress">*/}
+                        {/*    <div className="about-progress-bar">*/}
+                        {/*        <div className="about-progress-fill"></div>*/}
+                        {/*    </div>*/}
+                        {/*    <div className="about-testimonials-counter">*/}
+                        {/*        <span className="about-current">1</span>*/}
+                        {/*        <span className="about-slash">/</span>*/}
+                        {/*        <span className="about-total">{testimonials.length}</span>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
+                    </div>
+
+                    {/* CTA секция */}
+                    <div className="about-cta-section">
+                        <div className="about-cta-content">
+                            <div className="about-cta-text">
+                                <h3>Готовы начать проект?</h3>
+                                <p>Свяжитесь со мной для бесплатной консультации и расчета стоимости работ</p>
+                            </div>
+                            <div className="about-cta-buttons">
+                                <button
+                                    className="about-cta-btn about-primary"
+                                    onClick={() => document.querySelector('.contact-section')?.scrollIntoView({ behavior: 'smooth' })}
+                                >
+                                    Получить консультацию
+                                </button>
+                                <a href="tel:+79991234567" className="about-cta-btn about-secondary">
+                                    <FaPhone />
+                                    Позвонить сейчас
+                                </a>
+                            </div>
                         </div>
                     </div>
                 </div>

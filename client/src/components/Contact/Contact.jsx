@@ -29,33 +29,25 @@ const Contact = ({ openModal }) => {
     const [formStatus, setFormStatus] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [activeHour, setActiveHour] = useState(null);
-    const mapRef = useRef(null);
+    const [isMapLoaded, setIsMapLoaded] = useState(false);
+    const mapContainerRef = useRef(null);
+    const mapIframeRef = useRef(null);
+
+    const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31316.225376002167!2d74.70231946796906!3d43.0428249895966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389ebdd96a23754f%3A0x910c9ee831c61010!2sAk%20zhol%20border%20control%20point!5e0!3m2!1sen!2skg!4v1765603960864!5m2!1sen!2skg";
 
     useEffect(() => {
         // Инициализация текущего часа для отображения активности
         const now = new Date();
         setActiveHour(now.getHours());
 
-        // Имитация загрузки карты
+        // Загрузка карты с задержкой для лучшего UX
         const loadMap = () => {
-            if (mapRef.current) {
-                // В реальном проекте здесь будет инициализация Яндекс/Google карты
-                mapRef.current.innerHTML = `
-          <div class="contact-map-placeholder">
-            <div class="contact-map-marker">
-              <FaMapMarkerAlt />
-            </div>
-            <div class="contact-map-info">
-              <h4>Мы находимся здесь</h4>
-              <p>Москва, ул. Электриков, д. 15</p>
-              <p>Ближайшее метро: Электрозаводская</p>
-            </div>
-          </div>
-        `;
+            if (mapContainerRef.current) {
+                setIsMapLoaded(true);
             }
         };
 
-        const timer = setTimeout(loadMap, 1000);
+        const timer = setTimeout(loadMap, 500);
         return () => clearTimeout(timer);
     }, []);
 
@@ -244,6 +236,17 @@ const Contact = ({ openModal }) => {
         }
     };
 
+    // Обработчик для перезагрузки карты
+    const reloadMap = () => {
+        setIsMapLoaded(false);
+        setTimeout(() => {
+            if (mapIframeRef.current) {
+                mapIframeRef.current.src = mapIframeRef.current.src;
+                setIsMapLoaded(true);
+            }
+        }, 100);
+    };
+
     return (
         <section id="contact" className="contact-section">
             <div className="contact-container">
@@ -347,8 +350,8 @@ const Contact = ({ openModal }) => {
                                         Ваше имя *
                                         {formErrors.name && (
                                             <span className="contact-error-message">
-                        <FaExclamationCircle /> {formErrors.name}
-                      </span>
+                                                <FaExclamationCircle /> {formErrors.name}
+                                            </span>
                                         )}
                                     </label>
                                     <input
@@ -368,8 +371,8 @@ const Contact = ({ openModal }) => {
                                         Номер телефона *
                                         {formErrors.phone && (
                                             <span className="contact-error-message">
-                        <FaExclamationCircle /> {formErrors.phone}
-                      </span>
+                                                <FaExclamationCircle /> {formErrors.phone}
+                                            </span>
                                         )}
                                     </label>
                                     <input
@@ -389,8 +392,8 @@ const Contact = ({ openModal }) => {
                                         Email
                                         {formErrors.email && (
                                             <span className="contact-error-message">
-                        <FaExclamationCircle /> {formErrors.email}
-                      </span>
+                                                <FaExclamationCircle /> {formErrors.email}
+                                            </span>
                                         )}
                                     </label>
                                     <input
@@ -409,8 +412,8 @@ const Contact = ({ openModal }) => {
                                         Тип услуги *
                                         {formErrors.service && (
                                             <span className="contact-error-message">
-                        <FaExclamationCircle /> {formErrors.service}
-                      </span>
+                                                <FaExclamationCircle /> {formErrors.service}
+                                            </span>
                                         )}
                                     </label>
                                     <select
@@ -490,30 +493,57 @@ const Contact = ({ openModal }) => {
                 <div className="contact-bottom-section">
                     <div className="contact-map-section">
                         <div className="contact-map-header">
-                            <h3>Мы на карте</h3>
+                            <div className="contact-map-header-top">
+                                <h3>Мы на карте</h3>
+                                <button
+                                    className="contact-map-reload-btn"
+                                    onClick={reloadMap}
+                                    title="Обновить карту"
+                                >
+                                    ⟳
+                                </button>
+                            </div>
                             <p>Приезжайте к нам в офис для консультации</p>
                         </div>
-                        <div className="contact-map-container" ref={mapRef}>
-                            {/* Карта будет загружена через useEffect */}
-                            <div className="contact-map-loading">Загрузка карты...</div>
+                        <div
+                            className="contact-map-container"
+                            ref={mapContainerRef}
+                        >
+                            {isMapLoaded ? (
+                                <iframe
+                                    ref={mapIframeRef}
+                                    src={MAP_URL}
+                                    width="100%"
+                                    height="100%"
+                                    style={{ border: 0 }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                    referrerPolicy="no-referrer-when-downgrade"
+                                    title="Google Maps - Ak zhol border control point"
+                                    className="contact-map-iframe"
+                                />
+                            ) : (
+                                <div className="contact-map-loading">
+                                    <div className="contact-map-loading-spinner"></div>
+                                    <p>Загрузка карты...</p>
+                                </div>
+                            )}
                         </div>
                         <div className="contact-map-actions">
                             <a
-                                href="https://yandex.ru/maps/-/CDUrQ~P"
+                                href="https://www.google.com/maps?q=Ak+zhol+border+control+point"
                                 className="contact-map-action-btn"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Открыть в Яндекс.Картах
-                            </a>
-                            <a
-                                href="https://www.google.com/maps"
-                                className="contact-map-action-btn contact-secondary"
                                 target="_blank"
                                 rel="noopener noreferrer"
                             >
                                 Открыть в Google Картах
                             </a>
+                            <button
+                                className="contact-map-action-btn contact-secondary"
+                                onClick={() => navigator.clipboard.writeText('https://maps.google.com/?q=Ak+zhol+border+control+point')}
+                            >
+                                Скопировать ссылку
+                            </button>
                         </div>
                     </div>
 
