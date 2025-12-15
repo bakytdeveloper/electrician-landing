@@ -111,8 +111,8 @@ const Contact = () => {
         {
             icon: <FaMapMarkerAlt />,
             title: 'Адрес',
-            details: ['Москва, ул. Электриков, д. 15', 'Ближайшее метро: Электрозаводская'],
-            link: 'https://yandex.ru/maps/-/CDUrQ~P',
+            details: ['Кордай, ул.Весёлая, д. 15'],
+            link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point',
             description: 'Принимаем по предварительной записи'
         },
         {
