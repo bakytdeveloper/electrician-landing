@@ -24,11 +24,11 @@ const Services = () => {
     const [activeService, setActiveService] = useState(null);
 
     const categories = [
-        { id: 'all', label: 'Все услуги' },
         { id: 'installation', label: 'Монтаж' },
         { id: 'maintenance', label: 'Обслуживание' },
         { id: 'repair', label: 'Ремонт' },
         { id: 'consultation', label: 'Консультации' },
+        { id: 'all', label: 'Все услуги' },
     ];
 
     const services = [

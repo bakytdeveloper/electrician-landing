@@ -43,7 +43,7 @@
     flex-wrap: wrap;
     gap: 15px;
     margin-bottom: 50px;
-    padding: 0 20px;
+    padding: 0 10px;
 }
 
 .services-category-filter {
@@ -446,6 +446,33 @@
     .services-section-subtitle {
         font-size: 1rem;
     }
+
+    /*//*/
+
+    /*!* Фильтры категорий *!*/
+    /*.services-category-filters {*/
+    /*    display: flex;*/
+    /*    justify-content: center;*/
+    /*    flex-wrap: wrap;*/
+    /*    gap: 15px;*/
+    /*    margin-bottom: 50px;*/
+    /*    padding: 0 10px;*/
+    /*}*/
+
+    /*.services-category-filter {*/
+    /*    padding: 12px 24px;*/
+    /*    border: 2px solid var(--light-gray);*/
+    /*    background: none;*/
+    /*    border-radius: 50px;*/
+    /*    font-family: 'Roboto', sans-serif;*/
+    /*    font-size: 0.95rem;*/
+    /*    font-weight: 600;*/
+    /*    color: var(--secondary-color);*/
+    /*    cursor: pointer;*/
+    /*    transition: var(--transition);*/
+    /*    white-space: nowrap;*/
+    /*}*/
+    /*//*/
 
     .services-category-filters {
         gap: 10px;
