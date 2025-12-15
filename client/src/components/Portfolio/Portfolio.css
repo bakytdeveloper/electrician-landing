@@ -842,7 +842,7 @@
 
 @media (max-width: 768px) {
     .portfolio {
-        padding: 60px 0;
+        padding: 10px 0;
     }
 
     .portfolio-grid {
@@ -903,6 +903,10 @@
         width: 100%;
         max-width: 300px;
     }
+
+    .portfolio-meta {
+        display: none;
+    }
 }
 
 @media (max-width: 576px) {
@@ -936,7 +940,7 @@
         grid-template-columns: repeat(3, 1fr);
     }
 
-    .portfolio-meta {
-        grid-template-columns: repeat(2, 1fr);
-    }
+    /*.portfolio-meta {*/
+    /*    grid-template-columns: repeat(2, 1fr);*/
+    /*}*/
 }

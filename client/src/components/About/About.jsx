@@ -20,7 +20,7 @@ import { MdElectricalServices, MdEngineering, MdSupportAgent } from 'react-icons
 import './About.css';
 
 const About = () => {
-    const [activeTab, setActiveTab] = useState('experience');
+    const [activeTab, setActiveTab] = useState('services');
     const [activeCert, setActiveCert] = useState(0);
     const [stats, setStats] = useState({
         projects: 0,
@@ -357,17 +357,18 @@ const About = () => {
                     <div className="about-tabs-section">
                         <div className="about-tabs-header">
                             <button
-                                className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}
-                                onClick={() => setActiveTab('experience')}
-                            >
-                                Опыт работы
-                            </button>
-                            <button
                                 className={`about-tab-button ${activeTab === 'services' ? 'about-active' : ''}`}
                                 onClick={() => setActiveTab('services')}
                             >
                                 Услуги
                             </button>
+                            <button
+                                className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}
+                                onClick={() => setActiveTab('experience')}
+                            >
+                                Опыт работы
+                            </button>
+
                             <button
                                 className={`about-tab-button ${activeTab === 'certificates' ? 'about-active' : ''}`}
                                 onClick={() => setActiveTab('certificates')}
