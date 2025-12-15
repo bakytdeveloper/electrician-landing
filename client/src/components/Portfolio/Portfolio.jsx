@@ -528,7 +528,7 @@ const Portfolio = () => {
                     <div className="cta-buttons">
                         <button
                             className="cta-btn primary"
-                            onClick={() => document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' })}
+                            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                         >
                             Получить смету
                         </button>
