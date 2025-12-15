@@ -232,7 +232,7 @@
 }
 
 .feature-item span {
-    color: var(--secondary-color);
+    color: var(--secondary-color) !important;
 }
 
 .service-actions {
