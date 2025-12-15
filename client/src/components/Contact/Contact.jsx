@@ -16,7 +16,8 @@ import { MdOutlineSupportAgent, MdEmail } from 'react-icons/md';
 import './Contact.css';
 import Button from '../common/Button/Button';
 
-const Contact = ({ openModal }) => {
+const Contact = () => {
+// const Contact = ({ openModal }) => {
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -608,7 +609,11 @@ const Contact = ({ openModal }) => {
                         </a>
                         <button
                             className="contact-quick-contact-btn contact-secondary"
-                            onClick={() => openModal('callback')}
+                            // onClick={() => openModal('callback')}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                document.querySelector('.contact-form-section')?.scrollIntoView({ behavior: 'smooth' });
+                            }}
                         >
                             <MdEmail />
                             Написать
