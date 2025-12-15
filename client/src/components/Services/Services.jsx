@@ -92,26 +92,6 @@ const Services = () => {
             price: 'от 3 000 ₽',
             duration: 'от 30 мин'
         },
-        // {
-        //     id: 7,
-        //     title: 'Установка систем защиты',
-        //     description: 'Монтаж УЗО, стабилизаторов напряжения, реле напряжения и другой защитной аппаратуры.',
-        //     icon: <FaShieldAlt />,
-        //     category: 'installation',
-        //     features: ['УЗО', 'Стабилизаторы', 'Реле напряжения', 'Молниезащита'],
-        //     price: 'от 2 000 ₽',
-        //     duration: 'от 2 часов'
-        // },
-        // {
-        //     id: 8,
-        //     title: 'Проектирование электроснабжения',
-        //     description: 'Разработка проектов электроснабжения для квартир, домов и коммерческих помещений.',
-        //     icon: <MdOutlinePrecisionManufacturing />,
-        //     category: 'consultation',
-        //     features: ['Проект под ключ', 'Согласование', 'Смета', 'Техническая документация'],
-        //     price: 'от 5 000 ₽',
-        //     duration: 'от 2 дней'
-        // },
     ];
 
     const filteredServices = activeCategory === 'all'
@@ -144,19 +124,19 @@ const Services = () => {
         <section id="services" className="services">
             <div className="container">
                 {/* Заголовок секции */}
-                <div className="section-header">
-                    <h2 className="section-title">Наши услуги</h2>
-                    <p className="section-subtitle">
+                <div className="services-section-header">
+                    <h2 className="services-section-title">Наши услуги</h2>
+                    <p className="services-section-subtitle">
                         Профессиональные услуги электрика любой сложности. Работаем качественно, быстро и с гарантией.
                     </p>
                 </div>
 
                 {/* Фильтры категорий */}
-                <div className="category-filters">
+                <div className="services-category-filters">
                     {categories.map(category => (
                         <button
                             key={category.id}
-                            className={`category-filter ${activeCategory === category.id ? 'active' : ''}`}
+                            className={`services-category-filter ${activeCategory === category.id ? 'active' : ''}`}
                             onClick={() => setActiveCategory(category.id)}
                         >
                             {category.label}
@@ -169,55 +149,55 @@ const Services = () => {
                     {filteredServices.map(service => (
                         <div
                             key={service.id}
-                            className={`service-card ${activeService === service.id ? 'expanded' : ''}`}
+                            className={`services-service-card ${activeService === service.id ? 'expanded' : ''}`}
                             onClick={() => handleServiceClick(service.id)}
                         >
-                            <div className="service-card-header">
-                                <div className="service-icon">
+                            <div className="services-service-card-header">
+                                <div className="services-service-icon">
                                     {service.icon}
                                 </div>
-                                <div className="service-title-wrapper">
-                                    <h3 className="service-title">{service.title}</h3>
-                                    <div className="service-meta">
-                                        <span className="service-price">{service.price}</span>
-                                        <span className="service-duration">{service.duration}</span>
+                                <div className="services-service-title-wrapper">
+                                    <h3 className="services-service-title">{service.title}</h3>
+                                    <div className="services-service-meta">
+                                        <span className="services-service-price">{service.price}</span>
+                                        <span className="services-service-duration">{service.duration}</span>
                                     </div>
                                 </div>
-                                <div className="service-arrow">
+                                <div className="services-service-arrow">
                                     <FaArrowRight />
                                 </div>
                             </div>
 
-                            <div className="service-card-content">
-                                <p className="service-description">{service.description}</p>
+                            <div className="services-service-card-content">
+                                <p className="services-service-description">{service.description}</p>
 
-                                <div className="service-features">
+                                <div className="services-service-features">
                                     <h4>Что входит:</h4>
-                                    <ul className="features-list">
+                                    <ul className="services-features-list">
                                         {service.features.map((feature, index) => (
-                                            <li key={index} className="feature-item">
-                                                <FaCheckCircle className="feature-check" />
+                                            <li key={index} className="services-feature-item">
+                                                <FaCheckCircle className="services-feature-check" />
                                                 <span>{feature}</span>
                                             </li>
                                         ))}
                                     </ul>
                                 </div>
 
-                                <div className="service-actions">
+                                <div className="services-service-actions">
                                     <Button
                                         variant="primary"
                                         size="small"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' });
+                                            document.querySelector('.contact-form-header')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
-                                        className="service-order-btn"
+                                        className="services-service-order-btn"
                                     >
                                         Заказать услугу
                                     </Button>
                                     <a
                                         href={`tel:+79991234567`}
-                                        className="service-call-link"
+                                        className="services-service-call-link"
                                         onClick={(e) => e.stopPropagation()}
                                     >
                                         Позвонить для уточнения
@@ -229,16 +209,16 @@ const Services = () => {
                 </div>
 
                 {/* Преимущества */}
-                <div className="benefits-section">
-                    <div className="benefits-header">
+                <div className="services-benefits-section">
+                    <div className="services-benefits-header">
                         <h3>Почему выбирают нас</h3>
                         <p>Мы гарантируем качество и надежность всех выполненных работ</p>
                     </div>
 
-                    <div className="benefits-grid">
+                    <div className="services-benefits-grid">
                         {benefits.map((benefit, index) => (
-                            <div key={index} className="benefit-card">
-                                <div className="benefit-icon-wrapper">
+                            <div key={index} className="services-benefit-card">
+                                <div className="services-benefit-icon-wrapper">
                                     {benefit.icon}
                                 </div>
                                 <div className="benefit-content">
@@ -251,12 +231,12 @@ const Services = () => {
                 </div>
 
                 {/* CTA блок */}
-                <div className="services-cta">
-                    <div className="cta-content">
+                <div className="services-services-cta">
+                    <div className="services-cta-content">
                         <h3>Нужна консультация электрика?</h3>
                         <p>Оставьте заявку и получите бесплатную консультацию по вашему вопросу</p>
                     </div>
-                    <div className="cta-actions">
+                    <div className="services-cta-actions">
                         <Button
                             variant="primary"
                             size="large"
@@ -264,7 +244,7 @@ const Services = () => {
                         >
                             Получить консультацию
                         </Button>
-                        <a href="tel:+79991234567" className="cta-phone">
+                        <a href="tel:+79991234567" className="services-cta-phone">
                             Или позвоните: +7 (999) 123-45-67
                         </a>
                     </div>
