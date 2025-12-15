@@ -768,6 +768,17 @@
         padding: 40px 0 30px;
     }
 
+
+    /* Скрываем третью колонку на очень маленьких экранах */
+    .footer-column:nth-child(3) {
+        display: none;
+    }
+
+    /* Скрываем третью колонку на очень маленьких экранах */
+    .footer-column:nth-child(2) {
+        margin-top: 50px;
+    }
+
     .footer-logo {
         flex-direction: row;
         text-align: left;
