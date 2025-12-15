@@ -189,7 +189,7 @@ const Services = () => {
                                         size="small"
                                         onClick={(e) => {
                                             e.stopPropagation();
-                                            document.querySelector('.contact-form-header')?.scrollIntoView({ behavior: 'smooth' });
+                                            document.querySelector('.contact-form-section')?.scrollIntoView({ behavior: 'smooth' });
                                         }}
                                         className="services-service-order-btn"
                                     >
@@ -240,7 +240,7 @@ const Services = () => {
                         <Button
                             variant="primary"
                             size="large"
-                            onClick={() => document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' })}
+                            onClick={() => document.querySelector('.contact-form-section')?.scrollIntoView({ behavior: 'smooth' })}
                         >
                             Получить консультацию
                         </Button>
