@@ -5,17 +5,9 @@ import {
     FaMapMarkerAlt,
     FaClock,
     FaChevronRight,
-    FaFacebook,
-    FaInstagram,
-    FaTelegram,
-    FaYoutube,
-    FaVk,
-    FaWhatsapp,
-    FaRegCopyright,
-    FaShieldAlt,
-    FaCreditCard
+    FaRegCopyright
 } from 'react-icons/fa';
-import { MdElectricalServices, MdSupportAgent } from 'react-icons/md';
+import { MdElectricalServices } from 'react-icons/md';
 import './Footer.css';
 import Button from '../common/Button/Button';
 
@@ -29,8 +21,7 @@ const Footer = () => {
         { label: 'О нас', href: '#about' },
         { label: 'Контакты', href: '#contact' },
         { label: 'Отзывы', href: '#about' },
-        { label: 'Цены', href: '#services' },
-        { label: 'Акции', href: '#home' }
+        { label: 'Цены', href: '#services' }
     ];
 
     const services = [
@@ -47,24 +38,8 @@ const Footer = () => {
     const contactInfo = [
         { icon: <FaPhone />, text: '+7 (999) 123-45-67', link: 'tel:+79991234567' },
         { icon: <FaEnvelope />, text: 'info@electromaster.ru', link: 'mailto:info@electromaster.ru' },
-        { icon: <FaMapMarkerAlt />, text: 'Москва, ул. Электриков, д. 15', link: 'https://yandex.ru/maps' },
+        { icon: <FaMapMarkerAlt />, text: 'Кордай, ул.Электриков, д. 15', link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point' },
         { icon: <FaClock />, text: 'Пн-Пт: 8:00-20:00, Сб-Вс: 9:00-18:00', link: '#contact' }
-    ];
-
-    const socialLinks = [
-        { icon: <FaVk />, label: 'ВКонтакте', href: 'https://vk.com/electromaster', color: '#4C75A3' },
-        { icon: <FaTelegram />, label: 'Telegram', href: 'https://t.me/electromaster', color: '#0088cc' },
-        { icon: <FaWhatsapp />, label: 'WhatsApp', href: 'https://wa.me/79991234567', color: '#25D366' },
-        { icon: <FaInstagram />, label: 'Instagram', href: 'https://instagram.com/electromaster', color: '#E4405F' },
-        { icon: <FaYoutube />, label: 'YouTube', href: 'https://youtube.com/electromaster', color: '#FF0000' },
-        { icon: <FaFacebook />, label: 'Facebook', href: 'https://facebook.com/electromaster', color: '#1877F2' }
-    ];
-
-    const paymentMethods = [
-        { label: 'Наличные', icon: '💵' },
-        { label: 'Банковская карта', icon: '💳' },
-        { label: 'Безналичный расчет', icon: '🏦' },
-        { label: 'Перевод', icon: '📱' }
     ];
 
     const scrollToSection = (sectionId) => {
@@ -92,52 +67,39 @@ const Footer = () => {
                 <div className="container">
                     <div className="footer-content">
                         {/* Колонка 1: О компании */}
-                        <div className="footer-column about-column">
+                        <div className="footer-column">
                             <div className="footer-logo">
-                                <MdElectricalServices className="logo-icon" />
-                                <div className="logo-text">
-                                    <h3 className="logo-title">ЭлектроМастер</h3>
-                                    <p className="logo-subtitle">Профессиональные услуги электрика</p>
+                                <MdElectricalServices className="footer-logo-icon" />
+                                <div className="footer-logo-text">
+                                    <h3 className="footer-logo-title">ЭлектроМастер</h3>
+                                    <p className="footer-logo-subtitle">Профессиональные услуги электрика</p>
                                 </div>
                             </div>
 
-                            <p className="company-description">
+                            <p className="footer-company-description">
                                 Профессиональные электромонтажные работы любой сложности.
                                 Более 12 лет опыта, гарантия качества, современное оборудование.
                             </p>
 
-                            <div className="contact-list">
+                            <div className="footer-contact-list">
                                 {contactInfo.map((contact, index) => (
                                     <a
                                         key={index}
                                         href={contact.link}
-                                        className="contact-item"
+                                        className="footer-contact-item"
                                         target={contact.link.startsWith('http') ? '_blank' : '_self'}
                                         rel="noopener noreferrer"
                                     >
-                                        <span className="contact-icon">{contact.icon}</span>
-                                        <span className="contact-text">{contact.text}</span>
+                                        <span className="footer-contact-icon">{contact.icon}</span>
+                                        <span className="footer-contact-text">{contact.text}</span>
                                     </a>
                                 ))}
-                            </div>
-
-                            <div className="emergency-call-footer">
-                                <div className="emergency-icon">
-                                    <MdSupportAgent />
-                                </div>
-                                <div className="emergency-content">
-                                    <h4>Экстренный вызов</h4>
-                                    <p>24/7 без выходных</p>
-                                    <a href="tel:+79991234567" className="emergency-link">
-                                        +7 (999) 123-45-67
-                                    </a>
-                                </div>
                             </div>
                         </div>
 
                         {/* Колонка 2: Быстрые ссылки */}
-                        <div className="footer-column links-column">
-                            <h4 className="column-title">Быстрые ссылки</h4>
+                        <div className="footer-column">
+                            <h4 className="footer-column-title">Быстрые ссылки</h4>
                             <ul className="footer-links">
                                 {quickLinks.map((link, index) => (
                                     <li key={index} className="footer-link-item">
@@ -145,34 +107,17 @@ const Footer = () => {
                                             className="footer-link"
                                             onClick={() => handleQuickLinkClick(link.href)}
                                         >
-                                            <FaChevronRight className="link-icon" />
+                                            <FaChevronRight className="footer-link-icon" />
                                             <span>{link.label}</span>
                                         </button>
                                     </li>
                                 ))}
                             </ul>
-
-                            <div className="footer-features">
-                                <div className="feature">
-                                    <FaShieldAlt className="feature-icon" />
-                                    <div className="feature-text">
-                                        <span className="feature-title">Гарантия</span>
-                                        <span className="feature-desc">до 3 лет</span>
-                                    </div>
-                                </div>
-                                <div className="feature">
-                                    <FaCreditCard className="feature-icon" />
-                                    <div className="feature-text">
-                                        <span className="feature-title">Оплата</span>
-                                        <span className="feature-desc">любым способом</span>
-                                    </div>
-                                </div>
-                            </div>
                         </div>
 
                         {/* Колонка 3: Услуги */}
-                        <div className="footer-column services-column">
-                            <h4 className="column-title">Наши услуги</h4>
+                        <div className="footer-column">
+                            <h4 className="footer-column-title">Наши услуги</h4>
                             <ul className="footer-links">
                                 {services.map((service, index) => (
                                     <li key={index} className="footer-link-item">
@@ -180,89 +125,12 @@ const Footer = () => {
                                             className="footer-link"
                                             onClick={() => handleQuickLinkClick(service.href)}
                                         >
-                                            <FaChevronRight className="link-icon" />
+                                            <FaChevronRight className="footer-link-icon" />
                                             <span>{service.label}</span>
                                         </button>
                                     </li>
                                 ))}
                             </ul>
-
-                            <div className="payment-methods">
-                                <h5>Способы оплаты</h5>
-                                <div className="payment-icons">
-                                    {paymentMethods.map((method, index) => (
-                                        <div key={index} className="payment-method">
-                                            <span className="payment-icon">{method.icon}</span>
-                                            <span className="payment-label">{method.label}</span>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        </div>
-
-                        {/* Колонка 4: Подписка и соцсети */}
-                        <div className="footer-column subscription-column">
-                            <h4 className="column-title">Подпишитесь на новости</h4>
-                            <p className="subscription-desc">
-                                Получайте полезные советы по электробезопасности и специальные предложения
-                            </p>
-
-                            <form className="subscription-form">
-                                <div className="form-group">
-                                    <input
-                                        type="email"
-                                        placeholder="Ваш email"
-                                        className="email-input"
-                                        required
-                                    />
-                                    <Button
-                                        type="submit"
-                                        variant="primary"
-                                        size="small"
-                                        className="subscribe-btn"
-                                    >
-                                        Подписаться
-                                    </Button>
-                                </div>
-                                <p className="form-note">
-                                    Подписываясь, вы соглашаетесь с политикой конфиденциальности
-                                </p>
-                            </form>
-
-                            <div className="social-section">
-                                <h5>Мы в социальных сетях</h5>
-                                <div className="social-links-grid">
-                                    {socialLinks.map((social, index) => (
-                                        <a
-                                            key={index}
-                                            href={social.href}
-                                            className="social-link"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            style={{ '--social-color': social.color }}
-                                            aria-label={social.label}
-                                        >
-                                            {social.icon}
-                                            <span className="social-tooltip">{social.label}</span>
-                                        </a>
-                                    ))}
-                                </div>
-                            </div>
-
-                            <div className="app-download">
-                                <h5>Мобильное приложение</h5>
-                                <p>Вызовите электрика в один клик</p>
-                                <div className="app-buttons">
-                                    <button className="app-button google-play">
-                                        <span className="app-label">Доступно в</span>
-                                        <span className="app-name">Google Play</span>
-                                    </button>
-                                    <button className="app-button app-store">
-                                        <span className="app-label">Загрузите в</span>
-                                        <span className="app-name">App Store</span>
-                                    </button>
-                                </div>
-                            </div>
                         </div>
                     </div>
                 </div>
@@ -272,21 +140,21 @@ const Footer = () => {
             <div className="footer-bottom">
                 <div className="container">
                     <div className="footer-bottom-content">
-                        <div className="copyright">
-                            <FaRegCopyright className="copyright-icon" />
+                        <div className="footer-copyright">
+                            <FaRegCopyright className="footer-copyright-icon" />
                             <span>{currentYear} ЭлектроМастер. Все права защищены.</span>
                         </div>
 
-                        <div className="legal-links">
-                            <a href="/privacy" className="legal-link">Политика конфиденциальности</a>
-                            <a href="/terms" className="legal-link">Пользовательское соглашение</a>
-                            <a href="/sitemap" className="legal-link">Карта сайта</a>
-                        </div>
+                        {/*<div className="footer-legal-links">*/}
+                        {/*    <a href="/privacy" className="footer-legal-link">Политика конфиденциальности</a>*/}
+                        {/*    <a href="/terms" className="footer-legal-link">Пользовательское соглашение</a>*/}
+                        {/*    <a href="/sitemap" className="footer-legal-link">Карта сайта</a>*/}
+                        {/*</div>*/}
 
-                        <div className="developer-info">
+                        <div className="footer-developer-info">
                             <span>Разработка сайта:</span>
-                            <a href="https://webmaster.ru" className="developer-link" target="_blank" rel="noopener noreferrer">
-                                WebMaster Studio
+                            <a href="https://webmaster.ru" className="footer-developer-link" target="_blank" rel="noopener noreferrer">
+                                bakytdeveloper
                             </a>
                         </div>
                     </div>
@@ -295,33 +163,33 @@ const Footer = () => {
 
             {/* Кнопка "Наверх" */}
             <button
-                className="scroll-to-top"
+                className="footer-scroll-to-top"
                 onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                 aria-label="Наверх"
             >
-                <span className="arrow-up">↑</span>
+                <span className="footer-arrow-up">↑</span>
             </button>
 
             {/* Флоатинг кнопки быстрой связи */}
-            <div className="floating-buttons">
+            <div className="footer-floating-buttons">
                 <a
                     href="tel:+79991234567"
-                    className="floating-button phone-button"
+                    className="footer-floating-button footer-phone-button"
                     aria-label="Позвонить"
                 >
                     <FaPhone />
                 </a>
                 <a
                     href="https://wa.me/79991234567"
-                    className="floating-button whatsapp-button"
+                    className="footer-floating-button footer-whatsapp-button"
                     target="_blank"
                     rel="noopener noreferrer"
                     aria-label="WhatsApp"
                 >
-                    <FaWhatsapp />
+                    <FaEnvelope />
                 </a>
                 <button
-                    className="floating-button callback-button"
+                    className="footer-floating-button footer-callback-button"
                     onClick={() => document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' })}
                     aria-label="Заказать звонок"
                 >

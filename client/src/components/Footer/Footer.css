@@ -7,7 +7,7 @@
 
 /* Основной контент футера */
 .footer-main {
-    padding: 80px 0 60px;
+    padding: 60px 0 40px;
     position: relative;
     overflow: hidden;
 }
@@ -24,13 +24,13 @@
 
 .footer-content {
     display: grid;
-    grid-template-columns: repeat(4, 1fr);
-    gap: 50px;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 40px;
     position: relative;
     z-index: 1;
 }
 
-@media (max-width: 1200px) {
+@media (max-width: 992px) {
     .footer-content {
         grid-template-columns: repeat(2, 1fr);
         gap: 40px;
@@ -48,11 +48,7 @@
 .footer-column {
     display: flex;
     flex-direction: column;
-    gap: 25px;
-}
-
-.about-column {
-    grid-column: span 1;
+    gap: 20px;
 }
 
 /* Логотип компании */
@@ -60,50 +56,50 @@
     display: flex;
     align-items: center;
     gap: 15px;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-.logo-icon {
-    font-size: 3rem;
+.footer-logo-icon {
+    font-size: 2.5rem;
     color: var(--primary-color);
 }
 
-.logo-text {
+.footer-logo-text {
     display: flex;
     flex-direction: column;
 }
 
-.logo-title {
-    font-size: 1.8rem;
+.footer-logo-title {
+    font-size: 1.6rem;
     margin: 0;
     color: var(--white);
     line-height: 1.2;
 }
 
-.logo-subtitle {
-    font-size: 0.9rem;
+.footer-logo-subtitle {
+    font-size: 0.85rem;
     opacity: 0.8;
     margin: 5px 0 0;
 }
 
-.company-description {
-    font-size: 0.95rem;
+.footer-company-description {
+    font-size: 0.9rem;
     line-height: 1.6;
     opacity: 0.9;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
 /* Контактная информация */
-.contact-list {
+.footer-contact-list {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 25px;
+    gap: 12px;
+    margin-bottom: 20px;
 }
 
-.contact-item {
+.footer-contact-item {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
     gap: 12px;
     color: var(--white);
     text-decoration: none;
@@ -111,81 +107,83 @@
     padding: 8px 0;
 }
 
-.contact-item:hover {
+.footer-contact-item:hover {
     opacity: 0.8;
     transform: translateX(5px);
 }
 
-.contact-icon {
-    font-size: 1.1rem;
+.footer-contact-icon {
+    font-size: 1rem;
     color: var(--primary-color);
-    width: 24px;
+    width: 20px;
     display: flex;
     align-items: center;
     justify-content: center;
+    flex-shrink: 0;
 }
 
-.contact-text {
-    font-size: 0.95rem;
+.footer-contact-text {
+    font-size: 0.9rem;
     opacity: 0.9;
+    line-height: 1.4;
 }
 
 /* Экстренный вызов в футере */
-.emergency-call-footer {
+.footer-emergency-call {
     background: rgba(231, 76, 60, 0.2);
     border: 1px solid rgba(231, 76, 60, 0.3);
-    border-radius: 15px;
-    padding: 20px;
+    border-radius: 12px;
+    padding: 15px;
     display: flex;
     align-items: center;
     gap: 15px;
     margin-top: 15px;
 }
 
-.emergency-icon {
-    font-size: 2.5rem;
+.footer-emergency-icon {
+    font-size: 2rem;
     color: var(--accent-color);
 }
 
-.emergency-content h4 {
-    font-size: 1.1rem;
+.footer-emergency-content h4 {
+    font-size: 1rem;
     margin: 0 0 5px;
     color: var(--white);
 }
 
-.emergency-content p {
-    font-size: 0.85rem;
+.footer-emergency-content p {
+    font-size: 0.8rem;
     opacity: 0.8;
     margin: 0 0 8px;
 }
 
-.emergency-link {
+.footer-emergency-link {
     color: var(--accent-color);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
     text-decoration: none;
     transition: var(--transition);
 }
 
-.emergency-link:hover {
+.footer-emergency-link:hover {
     opacity: 0.8;
 }
 
 /* Заголовки колонок */
-.column-title {
-    font-size: 1.3rem;
-    margin: 0 0 25px;
+.footer-column-title {
+    font-size: 1.2rem;
+    margin: 0 0 20px;
     color: var(--white);
     position: relative;
-    padding-bottom: 15px;
+    padding-bottom: 12px;
 }
 
-.column-title::after {
+.footer-column-title::after {
     content: '';
     position: absolute;
     bottom: 0;
     left: 0;
-    width: 40px;
+    width: 35px;
     height: 3px;
     background-color: var(--primary-color);
 }
@@ -195,7 +193,9 @@
     list-style: none;
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
+    padding: 0;
+    margin: 0;
 }
 
 .footer-link-item {
@@ -206,16 +206,17 @@
 .footer-link {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 8px;
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.9);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     cursor: pointer;
     transition: var(--transition);
-    padding: 8px 0;
+    padding: 6px 0;
     text-align: left;
     width: 100%;
+    font-family: inherit;
 }
 
 .footer-link:hover {
@@ -223,13 +224,14 @@
     transform: translateX(5px);
 }
 
-.link-icon {
-    font-size: 0.8rem;
+.footer-link-icon {
+    font-size: 0.7rem;
     color: var(--primary-color);
     transition: var(--transition);
+    flex-shrink: 0;
 }
 
-.footer-link:hover .link-icon {
+.footer-link:hover .footer-link-icon {
     transform: translateX(3px);
 }
 
@@ -237,350 +239,354 @@
 .footer-features {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-    margin-top: 30px;
+    gap: 15px;
+    margin-top: 25px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.feature {
+.footer-feature {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 12px;
 }
 
-.feature-icon {
-    font-size: 1.5rem;
+.footer-feature-icon {
+    font-size: 1.3rem;
     color: var(--primary-color);
     flex-shrink: 0;
 }
 
-.feature-text {
+.footer-feature-text {
     display: flex;
     flex-direction: column;
 }
 
-.feature-title {
+.footer-feature-title {
     font-weight: 600;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
-.feature-desc {
-    font-size: 0.85rem;
+.footer-feature-desc {
+    font-size: 0.8rem;
     opacity: 0.8;
 }
 
 /* Способы оплаты */
-.payment-methods {
-    margin-top: 30px;
+.footer-payment-methods {
+    margin-top: 25px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.payment-methods h5 {
-    font-size: 1.1rem;
-    margin: 0 0 15px;
+.footer-payment-methods h5 {
+    font-size: 1rem;
+    margin: 0 0 12px;
     color: var(--white);
 }
 
-.payment-icons {
+.footer-payment-icons {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
-.payment-method {
+.footer-payment-method {
     display: flex;
     align-items: center;
-    gap: 10px;
-    padding: 10px;
+    gap: 8px;
+    padding: 8px;
     background: rgba(255, 255, 255, 0.05);
-    border-radius: 8px;
+    border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.1);
     transition: var(--transition);
+    font-size: 0.85rem;
 }
 
-.payment-method:hover {
+.footer-payment-method:hover {
     background: rgba(255, 255, 255, 0.1);
     transform: translateY(-2px);
 }
 
-.payment-icon {
-    font-size: 1.3rem;
+.footer-payment-icon {
+    font-size: 1.2rem;
 }
 
-.payment-label {
-    font-size: 0.85rem;
+.footer-payment-label {
+    font-size: 0.8rem;
     opacity: 0.9;
 }
 
 /* Форма подписки */
-.subscription-desc {
-    font-size: 0.9rem;
+.footer-subscription-desc {
+    font-size: 0.85rem;
     line-height: 1.5;
     opacity: 0.8;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
 }
 
-.subscription-form {
-    margin-bottom: 30px;
+.footer-subscription-form {
+    margin-bottom: 25px;
 }
 
-.form-group {
+.footer-form-group {
     display: flex;
     gap: 10px;
-    margin-bottom: 12px;
+    margin-bottom: 10px;
 }
 
-.email-input {
+.footer-email-input {
     flex: 1;
-    padding: 12px 16px;
+    padding: 10px 14px;
     border: 2px solid rgba(255, 255, 255, 0.2);
-    border-radius: 8px;
+    border-radius: 6px;
     background: rgba(255, 255, 255, 0.1);
     color: var(--white);
     font-family: 'Open Sans', sans-serif;
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     transition: var(--transition);
 }
 
-.email-input::placeholder {
+.footer-email-input::placeholder {
     color: rgba(255, 255, 255, 0.6);
 }
 
-.email-input:focus {
+.footer-email-input:focus {
     outline: none;
     border-color: var(--primary-color);
     background: rgba(255, 255, 255, 0.15);
 }
 
-.subscribe-btn {
+.footer-subscribe-btn {
     white-space: nowrap;
-    padding: 12px 20px;
+    padding: 10px 18px;
 }
 
-.form-note {
-    font-size: 0.8rem;
+.footer-form-note {
+    font-size: 0.75rem;
     opacity: 0.7;
     line-height: 1.4;
 }
 
 /* Социальные сети в футере */
-.social-section {
-    margin-bottom: 30px;
+.footer-social-section {
+    margin-bottom: 25px;
 }
 
-.social-section h5 {
-    font-size: 1.1rem;
-    margin: 0 0 15px;
+.footer-social-section h5 {
+    font-size: 1rem;
+    margin: 0 0 12px;
     color: var(--white);
 }
 
-.social-links-grid {
+.footer-social-links-grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 12px;
+    gap: 10px;
 }
 
-.social-link {
+.footer-social-link {
     position: relative;
-    width: 45px;
-    height: 45px;
+    width: 40px;
+    height: 40px;
     background: var(--secondary-light);
     border-radius: 50%;
     display: flex;
     align-items: center;
     justify-content: center;
     color: var(--white);
-    font-size: 1.2rem;
+    font-size: 1rem;
     transition: var(--transition);
     text-decoration: none;
     border: 2px solid transparent;
 }
 
-.social-link:hover {
+.footer-social-link:hover {
     transform: translateY(-3px) scale(1.1);
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
     border-color: var(--white);
 }
 
-.social-tooltip {
+.footer-social-tooltip {
     position: absolute;
     bottom: 100%;
     left: 50%;
     transform: translateX(-50%);
     background: var(--secondary-color);
     color: var(--white);
-    padding: 6px 12px;
-    border-radius: 6px;
-    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.7rem;
     white-space: nowrap;
     opacity: 0;
     visibility: hidden;
     transition: var(--transition);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     pointer-events: none;
     z-index: 100;
 }
 
-.social-tooltip::after {
+.footer-social-tooltip::after {
     content: '';
     position: absolute;
     top: 100%;
     left: 50%;
     transform: translateX(-50%);
-    border: 6px solid transparent;
+    border: 4px solid transparent;
     border-top-color: var(--secondary-color);
 }
 
-.social-link:hover .social-tooltip {
+.footer-social-link:hover .footer-social-tooltip {
     opacity: 1;
     visibility: visible;
 }
 
 /* Мобильное приложение */
-.app-download {
-    margin-top: 30px;
+.footer-app-download {
+    margin-top: 25px;
     padding-top: 20px;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.app-download h5 {
-    font-size: 1.1rem;
+.footer-app-download h5 {
+    font-size: 1rem;
     margin: 0 0 10px;
     color: var(--white);
 }
 
-.app-download p {
-    font-size: 0.9rem;
+.footer-app-download p {
+    font-size: 0.85rem;
     opacity: 0.8;
-    margin: 0 0 20px;
+    margin: 0 0 15px;
 }
 
-.app-buttons {
+.footer-app-buttons {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 10px;
 }
 
-.app-button {
+.footer-app-button {
     display: flex;
     flex-direction: column;
-    padding: 12px 20px;
+    padding: 10px 15px;
     border: none;
-    border-radius: 10px;
+    border-radius: 8px;
     background: rgba(255, 255, 255, 0.1);
     color: var(--white);
     cursor: pointer;
     transition: var(--transition);
     text-align: left;
     border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: inherit;
 }
 
-.app-button:hover {
+.footer-app-button:hover {
     background: rgba(255, 255, 255, 0.2);
     transform: translateY(-2px);
 }
 
-.app-button.google-play {
+.footer-app-button.google-play {
     background: linear-gradient(135deg, #4285F4, #34A853);
 }
 
-.app-button.app-store {
+.footer-app-button.app-store {
     background: linear-gradient(135deg, #000000, #1D1D1F);
 }
 
-.app-label {
-    font-size: 0.7rem;
+.footer-app-label {
+    font-size: 0.65rem;
     opacity: 0.8;
     margin-bottom: 2px;
 }
 
-.app-name {
-    font-size: 1rem;
+.footer-app-name {
+    font-size: 0.9rem;
     font-weight: 600;
 }
 
 /* Нижняя часть футера */
 .footer-bottom {
     background: rgba(0, 0, 0, 0.2);
-    padding: 25px 0;
+    padding: 20px 0;
     border-top: 1px solid rgba(255, 255, 255, 0.1);
 }
 
 .footer-bottom-content {
     display: flex;
-    justify-content: space-between;
+    justify-content: space-around;
     align-items: center;
     flex-wrap: wrap;
-    gap: 20px;
+    gap: 15px;
 }
+
 
 @media (max-width: 768px) {
     .footer-bottom-content {
         flex-direction: column;
         text-align: center;
+        gap: 20px;
     }
 }
 
-.copyright {
+.footer-copyright {
     display: flex;
     align-items: center;
-    gap: 10px;
-    font-size: 0.9rem;
+    gap: 8px;
+    font-size: 0.85rem;
     opacity: 0.8;
 }
 
-.copyright-icon {
-    font-size: 0.9rem;
+.footer-copyright-icon {
+    font-size: 0.85rem;
 }
 
-.legal-links {
+.footer-legal-links {
     display: flex;
-    gap: 25px;
+    gap: 20px;
     flex-wrap: wrap;
 }
 
 @media (max-width: 576px) {
-    .legal-links {
+    .footer-legal-links {
         flex-direction: column;
-        gap: 15px;
+        gap: 10px;
         align-items: center;
     }
 }
 
-.legal-link {
+.footer-legal-link {
     color: rgba(255, 255, 255, 0.7);
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     text-decoration: none;
     transition: var(--transition);
 }
 
-.legal-link:hover {
+.footer-legal-link:hover {
     color: var(--primary-color);
 }
 
-.developer-info {
+.footer-developer-info {
     display: flex;
     align-items: center;
     gap: 8px;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
     opacity: 0.8;
 }
 
-.developer-link {
+.footer-developer-link {
     color: var(--primary-color);
     text-decoration: none;
     transition: var(--transition);
 }
 
-.developer-link:hover {
+.footer-developer-link:hover {
     opacity: 0.8;
     text-decoration: underline;
 }
 
 /* Кнопка "Наверх" */
-.scroll-to-top {
+.footer-scroll-to-top {
     position: fixed;
     bottom: 100px;
     right: 30px;
@@ -600,26 +606,27 @@
     opacity: 0;
     visibility: hidden;
     box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    font-family: inherit;
 }
 
-.scroll-to-top.visible {
+.footer-scroll-to-top.visible {
     opacity: 1;
     visibility: visible;
 }
 
-.scroll-to-top:hover {
+.footer-scroll-to-top:hover {
     background: var(--primary-dark);
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
 }
 
-.arrow-up {
+.footer-arrow-up {
     display: block;
     line-height: 1;
 }
 
 /* Флоатинг кнопки */
-.floating-buttons {
+.footer-floating-buttons {
     position: fixed;
     bottom: 30px;
     right: 30px;
@@ -630,13 +637,14 @@
 }
 
 @media (max-width: 768px) {
-    .floating-buttons {
+    .footer-floating-buttons {
         bottom: 20px;
         right: 20px;
+        gap: 10px;
     }
 }
 
-.floating-button {
+.footer-floating-button {
     width: 60px;
     height: 60px;
     border: none;
@@ -655,14 +663,14 @@
 }
 
 @media (max-width: 768px) {
-    .floating-button {
+    .footer-floating-button {
         width: 50px;
         height: 50px;
         font-size: 1.2rem;
     }
 }
 
-.floating-button::after {
+.footer-floating-button::after {
     content: '';
     position: absolute;
     top: 0;
@@ -674,47 +682,47 @@
     transition: var(--transition);
 }
 
-.floating-button:hover::after {
+.footer-floating-button:hover::after {
     opacity: 1;
 }
 
-.floating-button:hover {
+.footer-floating-button:hover {
     transform: scale(1.1) translateY(-5px);
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
 }
 
-.phone-button {
+.footer-phone-button {
     background: linear-gradient(135deg, #27ae60, #2ecc71);
-    animation: pulse-phone 3s infinite;
+    animation: footer-pulse-phone 3s infinite;
 }
 
-.whatsapp-button {
+.footer-whatsapp-button {
     background: linear-gradient(135deg, #25D366, #128C7E);
-    animation: pulse-whatsapp 3s infinite 0.5s;
+    animation: footer-pulse-whatsapp 3s infinite 0.5s;
 }
 
-.callback-button {
+.footer-callback-button {
     background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
-    animation: pulse-callback 3s infinite 1s;
+    animation: footer-pulse-callback 3s infinite 1s;
 }
 
-@keyframes pulse-phone {
+@keyframes footer-pulse-phone {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
 }
 
-@keyframes pulse-whatsapp {
+@keyframes footer-pulse-whatsapp {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
 }
 
-@keyframes pulse-callback {
+@keyframes footer-pulse-callback {
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
 }
 
 /* Анимации */
-@keyframes fadeInUp {
+@keyframes footer-fadeInUp {
     from {
         opacity: 0;
         transform: translateY(30px);
@@ -726,7 +734,7 @@
 }
 
 .footer-column {
-    animation: fadeInUp 0.6s ease-out forwards;
+    animation: footer-fadeInUp 0.6s ease-out forwards;
 }
 
 .footer-column:nth-child(1) { animation-delay: 0.1s; }
@@ -737,7 +745,7 @@
 /* Адаптивность */
 @media (max-width: 1200px) {
     .footer-main {
-        padding: 60px 0 40px;
+        padding: 50px 0 35px;
     }
 
     .footer-content {
@@ -750,50 +758,50 @@
         margin-top: 60px;
     }
 
-    .social-links-grid {
-        grid-template-columns: repeat(3, 1fr);
+    .footer-content {
+        gap: 30px;
     }
 }
 
 @media (max-width: 768px) {
     .footer-main {
-        padding: 50px 0 30px;
+        padding: 40px 0 30px;
     }
 
     .footer-logo {
-        flex-direction: column;
-        text-align: center;
-        gap: 10px;
+        flex-direction: row;
+        text-align: left;
+        gap: 15px;
     }
 
-    .logo-text {
-        align-items: center;
+    .footer-logo-text {
+        align-items: flex-start;
     }
 
-    .contact-item {
-        justify-content: center;
-        text-align: center;
+    .footer-contact-item {
+        justify-content: flex-start;
+        text-align: left;
     }
 
-    .emergency-call-footer {
-        flex-direction: column;
-        text-align: center;
+    .footer-emergency-call {
+        flex-direction: row;
+        text-align: left;
     }
 
-    .payment-icons {
+    .footer-payment-icons {
         grid-template-columns: 1fr;
     }
 
-    .social-links-grid {
-        grid-template-columns: repeat(6, 1fr);
+    .footer-social-links-grid {
+        grid-template-columns: repeat(3, 1fr);
     }
 
-    .form-group {
+    .footer-form-group {
         flex-direction: column;
     }
 
-    .email-input,
-    .subscribe-btn {
+    .footer-email-input,
+    .footer-subscribe-btn {
         width: 100%;
     }
 }
@@ -803,22 +811,68 @@
         gap: 15px;
     }
 
-    .legal-links {
+    .footer-legal-links {
         gap: 10px;
     }
 
-    .developer-info {
+    .footer-developer-info {
         flex-direction: column;
         gap: 5px;
     }
 
-    .social-links-grid {
+    .footer-social-links-grid {
         grid-template-columns: repeat(3, 1fr);
     }
 
-    .floating-buttons {
+    .footer-floating-buttons {
         bottom: 15px;
         right: 15px;
         gap: 10px;
+    }
+
+    .footer-logo {
+        flex-direction: column;
+        text-align: center;
+        gap: 10px;
+    }
+
+    .footer-logo-text {
+        align-items: center;
+    }
+}
+
+/* Медиа запросы для очень больших экранов */
+@media (min-width: 1600px) {
+    .footer-content {
+        grid-template-columns: repeat(4, 1fr);
+    }
+}
+
+/* Медиа запросы для очень маленьких экранов */
+@media (max-width: 375px) {
+    .footer {
+        margin-top: 40px;
+    }
+
+    .footer-main {
+        padding: 30px 0 25px;
+    }
+
+    .footer-content {
+        gap: 30px;
+    }
+
+    .footer-column-title {
+        font-size: 1.1rem;
+    }
+
+    .footer-logo-title {
+        font-size: 1.4rem;
+    }
+
+    .footer-floating-button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
     }
 }

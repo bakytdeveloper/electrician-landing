@@ -61,7 +61,7 @@ const Hero = ({ openModal }) => {
     };
 
     return (
-        <section className="hero">
+        <section className="hero" id="home">
             {/* Фоновые слайды */}
             <div className="hero-slides">
                 {slides.map((slide, index) => (
