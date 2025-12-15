@@ -432,9 +432,14 @@
         font-size: 0.85rem;
     }
 
+    .hero-contact-card {
+        display: none;
+    }
+
     .hero-features {
-        grid-template-columns: 1fr;
-        gap: 20px;
+        /*grid-template-columns: 1fr;*/
+        /*gap: 20px;*/
+        display: none;
     }
 
     .feature-card {
@@ -459,9 +464,9 @@
         font-size: 0.95rem;
     }
 
-    .hero-contact-card {
-        padding: 20px 15px;
-    }
+    /*.hero-contact-card {*/
+    /*    padding: 20px 15px;*/
+    /*}*/
 
     .contact-info-item {
         flex-direction: column;
