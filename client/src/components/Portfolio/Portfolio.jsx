@@ -507,7 +507,7 @@ const Portfolio = () => {
                                     className="modal-action-btn primary"
                                     onClick={() => {
                                         closeModal();
-                                        document.querySelector('.contact')?.scrollIntoView({ behavior: 'smooth' });
+                                        document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
                                     }}
                                 >
                                     Заказать подобный проект

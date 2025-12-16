@@ -13,11 +13,11 @@
     padding: 20px;
 }
 
-.modal-content {
+.modals-modal-content {
     background-color: var(--white);
     border-radius: 10px;
     width: 100%;
-    max-width: 90%;
+    max-width: 600px;
     max-height: 90vh;
     overflow-y: auto;
     position: relative;
