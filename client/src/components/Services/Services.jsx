@@ -2,9 +2,7 @@ import React, { useState } from 'react';
 import {
     FaTools,
     FaBolt,
-    FaHome,
     FaWrench,
-    FaShieldAlt,
     FaCheckCircle,
     FaClock,
     FaTruck,
@@ -14,7 +12,6 @@ import {
     MdOutlineElectricalServices,
     MdSecurity,
     MdHomeRepairService,
-    MdOutlinePrecisionManufacturing
 } from 'react-icons/md';
 import './Services.css';
 import Button from '../common/Button/Button';
