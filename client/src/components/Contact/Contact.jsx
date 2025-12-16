@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     FaPhone,
     FaEnvelope,
@@ -17,7 +17,7 @@ import './Contact.css';
 import Button from '../common/Button/Button';
 
 const Contact = () => {
-// const Contact = ({ openModal }) => {
+    // const Contact = ({ openModal }) => {
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -38,23 +38,8 @@ const Contact = () => {
 
     const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31316.225376002167!2d74.70231946796906!3d43.0428249895966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389ebdd96a23754f%3A0x910c9ee831c61010!2sAk%20zhol%20border%20control%20point!5e0!3m2!1sen!2skg!4v1765603960864!5m2!1sen!2skg";
 
-    useEffect(() => {
-        // Инициализация текущего часа для отображения активности
-        const now = new Date();
-        setActiveHour(now.getHours());
-
-        // Загрузка карты с задержкой для лучшего UX
-        const loadMap = () => {
-            if (mapContainerRef.current) {
-                setIsMapLoaded(true);
-            }
-        };
-
-        const timer = setTimeout(loadMap, 500);
-        return () => clearTimeout(timer);
-    }, []);
-
-    const serviceOptions = [
+    // Используем useMemo для стабильных массивов
+    const serviceOptions = useMemo(() => [
         { value: '', label: 'Выберите услугу' },
         { value: 'installation', label: 'Монтаж электропроводки' },
         { value: 'repair', label: 'Ремонт проводки' },
@@ -62,9 +47,9 @@ const Contact = () => {
         { value: 'maintenance', label: 'Обслуживание' },
         { value: 'consultation', label: 'Консультация' },
         { value: 'other', label: 'Другое' }
-    ];
+    ], []);
 
-    const workingHours = [
+    const workingHours = useMemo(() => [
         { day: 'Понедельник', hours: '8:00 - 20:00', isToday: false },
         { day: 'Вторник', hours: '8:00 - 20:00', isToday: false },
         { day: 'Среда', hours: '8:00 - 20:00', isToday: false },
@@ -72,29 +57,16 @@ const Contact = () => {
         { day: 'Пятница', hours: '8:00 - 20:00', isToday: false },
         { day: 'Суббота', hours: '9:00 - 18:00', isToday: false },
         { day: 'Воскресенье', hours: '9:00 - 18:00', isToday: false }
-    ];
+    ], []);
 
-    // Определяем текущий день
-    useEffect(() => {
-        const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
-        const today = days[new Date().getDay()];
-
-        const updatedHours = workingHours.map(wh => ({
-            ...wh,
-            isToday: wh.day === today
-        }));
-
-        setTodayHours(updatedHours);
-    }, [workingHours]);
-
-    const socialLinks = [
+    const socialLinks = useMemo(() => [
         { icon: <FaWhatsapp />, label: 'WhatsApp', href: 'https://wa.me/79991234567', color: '#25D366' },
         { icon: <FaTelegram />, label: 'Telegram', href: 'https://t.me/electromaster', color: '#0088cc' },
         { icon: <FaVk />, label: 'VK', href: 'https://vk.com/electromaster', color: '#4C75A3' },
         { icon: <FaInstagram />, label: 'Instagram', href: 'https://instagram.com/electromaster', color: '#E4405F' }
-    ];
+    ], []);
 
-    const contactInfo = [
+    const contactInfo = useMemo(() => [
         {
             icon: <FaPhone />,
             title: 'Телефон',
@@ -122,7 +94,36 @@ const Contact = () => {
             details: ['Пн-Пт: 8:00 - 20:00', 'Сб-Вс: 9:00 - 18:00'],
             description: 'Аварийные вызовы - 24/7'
         }
-    ];
+    ], []);
+
+    useEffect(() => {
+        // Инициализация текущего часа для отображения активности
+        const now = new Date();
+        setActiveHour(now.getHours());
+
+        // Загрузка карты с задержкой для лучшего UX
+        const loadMap = () => {
+            if (mapContainerRef.current) {
+                setIsMapLoaded(true);
+            }
+        };
+
+        const timer = setTimeout(loadMap, 500);
+        return () => clearTimeout(timer);
+    }, []);
+
+    // Определяем текущий день - исправленная версия
+    useEffect(() => {
+        const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
+        const today = days[new Date().getDay()];
+
+        const updatedHours = workingHours.map(wh => ({
+            ...wh,
+            isToday: wh.day === today
+        }));
+
+        setTodayHours(updatedHours);
+    }, [workingHours]);
 
     const validateForm = () => {
         const errors = {};
@@ -247,6 +248,18 @@ const Contact = () => {
                 setIsMapLoaded(true);
             }
         }, 100);
+    };
+
+    // Обработчик копирования ссылки
+    const handleCopyMapLink = () => {
+        navigator.clipboard.writeText('https://maps.google.com/?q=Ak+zhol+border+control+point')
+            .then(() => {
+                // Можно добавить уведомление об успешном копировании
+                console.log('Ссылка скопирована');
+            })
+            .catch(err => {
+                console.error('Ошибка при копировании: ', err);
+            });
     };
 
     return (
@@ -542,7 +555,7 @@ const Contact = () => {
                             </a>
                             <button
                                 className="contact-map-action-btn contact-secondary"
-                                onClick={() => navigator.clipboard.writeText('https://maps.google.com/?q=Ak+zhol+border+control+point')}
+                                onClick={handleCopyMapLink}
                             >
                                 Скопировать ссылку
                             </button>
