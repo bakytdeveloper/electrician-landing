@@ -29,10 +29,12 @@ const Contact = () => {
     const [formErrors, setFormErrors] = useState({});
     const [formStatus, setFormStatus] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    // eslint-disable-next-line
     const [activeHour, setActiveHour] = useState(null);
     const [isMapLoaded, setIsMapLoaded] = useState(false);
     const mapContainerRef = useRef(null);
     const mapIframeRef = useRef(null);
+    const [todayHours, setTodayHours] = useState([]);
 
     const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31316.225376002167!2d74.70231946796906!3d43.0428249895966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389ebdd96a23754f%3A0x910c9ee831c61010!2sAk%20zhol%20border%20control%20point!5e0!3m2!1sen!2skg!4v1765603960864!5m2!1sen!2skg";
 
@@ -82,9 +84,8 @@ const Contact = () => {
             isToday: wh.day === today
         }));
 
-        // Обновление данных для отображения
-        // В реальном компоненте нужно было бы использовать состояние
-    }, []);
+        setTodayHours(updatedHours);
+    }, [workingHours]);
 
     const socialLinks = [
         { icon: <FaWhatsapp />, label: 'WhatsApp', href: 'https://wa.me/79991234567', color: '#25D366' },
@@ -561,7 +562,7 @@ const Contact = () => {
                         </div>
 
                         <div className="contact-schedule-table">
-                            {workingHours.map((day, index) => (
+                            {todayHours.map((day, index) => (
                                 <div
                                     key={index}
                                     className={`contact-schedule-row ${day.isToday ? 'contact-today' : ''}`}
