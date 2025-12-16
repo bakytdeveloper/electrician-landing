@@ -138,6 +138,15 @@
     transform: scale(1.1);
 }
 
+/*border:"none", padding:"5px 5px 2px", textAlign: "center", borderRadius:"50%", backgroundColor:"blue"*/
+
+.logo-icon-box-md-electric-bolt {
+    border: none;
+    padding: 5px 5px 1px;
+    border-radius: 50%;
+    background: var(--secondary-light);
+}
+
 .logo-text {
     display: flex;
     flex-direction: column;

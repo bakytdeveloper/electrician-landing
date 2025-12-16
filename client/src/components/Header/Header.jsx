@@ -96,7 +96,9 @@ const Header = ({ openModal }) => {
                     <div className="header-content">
                         {/* Логотип */}
                         <div className="logo" onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}>
-                            <MdElectricBolt className="logo-icon" />
+                            <div className="logo-icon-box-md-electric-bolt">
+                                <MdElectricBolt className="logo-icon" />
+                            </div>
                             <div className="logo-text">
                                 <h1 className="logo-title">ЭлектроМастер</h1>
                                 <p className="logo-subtitle">Профессиональные услуги электрика</p>
