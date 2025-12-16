@@ -7,22 +7,43 @@ import Button from '../common/Button/Button';
 const Header = ({ openModal }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
         const handleScroll = () => {
             setIsScrolled(window.scrollY > 50);
         };
 
+        const checkMobile = () => {
+            setIsMobile(window.innerWidth <= 768);
+        };
+
+        // Проверяем при загрузке
+        checkMobile();
+
         window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        window.addEventListener('resize', checkMobile);
+
+        return () => {
+            window.removeEventListener('scroll', handleScroll);
+            window.removeEventListener('resize', checkMobile);
+        };
     }, []);
 
     const toggleMenu = () => {
         setIsMenuOpen(!isMenuOpen);
+        // Блокируем скролл при открытом меню
+        if (!isMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'auto';
+        }
     };
 
     const handleNavClick = (sectionId) => {
         setIsMenuOpen(false);
+        document.body.style.overflow = 'auto'; // Восстанавливаем скролл
+
         const element = document.getElementById(sectionId);
         if (element) {
             const offset = 80;
@@ -156,11 +177,19 @@ const Header = ({ openModal }) => {
                 {/* Мобильное меню */}
                 <div className={`mobile-menu ${isMenuOpen ? 'active' : ''}`}>
                     <div className="mobile-menu-content">
+                        {/* Заголовок мобильного меню с кнопкой закрытия */}
                         <div className="mobile-menu-header">
                             <div className="mobile-logo">
                                 <MdElectricBolt />
                                 <span>ЭлектроМастер</span>
                             </div>
+                            <button
+                                className="mobile-menu-close"
+                                onClick={toggleMenu}
+                                aria-label="Закрыть меню"
+                            >
+                                <FaTimes />
+                            </button>
                         </div>
 
                         <nav className="mobile-nav">
@@ -211,6 +240,7 @@ const Header = ({ openModal }) => {
                                 onClick={() => {
                                     openModal('callback');
                                     setIsMenuOpen(false);
+                                    document.body.style.overflow = 'auto';
                                 }}
                             >
                                 Заказать вызов
@@ -219,7 +249,11 @@ const Header = ({ openModal }) => {
                             <Button
                                 variant="outline"
                                 fullWidth
-                                onClick={handleCallClick}
+                                onClick={() => {
+                                    handleCallClick();
+                                    setIsMenuOpen(false);
+                                    document.body.style.overflow = 'auto';
+                                }}
                                 className="mobile-call-button"
                             >
                                 <FaPhone />
