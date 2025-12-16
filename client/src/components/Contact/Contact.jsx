@@ -612,7 +612,7 @@ const Contact = () => {
                             // onClick={() => openModal('callback')}
                             onClick={(e) => {
                                 e.stopPropagation();
-                                document.querySelector('.contact-form-section')?.scrollIntoView({ behavior: 'smooth' });
+                                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
                             }}
                         >
                             <MdEmail />
