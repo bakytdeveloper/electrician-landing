@@ -124,6 +124,16 @@
         grid-template-columns: 1fr;
         gap: 10px;
     }
+
+    .contact-info-header {
+        display: block;
+        margin-bottom: 0;
+    }
+
+    .contact-online {
+        width: 50%;
+        margin: 0 auto;
+    }
 }
 
 .contact-info-card {
