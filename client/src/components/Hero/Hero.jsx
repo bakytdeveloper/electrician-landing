@@ -21,7 +21,7 @@ const Hero = ({ openModal }) => {
         {
             icon: <FaClock />,
             title: 'Оперативный выезд',
-            description: 'Приезжаем в течение 60 минут по Москве'
+            description: 'Приезжаем в течение 60 минут по городу'
         },
         {
             icon: <MdSafetyDivider />,
@@ -85,7 +85,7 @@ const Hero = ({ openModal }) => {
                         </div>
 
                         <h1 className="hero-title">
-                            Профессиональные услуги электрика в Москве
+                            Профессиональные услуги электрика
                         </h1>
 
                         <p className="hero-subtitle">

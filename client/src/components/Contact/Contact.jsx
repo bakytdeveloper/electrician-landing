@@ -17,7 +17,6 @@ import './Contact.css';
 import Button from '../common/Button/Button';
 
 const Contact = () => {
-    // const Contact = ({ openModal }) => {
     const [formData, setFormData] = useState({
         name: '',
         phone: '',
@@ -38,7 +37,6 @@ const Contact = () => {
 
     const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d31316.225376002167!2d74.70231946796906!3d43.0428249895966!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x389ebdd96a23754f%3A0x910c9ee831c61010!2sAk%20zhol%20border%20control%20point!5e0!3m2!1sen!2skg!4v1765603960864!5m2!1sen!2skg";
 
-    // Используем useMemo для стабильных массивов
     const serviceOptions = useMemo(() => [
         { value: '', label: 'Выберите услугу' },
         { value: 'installation', label: 'Монтаж электропроводки' },
@@ -97,11 +95,9 @@ const Contact = () => {
     ], []);
 
     useEffect(() => {
-        // Инициализация текущего часа для отображения активности
         const now = new Date();
         setActiveHour(now.getHours());
 
-        // Загрузка карты с задержкой для лучшего UX
         const loadMap = () => {
             if (mapContainerRef.current) {
                 setIsMapLoaded(true);
@@ -112,7 +108,6 @@ const Contact = () => {
         return () => clearTimeout(timer);
     }, []);
 
-    // Определяем текущий день - исправленная версия
     useEffect(() => {
         const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
         const today = days[new Date().getDay()];
@@ -136,7 +131,7 @@ const Contact = () => {
 
         if (!formData.phone.trim()) {
             errors.phone = 'Введите номер телефона';
-        } else if (!/^[\+]?[0-9\s\-\(\)]+$/.test(formData.phone)) {
+        } else if (!/^[+]?[0-9\s\-()]+$/.test(formData.phone)) {
             errors.phone = 'Введите корректный номер телефона';
         }
 
@@ -158,7 +153,6 @@ const Contact = () => {
             [name]: value
         }));
 
-        // Очищаем ошибку при изменении поля
         if (formErrors[name]) {
             setFormErrors(prev => ({
                 ...prev,
@@ -180,7 +174,6 @@ const Contact = () => {
         setFormStatus(null);
 
         try {
-            // Отправка данных на сервер
             const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
@@ -197,7 +190,6 @@ const Contact = () => {
                     message: data.message || 'Заявка успешно отправлена! Мы свяжемся с вами в ближайшее время.'
                 });
 
-                // Очищаем форму
                 setFormData({
                     name: '',
                     phone: '',
@@ -206,7 +198,6 @@ const Contact = () => {
                     message: ''
                 });
 
-                // Скрываем сообщение через 5 секунд
                 setTimeout(() => {
                     setFormStatus(null);
                 }, 5000);
@@ -227,34 +218,34 @@ const Contact = () => {
 
     const isWorkingNow = () => {
         const now = new Date();
-        const day = now.getDay(); // 0 - воскресенье, 1 - понедельник и т.д.
+        const day = now.getDay();
         const hour = now.getHours();
 
-        if (day === 0) { // Воскресенье
+        if (day === 0) {
             return hour >= 9 && hour < 18;
-        } else if (day === 6) { // Суббота
+        } else if (day === 6) {
             return hour >= 9 && hour < 18;
-        } else { // Будние дни
+        } else {
             return hour >= 8 && hour < 20;
         }
     };
 
-    // Обработчик для перезагрузки карты
     const reloadMap = () => {
         setIsMapLoaded(false);
         setTimeout(() => {
             if (mapIframeRef.current) {
-                mapIframeRef.current.src = mapIframeRef.current.src;
+                // Исправляем: добавляем случайный параметр для перезагрузки
+                const currentSrc = mapIframeRef.current.src;
+                const separator = currentSrc.includes('?') ? '&' : '?';
+                mapIframeRef.current.src = currentSrc + separator + 'reload=' + Date.now();
                 setIsMapLoaded(true);
             }
         }, 100);
     };
 
-    // Обработчик копирования ссылки
     const handleCopyMapLink = () => {
         navigator.clipboard.writeText('https://maps.google.com/?q=Ak+zhol+border+control+point')
             .then(() => {
-                // Можно добавить уведомление об успешном копировании
                 console.log('Ссылка скопирована');
             })
             .catch(err => {
@@ -265,7 +256,6 @@ const Contact = () => {
     return (
         <section id="contact" className="contact-section">
             <div className="contact-container">
-                {/* Заголовок секции */}
                 <div className="contact-section-header">
                     <h2 className="contact-section-title">Контакты</h2>
                     <p className="contact-section-subtitle">
@@ -274,7 +264,6 @@ const Contact = () => {
                 </div>
 
                 <div className="contact-content-wrapper">
-                    {/* Контактная информация */}
                     <div className="contact-info-section">
                         <div className="contact-info-header">
                             <h3>Свяжитесь с нами</h3>
@@ -313,7 +302,6 @@ const Contact = () => {
                             ))}
                         </div>
 
-                        {/* Социальные сети */}
                         <div className="contact-social-section">
                             <h4>Мы в социальных сетях</h4>
                             <p>Следите за нашими работами и акциями</p>
@@ -335,7 +323,6 @@ const Contact = () => {
                             </div>
                         </div>
 
-                        {/* Экстренный вызов */}
                         <div className="contact-emergency-call">
                             <div className="contact-emergency-icon">
                                 <MdOutlineSupportAgent />
@@ -351,7 +338,6 @@ const Contact = () => {
                         </div>
                     </div>
 
-                    {/* Форма обратной связи */}
                     <div className="contact-form-section">
                         <div className="contact-form-header">
                             <h3>Оставьте заявку</h3>
@@ -504,7 +490,6 @@ const Contact = () => {
                     </div>
                 </div>
 
-                {/* Карта и расписание */}
                 <div className="contact-bottom-section">
                     <div className="contact-map-section">
                         <div className="contact-map-header">
@@ -610,7 +595,6 @@ const Contact = () => {
                     </div>
                 </div>
 
-                {/* Быстрые контакты */}
                 <div className="contact-quick-contact">
                     <div className="contact-quick-contact-content">
                         <h3>Нужна срочная консультация?</h3>
@@ -623,7 +607,6 @@ const Contact = () => {
                         </a>
                         <button
                             className="contact-quick-contact-btn contact-secondary"
-                            // onClick={() => openModal('callback')}
                             onClick={(e) => {
                                 e.stopPropagation();
                                 document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });

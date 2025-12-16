@@ -39,7 +39,7 @@ const Services = () => {
             icon: <FaBolt />,
             category: 'installation',
             features: ['Скрытая проводка', 'Открытая проводка', 'Замена проводки', 'Дизайн-проект'],
-            price: 'от 2 500 ₽',
+            price: 'от 2 500 ₸',
             duration: 'от 4 часов'
         },
         {
@@ -49,7 +49,7 @@ const Services = () => {
             icon: <MdOutlineElectricalServices />,
             category: 'installation',
             features: ['Сборка щита', 'Монтаж автоматов', 'Подключение УЗО', 'Маркировка'],
-            price: 'от 3 500 ₽',
+            price: 'от 3 500 ₸',
             duration: 'от 3 часов'
         },
         {
@@ -59,7 +59,7 @@ const Services = () => {
             icon: <MdHomeRepairService />,
             category: 'installation',
             features: ['Евро розетки', 'Проходные выключатели', 'Сенсорные панели', 'Влагозащищенные'],
-            price: 'от 450 ₽/шт',
+            price: 'от 450 ₸/шт',
             duration: 'от 30 мин'
         },
         {
@@ -69,7 +69,7 @@ const Services = () => {
             icon: <FaTools />,
             category: 'maintenance',
             features: ['Диагностика', 'Профилактика', 'Замена изношенных частей', 'Настройка'],
-            price: 'от 1 800 ₽',
+            price: 'от 1 800 ₸',
             duration: 'от 2 часов'
         },
         {
@@ -79,7 +79,7 @@ const Services = () => {
             icon: <FaWrench />,
             category: 'repair',
             features: ['Диагностика', 'Запчасти в наличии', 'Гарантия на ремонт', 'Выезд мастера'],
-            price: 'от 1 200 ₽',
+            price: 'от 1 200 ₸',
             duration: 'от 1 часа'
         },
         {
@@ -89,7 +89,7 @@ const Services = () => {
             icon: <MdSecurity />,
             category: 'maintenance',
             features: ['Круглосуточно', 'Быстрый выезд', 'Экстренный ремонт', 'Выезд в течение часа'],
-            price: 'от 3 000 ₽',
+            price: 'от 3 000 ₸',
             duration: 'от 30 мин'
         },
     ];

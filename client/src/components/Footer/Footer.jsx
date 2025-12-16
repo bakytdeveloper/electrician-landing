@@ -9,7 +9,6 @@ import {
 } from 'react-icons/fa';
 import { MdElectricalServices } from 'react-icons/md';
 import './Footer.css';
-import Button from '../common/Button/Button';
 
 const Footer = () => {
     const currentYear = new Date().getFullYear();
@@ -153,7 +152,7 @@ const Footer = () => {
 
                         <div className="footer-developer-info">
                             <span>Разработка сайта:</span>
-                            <a href="https://webmaster.ru" className="footer-developer-link" target="_blank" rel="noopener noreferrer">
+                            <a href="mailto:bakytdeveloper@gmail.com" className="footer-developer-link" target="_blank" rel="noopener noreferrer">
                                 bakytdeveloper
                             </a>
                         </div>
