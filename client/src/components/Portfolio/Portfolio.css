@@ -1042,9 +1042,6 @@
 
 /* Адаптивные изображения */
 @media (max-width: 768px) {
-    .portfolio-image-wrapper {
-        height: 180px;
-    }
 
     .modal-main-image {
         object-fit: contain;
