@@ -9,7 +9,7 @@ const Modal = ({ isOpen, onClose, type = 'callback' }) => {
         phone: '',
         email: '',
         message: '',
-        serviceType: 'consultation'
+        service: 'consultation'
     });
 
     const [isLoading, setIsLoading] = useState(false);
@@ -53,7 +53,7 @@ const Modal = ({ isOpen, onClose, type = 'callback' }) => {
                 phone: '',
                 email: '',
                 message: '',
-                serviceType: 'consultation'
+                service: 'consultation'
             });
 
             // Закрываем модалку через 3 секунды
@@ -148,7 +148,7 @@ const Modal = ({ isOpen, onClose, type = 'callback' }) => {
                                 <select
                                     id="serviceType"
                                     name="serviceType"
-                                    value={formData.serviceType}
+                                    value={formData.service}
                                     onChange={handleChange}
                                 >
                                     {serviceOptions.map(option => (

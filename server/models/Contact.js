@@ -3,12 +3,12 @@ const mongoose = require('mongoose');
 const contactSchema = new mongoose.Schema({
     name: {
         type: String,
-        required: [true, 'Please add a name'],
+        required: [true, 'Пожалуйста, укажите имя'],
         trim: true,
     },
     phone: {
         type: String,
-        required: [true, 'Please add a phone number'],
+        required: [true, 'Пожалуйста, укажите номер телефона'],
         trim: true,
     },
     email: {
@@ -22,8 +22,15 @@ const contactSchema = new mongoose.Schema({
     },
     serviceType: {
         type: String,
-        enum: ['installation', 'maintenance', 'repair', 'consultation', 'other'],
-        default: 'other',
+        enum: [
+            'Монтаж электропроводки',
+            'Обслуживание',
+            'Ремонт проводки',
+            'Установка оборудования',
+            'Консультация',
+            'Другое'
+        ],
+        default: 'Другое',
     },
     status: {
         type: String,
@@ -36,4 +43,4 @@ const contactSchema = new mongoose.Schema({
     },
 });
 
-module.exports = mongoose.model('Contact', contactSchema);
+module.exports = mongoose.models.Contact || mongoose.model('Contact', contactSchema);
