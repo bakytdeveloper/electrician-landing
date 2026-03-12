@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const multer = require('multer');
 const path = require('path');
+const fs = require('fs');
 const authMiddleware = require('../middleware/auth');
 const {
     getHeroContent,
@@ -10,33 +11,54 @@ const {
     deleteSlideImage
 } = require('../controllers/heroController');
 
+// Создаем папку uploads если её нет - используем правильный путь относительно корня сервера
+const serverDir = path.join(__dirname, '..');
+const uploadsDir = path.join(serverDir, 'uploads');
+const slidesDir = path.join(uploadsDir, 'slides');
+
+console.log('Server directory:', serverDir);
+console.log('Uploads directory:', uploadsDir);
+console.log('Slides directory:', slidesDir);
+
+// Создаем директории при старте
+[uploadsDir, slidesDir].forEach(dir => {
+    if (!fs.existsSync(dir)) {
+        fs.mkdirSync(dir, { recursive: true });
+        console.log('Created directory:', dir);
+    } else {
+        console.log('Directory exists:', dir);
+    }
+});
+
 // Настройка multer для загрузки файлов
 const storage = multer.diskStorage({
     destination: (req, file, cb) => {
-        cb(null, 'uploads/');
+        // Сохраняем сразу в правильную папку
+        cb(null, uploadsDir);
     },
     filename: (req, file, cb) => {
         const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
-        cb(null, 'slide-' + uniqueSuffix + path.extname(file.originalname));
+        const ext = path.extname(file.originalname);
+        cb(null, 'slide-' + uniqueSuffix + ext);
     }
 });
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = /jpeg|jpg|png|gif|webp/;
+    const allowedTypes = /jpeg|jpg|png|gif|webp|svg/;
     const extname = allowedTypes.test(path.extname(file.originalname).toLowerCase());
     const mimetype = allowedTypes.test(file.mimetype);
 
     if (mimetype && extname) {
         return cb(null, true);
     } else {
-        cb(new Error('Только изображения разрешены'));
+        cb(new Error('Только изображения разрешены (jpeg, jpg, png, gif, webp, svg)'));
     }
 };
 
 const upload = multer({
     storage,
     fileFilter,
-    limits: { fileSize: 5 * 1024 * 1024 } // 5MB
+    limits: { fileSize: 10 * 1024 * 1024 } // 10MB
 });
 
 // Публичные маршруты

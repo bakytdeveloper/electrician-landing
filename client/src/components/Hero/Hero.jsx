@@ -8,6 +8,7 @@ const Hero = ({ openModal }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
+    const [imageErrors, setImageErrors] = useState({});
 
     useEffect(() => {
         fetchContent();
@@ -17,6 +18,7 @@ const Hero = ({ openModal }) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`);
             const data = await response.json();
+            console.log('Fetched hero content:', data); // Для отладки
             setContent(data);
         } catch (error) {
             console.error('Error fetching hero content:', error);
@@ -42,6 +44,11 @@ const Hero = ({ openModal }) => {
         setCurrentSlide(index);
     };
 
+    const handleImageError = (slideIndex) => {
+        console.log('Image error for slide:', slideIndex);
+        setImageErrors(prev => ({ ...prev, [slideIndex]: true }));
+    };
+
     if (loading) {
         return <div className="hero-loading">Загрузка...</div>;
     }
@@ -57,17 +64,44 @@ const Hero = ({ openModal }) => {
         <section className="hero" id="home">
             {/* Фоновые слайды */}
             <div className="hero-slides">
-                {activeSlides.map((slide, index) => (
-                    <div
-                        key={index}
-                        className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
-                        style={
-                            slide.bgType === 'color'
-                                ? { background: slide.bgValue }
-                                : { backgroundImage: `url(${slide.bgValue})` }
-                        }
-                    />
-                ))}
+                {activeSlides.map((slide, index) => {
+                    const originalIndex = content.slides.findIndex(s => s === slide);
+                    const hasError = imageErrors[originalIndex];
+
+                    // Определяем стиль фона
+                    let backgroundStyle = {};
+
+                    if (slide.bgType === 'color' || hasError) {
+                        backgroundStyle = {
+                            background: hasError ? 'linear-gradient(135deg, #6b85fa 0%, #521364 100%)' : slide.bgValue
+                        };
+                    } else {
+                        backgroundStyle = {
+                            backgroundImage: `url(${slide.bgValue})`,
+                            backgroundSize: 'cover',
+                            backgroundPosition: 'center',
+                            backgroundRepeat: 'no-repeat'
+                        };
+                    }
+
+                    return (
+                        <div
+                            key={originalIndex}
+                            className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                            style={backgroundStyle}
+                        >
+                            {slide.bgType !== 'color' && !hasError && (
+                                <img
+                                    src={slide.bgValue}
+                                    alt={`Слайд ${originalIndex + 1}`}
+                                    style={{ display: 'none' }}
+                                    onError={() => handleImageError(originalIndex)}
+                                    onLoad={() => console.log('Image loaded successfully:', slide.bgValue)}
+                                />
+                            )}
+                        </div>
+                    );
+                })}
             </div>
 
             {/* Overlay для затемнения фона */}

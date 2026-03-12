@@ -19,6 +19,7 @@ const HeroEditor = () => {
             const data = await response.json();
             setContent(data);
         } catch (err) {
+            console.error('Error fetching content:', err);
             setError('Ошибка загрузки контента');
         } finally {
             setLoading(false);
@@ -32,23 +33,48 @@ const HeroEditor = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
+
+            // Подготавливаем данные для сохранения (убираем полные URL)
+            const saveContent = {
+                ...content,
+                slides: content.slides.map(slide => {
+                    if (slide.bgType === 'file' && slide.bgValue) {
+                        // Извлекаем относительный путь из полного URL
+                        if (slide.bgValue.includes('/uploads')) {
+                            const urlParts = slide.bgValue.split('/uploads');
+                            if (urlParts.length > 1) {
+                                return {
+                                    ...slide,
+                                    bgValue: `/uploads${urlParts[1]}`
+                                };
+                            }
+                        }
+                    }
+                    return slide;
+                })
+            };
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(content)
+                body: JSON.stringify(saveContent)
             });
 
             if (!response.ok) {
                 throw new Error('Ошибка сохранения');
             }
 
+            const updatedContent = await response.json();
+            setContent(updatedContent);
             setSuccess('Изменения сохранены');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
+            console.error('Error saving:', err);
             setError('Ошибка при сохранении');
+            setTimeout(() => setError(''), 3000);
         } finally {
             setSaving(false);
         }
@@ -148,11 +174,16 @@ const HeroEditor = () => {
             }
 
             const data = await response.json();
-            handleSlideChange(index, 'bgValue', data.slide.bgValue);
-            handleSlideChange(index, 'bgType', 'file');
+
+            // Обновляем слайд с полученными данными
+            const newSlides = [...content.slides];
+            newSlides[index] = data.slide;
+            setContent({ ...content, slides: newSlides });
+
             setSuccess('Изображение загружено');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
+            console.error('Error uploading image:', err);
             setError('Ошибка загрузки изображения');
             setTimeout(() => setError(''), 3000);
         }
@@ -176,14 +207,54 @@ const HeroEditor = () => {
             }
 
             const data = await response.json();
-            handleSlideChange(index, 'bgValue', data.slide.bgValue);
-            handleSlideChange(index, 'bgType', 'color');
+
+            // Обновляем слайд с полученными данными
+            const newSlides = [...content.slides];
+            newSlides[index] = data.slide;
+            setContent({ ...content, slides: newSlides });
+
             setSuccess('Изображение удалено');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
+            console.error('Error deleting image:', err);
             setError('Ошибка удаления изображения');
             setTimeout(() => setError(''), 3000);
         }
+    };
+
+    // Функция для создания изображения-заглушки при ошибке
+    const getFallbackImage = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 400;
+        canvas.height = 200;
+        const ctx = canvas.getContext('2d');
+
+        // Заливка фона
+        ctx.fillStyle = '#f8f9fa';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Рамка
+        ctx.strokeStyle = '#dee2e6';
+        ctx.lineWidth = 2;
+        ctx.strokeRect(1, 1, canvas.width - 2, canvas.height - 2);
+
+        // Иконка (простой крестик)
+        ctx.beginPath();
+        ctx.strokeStyle = '#adb5bd';
+        ctx.lineWidth = 3;
+        ctx.moveTo(150, 80);
+        ctx.lineTo(250, 120);
+        ctx.moveTo(250, 80);
+        ctx.lineTo(150, 120);
+        ctx.stroke();
+
+        // Текст
+        ctx.fillStyle = '#6c757d';
+        ctx.font = 'bold 14px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText('Изображение не загружено', canvas.width / 2, 150);
+
+        return canvas.toDataURL();
     };
 
     if (loading) return <div className="editor-loading">Загрузка...</div>;
@@ -290,6 +361,7 @@ const HeroEditor = () => {
                     <h3>Слайды (максимум 3)</h3>
                     {content.slides.map((slide, index) => {
                         const gradient = parseGradient(slide.bgType === 'color' ? slide.bgValue : '');
+                        const fallbackImage = getFallbackImage();
 
                         return (
                             <div key={index} className="slide-editor">
@@ -394,7 +466,7 @@ const HeroEditor = () => {
                                                     alt={`Слайд ${index + 1}`}
                                                     onError={(e) => {
                                                         e.target.onerror = null;
-                                                        e.target.src = 'https://via.placeholder.com/400x200?text=Ошибка+загрузки+изображения';
+                                                        e.target.src = fallbackImage;
                                                     }}
                                                 />
                                             </div>
@@ -407,8 +479,12 @@ const HeroEditor = () => {
                                         {slide.bgValue && (
                                             <div className="image-preview">
                                                 <img
-                                                    src={slide.bgValue.startsWith('http') ? slide.bgValue : `${process.env.REACT_APP_API_URL}${slide.bgValue}`}
+                                                    src={slide.bgValue}
                                                     alt={`Слайд ${index + 1}`}
+                                                    onError={(e) => {
+                                                        e.target.onerror = null;
+                                                        e.target.src = fallbackImage;
+                                                    }}
                                                 />
                                                 <button
                                                     className="delete-image"

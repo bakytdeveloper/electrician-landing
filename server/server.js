@@ -20,6 +20,9 @@ app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
+// Статическая раздача файлов из папки uploads
+app.use('/uploads', express.static(path.join(__dirname, 'uploads')));
+
 // Маршруты
 app.use('/api/auth', authRoutes);
 app.use('/api/hero', heroRoutes);
