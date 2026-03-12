@@ -519,24 +519,24 @@ const Portfolio = () => {
                     </div>
                 )}
 
-                {/* Призыв к действию */}
-                <div className="portfolio-cta">
-                    <div className="cta-content">
-                        <h3>Хотите такой же результат?</h3>
-                        <p>Оставьте заявку и получите бесплатную смету на ваш проект</p>
-                    </div>
-                    <div className="cta-buttons">
-                        <button
-                            className="cta-btn primary"
-                            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                        >
-                            Получить смету
-                        </button>
-                        <a href="tel:+79991234567" className="cta-btn secondary">
-                            Обсудить по телефону
-                        </a>
-                    </div>
-                </div>
+                {/*/!* Призыв к действию *!/*/}
+                {/*<div className="portfolio-cta">*/}
+                {/*    <div className="cta-content">*/}
+                {/*        <h3>Хотите такой же результат?</h3>*/}
+                {/*        <p>Оставьте заявку и получите бесплатную смету на ваш проект</p>*/}
+                {/*    </div>*/}
+                {/*    <div className="cta-buttons">*/}
+                {/*        <button*/}
+                {/*            className="cta-btn primary"*/}
+                {/*            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}*/}
+                {/*        >*/}
+                {/*            Получить смету*/}
+                {/*        </button>*/}
+                {/*        <a href="tel:+79991234567" className="cta-btn secondary">*/}
+                {/*            Обсудить по телефону*/}
+                {/*        </a>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
         </section>
     );

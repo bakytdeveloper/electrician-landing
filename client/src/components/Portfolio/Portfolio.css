@@ -17,7 +17,7 @@
     position: relative;
     display: inline-block;
 }
-
+/*Ж Ё Л Т Ы Й  Ф О Н*/
 .section-title::after {
     content: '';
     position: absolute;
