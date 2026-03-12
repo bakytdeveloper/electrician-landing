@@ -95,59 +95,6 @@ const About = () => {
         }
     ];
 
-    const certificates = [
-        {
-            id: 1,
-            title: 'Электромонтажник 4 разряда',
-            issuer: 'Государственный образовательный центр',
-            year: '2012',
-            number: 'E-04567'
-        },
-        {
-            id: 2,
-            title: 'Специалист по обслуживанию электроустановок',
-            issuer: 'Профессиональная ассоциация электриков',
-            year: '2015',
-            number: 'PAE-78901'
-        },
-        {
-            id: 3,
-            title: 'Безопасность работ на высоте',
-            issuer: 'Центр охраны труда',
-            year: '2018',
-            number: 'BOT-23456'
-        },
-        {
-            id: 4,
-            title: 'Системы умного дома KNX',
-            issuer: 'Международная ассоциация KNX',
-            year: '2022',
-            number: 'KNX-12345'
-        }
-    ];
-
-    const principles = [
-        {
-            icon: <FaShieldAlt />,
-            title: 'Безопасность',
-            description: 'Строгое соблюдение всех норм и правил электробезопасности'
-        },
-        {
-            icon: <FaTools />,
-            title: 'Качество',
-            description: 'Использование только качественных материалов и оборудования'
-        },
-        {
-            icon: <FaClock />,
-            title: 'Пунктуальность',
-            description: 'Строгое соблюдение сроков и договоренностей'
-        },
-        {
-            icon: <MdSupportAgent />,
-            title: 'Поддержка',
-            description: 'Консультации и помощь даже после завершения работ'
-        }
-    ];
 
     const testimonials = [
         {
@@ -335,24 +282,6 @@ const About = () => {
                         </div>
                     </div>
 
-                    {/*/!* Принципы работы *!/*/}
-                    {/*<div className="about-principles-section">*/}
-                    {/*    <h3>Мои принципы работы</h3>*/}
-                    {/*    <div className="about-principles-grid">*/}
-                    {/*        {principles.map((principle, index) => (*/}
-                    {/*            <div key={index} className="about-principle-card">*/}
-                    {/*                <div className="about-principle-icon">*/}
-                    {/*                    {principle.icon}*/}
-                    {/*                </div>*/}
-                    {/*                <div className="about-principle-content">*/}
-                    {/*                    <h4>{principle.title}</h4>*/}
-                    {/*                    <p>{principle.description}</p>*/}
-                    {/*                </div>*/}
-                    {/*            </div>*/}
-                    {/*        ))}*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
-
                     {/* Вкладки */}
                     <div className="about-tabs-section">
                         <div className="about-tabs-header">
@@ -367,13 +296,6 @@ const About = () => {
                                 onClick={() => setActiveTab('experience')}
                             >
                                 Опыт работы
-                            </button>
-
-                            <button
-                                className={`about-tab-button ${activeTab === 'certificates' ? 'about-active' : ''}`}
-                                onClick={() => setActiveTab('certificates')}
-                            >
-                                Сертификаты
                             </button>
                         </div>
 
@@ -411,61 +333,6 @@ const About = () => {
                                 </div>
                             )}
 
-                            {activeTab === 'certificates' && (
-                                <div className="about-certificates-section">
-                                    <div className="about-certificates-slider">
-                                        <div className="about-certificate-active">
-                                            <div className="about-certificate-header">
-                                                <FaCertificate className="about-cert-icon" />
-                                                <div className="about-cert-title">
-                                                    <h4>{certificates[activeCert].title}</h4>
-                                                    <p className="about-cert-issuer">{certificates[activeCert].issuer}</p>
-                                                </div>
-                                            </div>
-                                            <div className="about-certificate-details">
-                                                <div className="about-detail">
-                                                    <span className="about-label">Год выдачи:</span>
-                                                    <span className="about-value">{certificates[activeCert].year}</span>
-                                                </div>
-                                                <div className="about-detail">
-                                                    <span className="about-label">Номер:</span>
-                                                    <span className="about-value">{certificates[activeCert].number}</span>
-                                                </div>
-                                            </div>
-                                            <div className="about-certificate-preview">
-                                                <div className="about-certificate-placeholder">
-                                                    <FaAward className="about-preview-icon" />
-                                                    <span>Сертификат {activeCert + 1}</span>
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div className="about-certificates-nav">
-                                            <button
-                                                className="about-nav-button about-prev"
-                                                onClick={() => setActiveCert(activeCert > 0 ? activeCert - 1 : certificates.length - 1)}
-                                            >
-                                                <FaChevronLeft />
-                                            </button>
-                                            <div className="about-certificates-dots">
-                                                {certificates.map((_, index) => (
-                                                    <button
-                                                        key={index}
-                                                        className={`about-dot ${index === activeCert ? 'about-active' : ''}`}
-                                                        onClick={() => setActiveCert(index)}
-                                                    />
-                                                ))}
-                                            </div>
-                                            <button
-                                                className="about-nav-button about-next"
-                                                onClick={() => setActiveCert(activeCert < certificates.length - 1 ? activeCert + 1 : 0)}
-                                            >
-                                                <FaChevronRight />
-                                            </button>
-                                        </div>
-                                    </div>
-                                </div>
-                            )}
                         </div>
                     </div>
 
@@ -536,16 +403,6 @@ const About = () => {
                             </div>
                         </div>
 
-                        {/*<div className="about-testimonials-progress">*/}
-                        {/*    <div className="about-progress-bar">*/}
-                        {/*        <div className="about-progress-fill"></div>*/}
-                        {/*    </div>*/}
-                        {/*    <div className="about-testimonials-counter">*/}
-                        {/*        <span className="about-current">1</span>*/}
-                        {/*        <span className="about-slash">/</span>*/}
-                        {/*        <span className="about-total">{testimonials.length}</span>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
                     </div>
 
                     {/* CTA секция */}
