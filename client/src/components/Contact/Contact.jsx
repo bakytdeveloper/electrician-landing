@@ -583,52 +583,52 @@ const Contact = () => {
                             ))}
                         </div>
 
-                        <div className="contact-emergency-info">
-                            <div className="contact-emergency-icon-small">
-                                <MdOutlineSupportAgent />
-                            </div>
-                            <div className="contact-emergency-text">
-                                <h4>Аварийная служба</h4>
-                                <p>Работает круглосуточно 24/7 без выходных</p>
-                            </div>
-                            <a href="tel:+79991234567" className="contact-emergency-btn">
-                                Вызвать аварийную
-                            </a>
-                        </div>
+                        {/*<div className="contact-emergency-info">*/}
+                        {/*    <div className="contact-emergency-icon-small">*/}
+                        {/*        <MdOutlineSupportAgent />*/}
+                        {/*    </div>*/}
+                        {/*    <div className="contact-emergency-text">*/}
+                        {/*        <h4>Аварийная служба</h4>*/}
+                        {/*        <p>Работает круглосуточно 24/7 без выходных</p>*/}
+                        {/*    </div>*/}
+                        {/*    <a href="tel:+79991234567" className="contact-emergency-btn">*/}
+                        {/*        Вызвать аварийную*/}
+                        {/*    </a>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
 
-                <div className="contact-quick-contact">
-                    <div className="contact-quick-contact-content">
-                        <h3>Нужна срочная консультация?</h3>
-                        <p>Позвоните или напишите нам прямо сейчас</p>
-                    </div>
-                    <div className="contact-quick-contact-actions">
-                        <a href="tel:+79991234567" className="contact-quick-contact-btn contact-primary">
-                            <FaPhone />
-                            Позвонить
-                        </a>
-                        <button
-                            className="contact-quick-contact-btn contact-secondary"
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                            }}
-                        >
-                            <MdEmail />
-                            Написать
-                        </button>
-                        <a
-                            href="https://wa.me/79991234567"
-                            className="contact-quick-contact-btn contact-whatsapp"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                        >
-                            <FaWhatsapp />
-                            WhatsApp
-                        </a>
-                    </div>
-                </div>
+                {/*<div className="contact-quick-contact">*/}
+                {/*    <div className="contact-quick-contact-content">*/}
+                {/*        <h3>Нужна срочная консультация?</h3>*/}
+                {/*        <p>Позвоните или напишите нам прямо сейчас</p>*/}
+                {/*    </div>*/}
+                {/*    <div className="contact-quick-contact-actions">*/}
+                {/*        <a href="tel:+79991234567" className="contact-quick-contact-btn contact-primary">*/}
+                {/*            <FaPhone />*/}
+                {/*            Позвонить*/}
+                {/*        </a>*/}
+                {/*        <button*/}
+                {/*            className="contact-quick-contact-btn contact-secondary"*/}
+                {/*            onClick={(e) => {*/}
+                {/*                e.stopPropagation();*/}
+                {/*                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });*/}
+                {/*            }}*/}
+                {/*        >*/}
+                {/*            <MdEmail />*/}
+                {/*            Написать*/}
+                {/*        </button>*/}
+                {/*        <a*/}
+                {/*            href="https://wa.me/79991234567"*/}
+                {/*            className="contact-quick-contact-btn contact-whatsapp"*/}
+                {/*            target="_blank"*/}
+                {/*            rel="noopener noreferrer"*/}
+                {/*        >*/}
+                {/*            <FaWhatsapp />*/}
+                {/*            WhatsApp*/}
+                {/*        </a>*/}
+                {/*    </div>*/}
+                {/*</div>*/}
             </div>
         </section>
     );

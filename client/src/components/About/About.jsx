@@ -241,7 +241,7 @@ const About = () => {
 
                     {/* Статистика */}
                     <div className="about-stats-grid">
-                        <div className="about-stat-card">
+                        <div className="about-stat-card ">
                             <div className="about-stat-icon">
                                 <MdElectricalServices />
                             </div>
