@@ -278,15 +278,15 @@ const Portfolio = () => {
                     </p>
                 </div>
 
-                {/* Счетчики статистики */}
-                <div className="portfolio-stats">
-                    {stats.map((stat, index) => (
-                        <div key={index} className="stat-card">
-                            <div className="stat-number">{stat.number}</div>
-                            <div className="stat-label">{stat.label}</div>
-                        </div>
-                    ))}
-                </div>
+                {/*/!* Счетчики статистики *!/*/}
+                {/*<div className="portfolio-stats">*/}
+                {/*    {stats.map((stat, index) => (*/}
+                {/*        <div key={index} className="stat-card">*/}
+                {/*            <div className="stat-number">{stat.number}</div>*/}
+                {/*            <div className="stat-label">{stat.label}</div>*/}
+                {/*        </div>*/}
+                {/*    ))}*/}
+                {/*</div>*/}
 
                 {/* Фильтры */}
                 <div className="portfolio-filters">

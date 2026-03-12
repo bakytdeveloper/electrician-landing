@@ -7,43 +7,14 @@ import Button from '../common/Button/Button';
 const Hero = ({ openModal }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
 
-    const features = [
-        {
-            icon: <FaTools />,
-            title: 'Профессиональное оборудование',
-            description: 'Работаем с современным инструментом и техникой'
-        },
-        {
-            icon: <FaShieldAlt />,
-            title: 'Гарантия качества',
-            description: 'Гарантия на все виды работ до 3 лет'
-        },
-        {
-            icon: <FaClock />,
-            title: 'Оперативный выезд',
-            description: 'Приезжаем в течение 60 минут по городу'
-        },
-        {
-            icon: <MdSafetyDivider />,
-            title: 'Безопасность',
-            description: 'Строгое соблюдение техники безопасности'
-        }
-    ];
-
     const slides = [
         {
-            title: 'Профессиональный электрик на дом',
-            subtitle: 'Качественный монтаж и обслуживание электрооборудования',
             bgClass: 'slide-1'
         },
         {
-            title: 'Ремонт бытовой техники',
-            subtitle: 'Быстрое восстановление работы вашей техники',
             bgClass: 'slide-2'
         },
         {
-            title: 'Монтаж электропроводки',
-            subtitle: 'Полный комплекс работ под ключ',
             bgClass: 'slide-3'
         }
     ];
@@ -51,7 +22,7 @@ const Hero = ({ openModal }) => {
     useEffect(() => {
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % slides.length);
-        }, 5000);
+        }, 10000);
 
         return () => clearInterval(interval);
     }, [slides.length]);
@@ -79,10 +50,6 @@ const Hero = ({ openModal }) => {
                 <div className="hero-content">
                     {/* Основной контент */}
                     <div className="hero-main">
-                        <div className="hero-badge">
-                            <MdOutlineElectricBolt />
-                            <span>Работаем 24/7</span>
-                        </div>
 
                         <h1 className="hero-title">
                             Профессиональные услуги электрика
@@ -174,20 +141,6 @@ const Hero = ({ openModal }) => {
                     </div>
                 </div>
 
-                {/* Функции/преимущества */}
-                <div className="hero-features">
-                    {features.map((feature, index) => (
-                        <div key={index} className="feature-card">
-                            <div className="feature-icon-wrapper">
-                                {feature.icon}
-                            </div>
-                            <div className="feature-content">
-                                <h4>{feature.title}</h4>
-                                <p>{feature.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
 
                 {/* Индикаторы слайдов */}
                 <div className="slide-indicators">
