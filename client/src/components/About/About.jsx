@@ -405,27 +405,27 @@ const About = () => {
 
                     </div>
 
-                    {/* CTA секция */}
-                    <div className="about-cta-section">
-                        <div className="about-cta-content">
-                            <div className="about-cta-text">
-                                <h3>Готовы начать проект?</h3>
-                                <p>Свяжитесь со мной для бесплатной консультации и расчета стоимости работ</p>
-                            </div>
-                            <div className="about-cta-buttons">
-                                <button
-                                    className="about-cta-btn about-primary"
-                                    onClick={() => document.querySelector('.contact-section')?.scrollIntoView({ behavior: 'smooth' })}
-                                >
-                                    Получить консультацию
-                                </button>
-                                <a href="tel:+79991234567" className="about-cta-btn about-secondary">
-                                    <FaPhone />
-                                    Позвонить сейчас
-                                </a>
-                            </div>
-                        </div>
-                    </div>
+                    {/*/!* CTA секция *!/*/}
+                    {/*<div className="about-cta-section">*/}
+                    {/*    <div className="about-cta-content">*/}
+                    {/*        <div className="about-cta-text">*/}
+                    {/*            <h3>Готовы начать проект?</h3>*/}
+                    {/*            <p>Свяжитесь со мной для бесплатной консультации и расчета стоимости работ</p>*/}
+                    {/*        </div>*/}
+                    {/*        <div className="about-cta-buttons">*/}
+                    {/*            <button*/}
+                    {/*                className="about-cta-btn about-primary"*/}
+                    {/*                onClick={() => document.querySelector('.contact-section')?.scrollIntoView({ behavior: 'smooth' })}*/}
+                    {/*            >*/}
+                    {/*                Получить консультацию*/}
+                    {/*            </button>*/}
+                    {/*            <a href="tel:+79991234567" className="about-cta-btn about-secondary">*/}
+                    {/*                <FaPhone />*/}
+                    {/*                Позвонить сейчас*/}
+                    {/*            </a>*/}
+                    {/*        </div>*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
                 </div>
             </div>
         </section>

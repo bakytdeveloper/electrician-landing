@@ -68,14 +68,14 @@ const Contact = () => {
         {
             icon: <FaPhone />,
             title: 'Телефон',
-            details: ['+7 (999) 123-45-67', '+7 (495) 123-45-67'],
+            details: ['+7 (999) 123-45-67'],
             link: 'tel:+79991234567',
             description: 'Звоните в любое время'
         },
         {
             icon: <FaEnvelope />,
             title: 'Email',
-            details: ['info@electromaster.ru', 'support@electromaster.ru'],
+            details: ['info@electromaster.ru'],
             link: 'mailto:info@electromaster.ru',
             description: 'Ответим в течение 2 часов'
         },
@@ -84,13 +84,13 @@ const Contact = () => {
             title: 'Адрес',
             details: ['Кордай, ул.Весёлая, д. 15'],
             link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point',
-            description: 'Принимаем по предварительной записи'
+            // description: 'Принимаем по предварительной записи'
         },
         {
             icon: <FaClock />,
             title: 'Время работы',
             details: ['Пн-Пт: 8:00 - 20:00', 'Сб-Вс: 9:00 - 18:00'],
-            description: 'Аварийные вызовы - 24/7'
+            // description: 'Аварийные вызовы - 24/7'
         }
     ], []);
 
@@ -323,23 +323,26 @@ const Contact = () => {
                             </div>
                         </div>
 
-                        <div className="contact-emergency-call">
-                            <div className="contact-emergency-icon">
-                                <MdOutlineSupportAgent />
-                            </div>
-                            <div className="contact-emergency-content">
-                                <h4>Экстренный вызов электрика</h4>
-                                <p>Приеду в течение часа для устранения аварийной ситуации</p>
-                                <a href="tel:+79991234567" className="contact-emergency-phone">
-                                    +7 (999) 123-45-67
-                                </a>
-                                <p className="contact-emergency-note">Работаю 24/7 без выходных</p>
-                            </div>
-                        </div>
+                        {/*<div className="contact-emergency-call">*/}
+                        {/*    <div className="contact-emergency-icon">*/}
+                        {/*        <MdOutlineSupportAgent />*/}
+                        {/*    </div>*/}
+                        {/*    <div className="contact-emergency-content">*/}
+                        {/*        <h4>Экстренный вызов электрика</h4>*/}
+                        {/*        <p>Приеду в течение часа для устранения аварийной ситуации</p>*/}
+                        {/*        <a href="tel:+79991234567" className="contact-emergency-phone">*/}
+                        {/*            +7 (999) 123-45-67*/}
+                        {/*        </a>*/}
+                        {/*        <p className="contact-emergency-note">Работаю 24/7 без выходных</p>*/}
+                        {/*    </div>*/}
+                        {/*</div>*/}
                     </div>
 
                     <div className="contact-form-section">
                         <div className="contact-form-header">
+                                <div className="contact-emergency-icon">
+                                    <MdOutlineSupportAgent />
+                                </div>
                             <h3>Оставьте заявку</h3>
                             <p>Заполните форму и получите бесплатную консультацию</p>
                         </div>
