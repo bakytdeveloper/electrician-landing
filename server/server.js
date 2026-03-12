@@ -20,19 +20,10 @@ app.use(express.urlencoded({ extended: true }));
 // Маршруты
 app.use('/api/contact', require('./routes/contactRoutes'));
 
-// Обслуживание статики в production
-if (process.env.NODE_ENV === 'production') {
-    app.use(express.static(path.join(__dirname, '../frontend/build')));
 
-    app.use((req, res) => {
-        res.sendFile(path.resolve(__dirname, '../frontend/build', 'index.html'));
-    });
-
-} else {
-    app.get('/', (req, res) => {
-        res.send('API is running...');
-    });
-}
+app.get('/', (req, res) => {
+    res.send('API is running...');
+});
 
 const PORT = process.env.PORT || 5000;
 

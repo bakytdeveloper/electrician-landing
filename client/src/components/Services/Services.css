@@ -300,13 +300,13 @@
     padding: 30px 20px;
     border-radius: 15px;
     transition: var(--transition);
-    background: rgba(248, 183, 57, 0.03);
-    border: 1px solid rgba(248, 183, 57, 0.1);
+    background: rgba(248, 183, 57, 0.3);
+    border: 1px solid rgba(248, 183, 57, 0.1) !important;
 }
 
 .services-benefit-card:hover {
     transform: translateY(-5px);
-    background: rgba(248, 183, 57, 0.08);
+    background: rgba(248, 183, 57, 0.5);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.05);
 }
 

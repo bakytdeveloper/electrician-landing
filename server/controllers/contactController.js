@@ -248,19 +248,19 @@ const submitContactForm = asyncHandler(async (req, res) => {
             to: process.env.ADMIN_EMAIL,
             subject: `🚀 Новая заявка: ${name} - ${serviceTypeRussian}`,
             text: `
-НОВАЯ ЗАЯВКА С САЙТА ЭЛЕКТРИКА
-─────────────────────────────────
-👤 КЛИЕНТ: ${name}
-📱 ТЕЛЕФОН: ${phone}
-📧 EMAIL: ${email || 'Не указан'}
-🔧 УСЛУГА: ${serviceTypeRussian}
-💬 СООБЩЕНИЕ: ${message || 'Не указано'}
-─────────────────────────────────
-📅 ДАТА: ${new Date().toLocaleString('ru-RU')}
-🚀 СРОЧНОСТЬ: В течение 15 минут
-
-Свяжитесь с клиентом как можно скорее!
-`,
+                НОВАЯ ЗАЯВКА С САЙТА ЭЛЕКТРИКА
+                ─────────────────────────────────
+                👤 КЛИЕНТ: ${name}
+                📱 ТЕЛЕФОН: ${phone}
+                📧 EMAIL: ${email || 'Не указан'}
+                🔧 УСЛУГА: ${serviceTypeRussian}
+                💬 СООБЩЕНИЕ: ${message || 'Не указано'}
+                ─────────────────────────────────
+                📅 ДАТА: ${new Date().toLocaleString('ru-RU')}
+                🚀 СРОЧНОСТЬ: В течение 15 минут
+                
+                Свяжитесь с клиентом как можно скорее!
+                `,
             html: createEmailTemplate(emailData),
         });
 
