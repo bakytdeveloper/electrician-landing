@@ -6,39 +6,66 @@ import Button from '../common/Button/Button';
 
 const Hero = ({ openModal }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
-
-    const slides = [
-        {
-            bgClass: 'slide-1'
-        },
-        {
-            bgClass: 'slide-2'
-        },
-        {
-            bgClass: 'slide-3'
-        }
-    ];
+    const [content, setContent] = useState(null);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+        fetchContent();
+    }, []);
+
+    const fetchContent = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`);
+            const data = await response.json();
+            setContent(data);
+        } catch (error) {
+            console.error('Error fetching hero content:', error);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    useEffect(() => {
+        if (!content?.slides) return;
+
+        const activeSlides = content.slides.filter(slide => slide.active !== false);
+        if (activeSlides.length === 0) return;
+
         const interval = setInterval(() => {
-            setCurrentSlide((prev) => (prev + 1) % slides.length);
+            setCurrentSlide((prev) => (prev + 1) % activeSlides.length);
         }, 10000);
 
         return () => clearInterval(interval);
-    }, [slides.length]);
+    }, [content?.slides]);
 
     const handleSlideChange = (index) => {
         setCurrentSlide(index);
     };
 
+    if (loading) {
+        return <div className="hero-loading">Загрузка...</div>;
+    }
+
+    if (!content) {
+        return null;
+    }
+
+    const activeSlides = content.slides.filter(slide => slide.active !== false);
+    const activeFeatures = content.features.filter(f => f.active);
+
     return (
         <section className="hero" id="home">
             {/* Фоновые слайды */}
             <div className="hero-slides">
-                {slides.map((slide, index) => (
+                {activeSlides.map((slide, index) => (
                     <div
                         key={index}
-                        className={`hero-slide ${slide.bgClass} ${index === currentSlide ? 'active' : ''}`}
+                        className={`hero-slide ${index === currentSlide ? 'active' : ''}`}
+                        style={
+                            slide.bgType === 'color'
+                                ? { background: slide.bgValue }
+                                : { backgroundImage: `url(${slide.bgValue})` }
+                        }
                     />
                 ))}
             </div>
@@ -50,29 +77,21 @@ const Hero = ({ openModal }) => {
                 <div className="hero-content">
                     {/* Основной контент */}
                     <div className="hero-main">
-
                         <h1 className="hero-title">
-                            Профессиональные услуги электрика
+                            {content.title}
                         </h1>
 
                         <p className="hero-subtitle">
-                            Монтаж, обслуживание и ремонт электрооборудования любой сложности.
-                            Гарантия качества, доступные цены, оперативный выезд.
+                            {content.subtitle}
                         </p>
 
                         <div className="hero-features-list">
-                            <div className="hero-feature-item">
-                                <FaCheckCircle className="feature-icon" />
-                                <span>Бесплатный выезд и диагностика</span>
-                            </div>
-                            <div className="hero-feature-item">
-                                <FaCheckCircle className="feature-icon" />
-                                <span>Опыт работы более 10 лет</span>
-                            </div>
-                            <div className="hero-feature-item">
-                                <FaCheckCircle className="feature-icon" />
-                                <span>Официальная гарантия</span>
-                            </div>
+                            {activeFeatures.map((feature, index) => (
+                                <div key={index} className="hero-feature-item">
+                                    <FaCheckCircle className="feature-icon" />
+                                    <span>{feature.text}</span>
+                                </div>
+                            ))}
                         </div>
 
                         <div className="hero-actions">
@@ -111,8 +130,8 @@ const Hero = ({ openModal }) => {
                                 </div>
                                 <div className="contact-info-content">
                                     <h4>Рабочие часы</h4>
-                                    <p>Ежедневно 8:00 - 22:00</p>
-                                    <p className="emergency">Экстренные вызовы - 24/7</p>
+                                    <p>{content.workHours?.daily}</p>
+                                    <p className="emergency">{content.workHours?.emergency}</p>
                                 </div>
                             </div>
 
@@ -122,8 +141,8 @@ const Hero = ({ openModal }) => {
                                 </div>
                                 <div className="contact-info-content">
                                     <h4>Срочный вызов</h4>
-                                    <a href="tel:+79991234567" className="emergency-phone">
-                                        +7 (999) 123-45-67
+                                    <a href={`tel:${content.emergencyPhone?.replace(/\D/g, '')}`} className="emergency-phone">
+                                        {content.emergencyPhone}
                                     </a>
                                     <p>Круглосуточно</p>
                                 </div>
@@ -141,18 +160,19 @@ const Hero = ({ openModal }) => {
                     </div>
                 </div>
 
-
                 {/* Индикаторы слайдов */}
-                <div className="slide-indicators">
-                    {slides.map((_, index) => (
-                        <button
-                            key={index}
-                            className={`slide-indicator ${index === currentSlide ? 'active' : ''}`}
-                            onClick={() => handleSlideChange(index)}
-                            aria-label={`Перейти к слайду ${index + 1}`}
-                        />
-                    ))}
-                </div>
+                {activeSlides.length > 1 && (
+                    <div className="slide-indicators">
+                        {activeSlides.map((_, index) => (
+                            <button
+                                key={index}
+                                className={`slide-indicator ${index === currentSlide ? 'active' : ''}`}
+                                onClick={() => handleSlideChange(index)}
+                                aria-label={`Перейти к слайду ${index + 1}`}
+                            />
+                        ))}
+                    </div>
+                )}
             </div>
         </section>
     );

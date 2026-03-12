@@ -904,3 +904,30 @@
         font-size: 1.1rem;
     }
 }
+
+/* Стили для ссылки админ-панели */
+.footer-contact-item.admin-link {
+    opacity: 0.6;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.footer-contact-item.admin-link:hover {
+    opacity: 1;
+    color: var(--primary-color);
+    transform: translateX(5px);
+}
+
+.footer-contact-item.admin-link .footer-contact-icon {
+    color: rgba(255, 255, 255, 0.5);
+    transition: all 0.3s ease;
+}
+
+.footer-contact-item.admin-link:hover .footer-contact-icon {
+    color: var(--primary-color);
+}
+
+.footer-contact-item.admin-link .footer-contact-text {
+    font-size: 0.85rem;
+    letter-spacing: 0.5px;
+}

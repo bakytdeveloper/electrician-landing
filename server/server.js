@@ -1,6 +1,9 @@
 const express = require('express');
 const dotenv = require('dotenv');
 const cors = require('cors');
+const authRoutes = require('./routes/authRoutes');
+const heroRoutes = require('./routes/heroRoutes');
+const contactRoutes = require('./routes/contactRoutes');
 const path = require('path');
 const connectDB = require('./config/db');
 
@@ -18,7 +21,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Маршруты
-app.use('/api/contact', require('./routes/contactRoutes'));
+app.use('/api/auth', authRoutes);
+app.use('/api/hero', heroRoutes);
+app.use('/api/contact', contactRoutes);
+// Маршруты
 
 
 app.get('/', (req, res) => {
