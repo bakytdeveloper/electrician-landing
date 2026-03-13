@@ -99,22 +99,29 @@ const updateHeroContent = async (req, res) => {
 
         // Обновляем slides если есть
         if (updates.slides) {
-            // Для каждого слайда проверяем, не изменился ли тип на color/url
+            // Для каждого слайда проверяем изменения
             for (let i = 0; i < updates.slides.length; i++) {
                 const updatedSlide = updates.slides[i];
                 const currentSlide = content.slides[i];
 
-                // Если тип изменился с file на что-то другое, удаляем файл
-                if (currentSlide?.bgType === 'file' && updatedSlide.bgType !== 'file' && currentSlide.bgValue) {
-                    const fileName = path.basename(currentSlide.bgValue);
-                    const filePath = path.join(__dirname, '../../uploads', fileName);
-                    try {
-                        await fs.access(filePath);
-                        await fs.unlink(filePath);
-                        console.log('File deleted:', filePath);
-                    } catch (err) {
-                        console.log('Error deleting file:', err);
+                if (currentSlide) {
+                    // СЛУЧАЙ 1: Тип изменился с file на что-то другое (color или url)
+                    if (currentSlide.bgType === 'file' && updatedSlide.bgType !== 'file' && currentSlide.bgValue) {
+                        const fileName = path.basename(currentSlide.bgValue);
+                        const serverDir = path.join(__dirname, '..');
+                        const filePath = path.join(serverDir, 'uploads', 'slides', fileName);
+
+                        try {
+                            await fs.access(filePath);
+                            await fs.unlink(filePath);
+                            console.log('File deleted after type change:', filePath);
+                        } catch (err) {
+                            console.log('Error deleting file or file not found:', err);
+                        }
                     }
+
+                    // СЛУЧАЙ 2: Тип остался file, но изменился URL (замена на другое изображение)
+                    // Этот случай обрабатывается в uploadSlideImage, здесь не нужно
                 }
             }
 
