@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
     FaTools,
     FaBolt,
@@ -16,121 +16,78 @@ import {
 import './Services.css';
 import Button from '../common/Button/Button';
 
+// Маппинг иконок
+const iconMap = {
+    FaBolt: FaBolt,
+    FaTools: FaTools,
+    FaWrench: FaWrench,
+    FaCheckCircle: FaCheckCircle,
+    FaClock: FaClock,
+    FaTruck: FaTruck,
+    MdOutlineElectricalServices: MdOutlineElectricalServices,
+    MdHomeRepairService: MdHomeRepairService,
+    MdSecurity: MdSecurity
+};
+
 const Services = () => {
+    const [content, setContent] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
-    const [activeService, setActiveService] = useState(null);
+    const [expandedServices, setExpandedServices] = useState({});
 
-    const categories = [
-        { id: 'installation', label: 'Монтаж' },
-        { id: 'maintenance', label: 'Обслуживание' },
-        { id: 'repair', label: 'Ремонт' },
-        { id: 'consultation', label: 'Консультации' },
-        { id: 'all', label: 'Все услуги' },
-    ];
+    useEffect(() => {
+        fetchContent();
+    }, []);
 
-    const services = [
-        {
-            id: 1,
-            title: 'Монтаж электропроводки',
-            description: 'Полный комплекс работ по прокладке и замене электропроводки в квартирах, домах и офисах.',
-            icon: <FaBolt />,
-            category: 'installation',
-            features: ['Скрытая проводка', 'Открытая проводка', 'Замена проводки', 'Дизайн-проект'],
-            price: 'от 2 500 ₸',
-            duration: 'от 4 часов'
-        },
-        {
-            id: 2,
-            title: 'Установка электрощитов',
-            description: 'Сборка и установка распределительных щитов с автоматическими выключателями и УЗО.',
-            icon: <MdOutlineElectricalServices />,
-            category: 'installation',
-            features: ['Сборка щита', 'Монтаж автоматов', 'Подключение УЗО', 'Маркировка'],
-            price: 'от 3 500 ₸',
-            duration: 'от 3 часов'
-        },
-        {
-            id: 3,
-            title: 'Монтаж розеток и выключателей',
-            description: 'Установка и замена розеток, выключателей, диммеров и других электроустановочных изделий.',
-            icon: <MdHomeRepairService />,
-            category: 'installation',
-            features: ['Евро розетки', 'Проходные выключатели', 'Сенсорные панели', 'Влагозащищенные'],
-            price: 'от 450 ₸/шт',
-            duration: 'от 30 мин'
-        },
-        {
-            id: 4,
-            title: 'Обсл.электрооборудования',
-            description: 'Регулярное техническое обслуживание электросистем для предотвращения аварийных ситуаций.',
-            icon: <FaTools />,
-            category: 'maintenance',
-            features: ['Диагностика', 'Профилактика', 'Замена изношенных частей', 'Настройка'],
-            price: 'от 1 800 ₸',
-            duration: 'от 2 часов'
-        },
-        {
-            id: 5,
-            title: 'Ремонт бытовой техники',
-            description: 'Диагностика и ремонт стиральных машин, холодильников, плит и другой бытовой техники.',
-            icon: <FaWrench />,
-            category: 'repair',
-            features: ['Диагностика', 'Запчасти в наличии', 'Гарантия на ремонт', 'Выезд мастера'],
-            price: 'от 1 200 ₸',
-            duration: 'от 1 часа'
-        },
-        {
-            id: 6,
-            title: 'Аварийные работы',
-            description: 'Круглосуточный выезд для устранения аварийных ситуаций и восстановления электроснабжения.',
-            icon: <MdSecurity />,
-            category: 'maintenance',
-            features: ['Круглосуточно', 'Быстрый выезд', 'Экстренный ремонт', 'Выезд в течение часа'],
-            price: 'от 3 000 ₸',
-            duration: 'от 30 мин'
-        },
-    ];
-
-    const filteredServices = activeCategory === 'all'
-        ? services
-        : services.filter(service => service.category === activeCategory);
-
-    const handleServiceClick = (serviceId) => {
-        setActiveService(activeService === serviceId ? null : serviceId);
+    const fetchContent = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/services/content`);
+            const data = await response.json();
+            setContent(data);
+        } catch (error) {
+            console.error('Error fetching services content:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const benefits = [
-        {
-            icon: <FaCheckCircle />,
-            title: 'Гарантия 3 года',
-            description: 'На все виды работ предоставляем официальную гарантию'
-        },
-        {
-            icon: <FaClock />,
-            title: 'Работаем быстро',
-            description: 'Среднее время выполнения заказа - 2-4 часа'
-        },
-        {
-            icon: <FaTruck />,
-            title: 'Бесплатный выезд',
-            description: 'Выезд мастера и диагностика - бесплатно'
-        },
-    ];
+    const handleServiceClick = (serviceId) => {
+        setExpandedServices(prev => ({
+            ...prev,
+            [serviceId]: !prev[serviceId]
+        }));
+    };
+
+    if (loading) {
+        return <div className="services-loading">Загрузка...</div>;
+    }
+
+    if (!content) {
+        return null;
+    }
+
+    const filteredServices = activeCategory === 'all'
+        ? content.services.filter(s => s.active !== false)
+        : content.services.filter(s => s.category === activeCategory && s.active !== false);
+
+    const activeCategories = content.categories.filter(c =>
+        c.id === 'all' || content.services.some(s => s.category === c.id && s.active !== false)
+    );
+
+    const activeBenefits = content.benefits.filter(b => b.active !== false);
 
     return (
         <section id="services" className="services">
             <div className="container">
                 {/* Заголовок секции */}
                 <div className="services-section-header">
-                    <h2 className="services-section-title">Наши услуги</h2>
-                    <p className="services-section-subtitle">
-                        Профессиональные услуги электрика любой сложности. Работаем качественно, быстро и с гарантией.
-                    </p>
+                    <h2 className="services-section-title">{content.sectionTitle}</h2>
+                    <p className="services-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
                 {/* Фильтры категорий */}
                 <div className="services-category-filters">
-                    {categories.map(category => (
+                    {activeCategories.map(category => (
                         <button
                             key={category.id}
                             className={`services-category-filter ${activeCategory === category.id ? 'active' : ''}`}
@@ -143,95 +100,106 @@ const Services = () => {
 
                 {/* Карточки услуг */}
                 <div className="services-grid">
-                    {filteredServices.map(service => (
-                        <div
-                            key={service.id}
-                            className={`services-service-card ${activeService === service.id ? 'expanded' : ''}`}
-                            onClick={() => handleServiceClick(service.id)}
-                        >
-                            <div className="services-service-card-header">
-                                <div className="services-service-icon">
-                                    {service.icon}
-                                </div>
-                                <div className="services-service-title-wrapper">
-                                    <h3 className="services-service-title">{service.title}</h3>
-                                    <div className="services-service-meta">
-                                        <span className="services-service-price">{service.price}</span>
-                                        <span className="services-service-duration">{service.duration}</span>
+                    {filteredServices.map(service => {
+                        const IconComponent = iconMap[service.icon] || FaBolt;
+                        const isExpanded = expandedServices[service.id];
+
+                        return (
+                            <div
+                                key={service.id}
+                                className={`services-service-card ${isExpanded ? 'expanded' : ''}`}
+                                onClick={() => handleServiceClick(service.id)}
+                            >
+                                <div className="services-service-card-header">
+                                    <div className="services-service-icon">
+                                        <IconComponent />
+                                    </div>
+                                    <div className="services-service-title-wrapper">
+                                        <h3 className="services-service-title">{service.title}</h3>
+                                        <div className="services-service-meta">
+                                            <span className="services-service-price">{service.price}</span>
+                                            <span className="services-service-duration">{service.duration}</span>
+                                        </div>
+                                    </div>
+                                    <div className="services-service-arrow">
+                                        <FaArrowRight />
                                     </div>
                                 </div>
-                                <div className="services-service-arrow">
-                                    <FaArrowRight />
+
+                                <div className="services-service-card-content">
+                                    <p className="services-service-description">{service.description}</p>
+
+                                    <div className="services-service-features">
+                                        <h4>Что входит:</h4>
+                                        <ul className="services-features-list">
+                                            {service.features.map((feature, index) => (
+                                                <li key={index} className="services-feature-item">
+                                                    <FaCheckCircle className="services-feature-check" />
+                                                    <span>{feature}</span>
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="services-service-actions">
+                                        <Button
+                                            variant="primary"
+                                            size="small"
+                                            onClick={(e) => {
+                                                e.stopPropagation();
+                                                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                                            }}
+                                            className="services-service-order-btn"
+                                        >
+                                            Заказать услугу
+                                        </Button>
+                                        <a
+                                            href={`tel:${content.cta?.phoneNumber || '+79991234567'}`}
+                                            className="services-service-call-link"
+                                            onClick={(e) => e.stopPropagation()}
+                                        >
+                                            Позвонить для уточнения
+                                        </a>
+                                    </div>
                                 </div>
                             </div>
-
-                            <div className="services-service-card-content">
-                                <p className="services-service-description">{service.description}</p>
-
-                                <div className="services-service-features">
-                                    <h4>Что входит:</h4>
-                                    <ul className="services-features-list">
-                                        {service.features.map((feature, index) => (
-                                            <li key={index} className="services-feature-item">
-                                                <FaCheckCircle className="services-feature-check" />
-                                                <span>{feature}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="services-service-actions">
-                                    <Button
-                                        variant="primary"
-                                        size="small"
-                                        onClick={(e) => {
-                                            e.stopPropagation();
-                                            document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                                        }}
-                                        className="services-service-order-btn"
-                                    >
-                                        Заказать услугу
-                                    </Button>
-                                    <a
-                                        href={`tel:+79991234567`}
-                                        className="services-service-call-link"
-                                        onClick={(e) => e.stopPropagation()}
-                                    >
-                                        Позвонить для уточнения
-                                    </a>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
+                        );
+                    })}
                 </div>
 
                 {/* Преимущества */}
-                <div className="services-benefits-section">
-                    <div className="services-benefits-header">
-                        <h3>Почему выбирают нас</h3>
-                        <p>Мы гарантируем качество и надежность всех выполненных работ</p>
-                    </div>
+                {activeBenefits.length > 0 && (
+                    <div className="services-benefits-section">
+                        <div className="services-benefits-header">
+                            <h3>Почему выбирают нас</h3>
+                            <p>Мы гарантируем качество и надежность всех выполненных работ</p>
+                        </div>
 
-                    <div className="services-benefits-grid">
-                        {benefits.map((benefit, index) => (
-                            <div key={index} className="services-benefit-card">
-                                <div className="services-benefit-icon-wrapper">
-                                    {benefit.icon}
-                                </div>
-                                <div className="benefit-content">
-                                    <h4>{benefit.title}</h4>
-                                    <p>{benefit.description}</p>
-                                </div>
-                            </div>
-                        ))}
+                        <div className="services-benefits-grid">
+                            {activeBenefits.map((benefit, index) => {
+                                const IconComponent = iconMap[benefit.icon] || FaCheckCircle;
+
+                                return (
+                                    <div key={index} className="services-benefit-card">
+                                        <div className="services-benefit-icon-wrapper">
+                                            <IconComponent />
+                                        </div>
+                                        <div className="benefit-content">
+                                            <h4>{benefit.title}</h4>
+                                            <p>{benefit.description}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* CTA блок */}
                 <div className="services-services-cta">
                     <div className="services-cta-content">
-                        <h3>Нужна консультация электрика?</h3>
-                        <p>Оставьте заявку и получите бесплатную консультацию по вашему вопросу</p>
+                        <h3>{content.cta?.title}</h3>
+                        <p>{content.cta?.description}</p>
                     </div>
                     <div className="services-cta-actions">
                         <Button
@@ -239,10 +207,10 @@ const Services = () => {
                             size="large"
                             onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
                         >
-                            Получить консультацию
+                            {content.cta?.buttonText}
                         </Button>
-                        <a href="tel:+79991234567" className="services-cta-phone">
-                            Или позвоните: +7 (999) 123-45-67
+                        <a href={`tel:${content.cta?.phoneNumber}`} className="services-cta-phone">
+                            {content.cta?.phoneText}
                         </a>
                     </div>
                 </div>

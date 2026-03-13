@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AdminPanel.css';
 import HeroEditor from '../HeroEditor/HeroEditor';
+import ServicesEditor from '../ServicesEditor/ServicesEditor';
 import { FaSignOutAlt, FaCog } from 'react-icons/fa';
 
 const AdminPanel = ({ onLogout }) => {
@@ -72,6 +73,7 @@ const AdminPanel = ({ onLogout }) => {
 
             <div className="admin-content">
                 {activeTab === 'hero' && <HeroEditor />}
+                {activeTab === 'services' && <ServicesEditor />}
                 {/* Другие редакторы будут добавлены позже */}
             </div>
         </div>
