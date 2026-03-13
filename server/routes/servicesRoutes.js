@@ -6,8 +6,6 @@ const {
     updateServicesContent,
     createService,
     deleteService,
-    createCategory,
-    deleteCategory
 } = require('../controllers/servicesController');
 
 // Публичные маршруты

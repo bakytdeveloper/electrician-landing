@@ -97,6 +97,8 @@ const ServicesEditor = () => {
         return JSON.stringify(content) !== JSON.stringify(originalContent);
     };
 
+// Найдите функцию handleSave в ServicesEditor.jsx и замените её на эту:
+
     const handleSave = async () => {
         if (!hasChanges()) {
             setSuccess('Нет изменений для сохранения');
@@ -110,17 +112,48 @@ const ServicesEditor = () => {
 
         try {
             const token = localStorage.getItem('adminToken');
+
+            // Подготавливаем данные для сохранения - удаляем _id из вложенных объектов
+            const saveContent = {
+                _id: content._id, // Сохраняем только ID основного документа
+                sectionTitle: content.sectionTitle,
+                sectionSubtitle: content.sectionSubtitle,
+                services: content.services.map(service => {
+                    // Создаем новый объект без _id
+                    const { _id, ...serviceData } = service;
+                    return {
+                        ...serviceData,
+                        features: serviceData.features.filter(f => f && f.trim() !== '')
+                    };
+                }),
+                benefits: content.benefits.map(benefit => {
+                    const { _id, ...benefitData } = benefit;
+                    return {
+                        ...benefitData,
+                        title: benefitData.title || '',
+                        description: benefitData.description || ''
+                    };
+                }),
+                cta: content.cta ? (() => {
+                    const { _id, ...ctaData } = content.cta;
+                    return ctaData;
+                })() : {}
+            };
+
+            console.log('Saving content:', saveContent); // Для отладки
+
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/services/content`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                     'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(content)
+                body: JSON.stringify(saveContent)
             });
 
             if (!response.ok) {
-                throw new Error('Ошибка сохранения');
+                const errorData = await response.json();
+                throw new Error(errorData.message || 'Ошибка сохранения');
             }
 
             const updatedContent = await response.json();
@@ -130,12 +163,13 @@ const ServicesEditor = () => {
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
             console.error('Error saving:', err);
-            setError('Ошибка при сохранении');
+            setError('Ошибка при сохранении: ' + err.message);
             setTimeout(() => setError(''), 3000);
         } finally {
             setSaving(false);
         }
     };
+
 
     const handleCancel = () => {
         if (originalContent) {
@@ -147,12 +181,15 @@ const ServicesEditor = () => {
 
     // Управление услугами
     const handleAddService = () => {
+        // Получаем список уникальных категорий для предложений
+        const existingCategories = [...new Set(content.services.map(s => s.category).filter(Boolean))];
+
         setEditingService({
             id: Date.now(),
             title: '',
             description: '',
             icon: 'FaBolt',
-            category: '',
+            category: existingCategories[0] || '',
             features: [''],
             price: '',
             duration: '',
@@ -164,7 +201,10 @@ const ServicesEditor = () => {
     };
 
     const handleEditService = (service) => {
-        setEditingService({ ...service, features: [...service.features] });
+        setEditingService({
+            ...service,
+            features: service.features && service.features.length ? [...service.features] : ['']
+        });
         setShowServiceModal(true);
     };
 
@@ -188,6 +228,14 @@ const ServicesEditor = () => {
             setContent({ ...content, services: data.services });
             setSuccess('Услуга удалена');
             setTimeout(() => setSuccess(''), 3000);
+
+            // Если текущая категория стала пустой, переключаемся на 'all'
+            if (activeCategory !== 'all') {
+                const servicesInCategory = data.services.filter(s => s.category === activeCategory);
+                if (servicesInCategory.length === 0) {
+                    setActiveCategory('all');
+                }
+            }
         } catch (err) {
             console.error('Error deleting service:', err);
             setError('Ошибка при удалении услуги');
@@ -202,8 +250,24 @@ const ServicesEditor = () => {
             return;
         }
 
+        // Сохраняем категорию exactly as entered (без изменений)
+        const categoryToSave = editingService.category.trim();
+
         // Фильтруем пустые фичи
-        editingService.features = editingService.features.filter(f => f.trim() !== '');
+        const featuresToSave = editingService.features.filter(f => f && f.trim() !== '');
+
+        const serviceToSave = {
+            id: editingService.id,
+            title: editingService.title,
+            description: editingService.description || '',
+            icon: editingService.icon || 'FaBolt',
+            category: categoryToSave,
+            features: featuresToSave.length ? featuresToSave : ['Базовая услуга'],
+            price: editingService.price,
+            duration: editingService.duration,
+            active: editingService.active !== undefined ? editingService.active : true,
+            order: editingService.order || 0
+        };
 
         if (editingService.isNew) {
             try {
@@ -214,36 +278,41 @@ const ServicesEditor = () => {
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}`
                     },
-                    body: JSON.stringify(editingService)
+                    body: JSON.stringify(serviceToSave)
                 });
 
                 if (!response.ok) {
-                    throw new Error('Ошибка создания');
+                    const errorData = await response.json();
+                    throw new Error(errorData.message || 'Ошибка создания');
                 }
 
                 const newService = await response.json();
                 setContent({ ...content, services: [...content.services, newService] });
                 setSuccess('Услуга создана');
+                setTimeout(() => setSuccess(''), 3000);
+                setShowServiceModal(false);
+                setEditingService(null);
             } catch (err) {
                 console.error('Error creating service:', err);
-                setError('Ошибка при создании услуги');
+                setError('Ошибка при создании услуги: ' + err.message);
+                setTimeout(() => setError(''), 3000);
             }
         } else {
-            // Обновляем существующую услугу
+            // Обновляем существующую услугу - находим по id (наш числовой ID), не по _id MongoDB
             const index = content.services.findIndex(s => s.id === editingService.id);
             if (index !== -1) {
                 const newServices = [...content.services];
-                newServices[index] = editingService;
+                newServices[index] = serviceToSave;
                 setContent({ ...content, services: newServices });
                 setSuccess('Услуга обновлена');
+                setTimeout(() => setSuccess(''), 3000);
+                setShowServiceModal(false);
+                setEditingService(null);
             }
         }
-
-        setTimeout(() => setSuccess(''), 3000);
-        setShowServiceModal(false);
-        setEditingService(null);
     };
 
+    
     // Управление преимуществами
     const handleBenefitChange = (index, field, value) => {
         const newBenefits = [...content.benefits];
@@ -304,15 +373,9 @@ const ServicesEditor = () => {
         if (!content?.services) return [];
         const categories = content.services
             .map(s => s.category)
-            .filter((value, index, self) => value && self.indexOf(value) === index)
-            .sort();
-        return ['all', ...categories];
-    };
-
-    // Получить отображаемое название категории
-    const getCategoryLabel = (categoryId) => {
-        if (categoryId === 'all') return 'Все услуги';
-        return categoryId;
+            .filter(category => category && category.trim() !== '')
+            .filter((value, index, self) => self.indexOf(value) === index);
+        return categories.sort((a, b) => a.localeCompare(b, 'ru'));
     };
 
     if (loading) return <div className="editor-loading">Загрузка...</div>;
@@ -400,16 +463,23 @@ const ServicesEditor = () => {
                         </button>
                     </div>
 
-                    {/* Фильтры категорий - динамически из услуг */}
-                    {categories.length > 1 && (
+                    {/* Фильтры категорий */}
+                    {categories.length > 0 && (
                         <div className="category-filters">
-                            {categories.map(categoryId => (
+                            <button
+                                key="all"
+                                className={`category-filter ${activeCategory === 'all' ? 'active' : ''}`}
+                                onClick={() => setActiveCategory('all')}
+                            >
+                                Все услуги
+                            </button>
+                            {categories.map(category => (
                                 <button
-                                    key={categoryId}
-                                    className={`category-filter ${activeCategory === categoryId ? 'active' : ''}`}
-                                    onClick={() => setActiveCategory(categoryId)}
+                                    key={category}
+                                    className={`category-filter ${activeCategory === category ? 'active' : ''}`}
+                                    onClick={() => setActiveCategory(category)}
                                 >
-                                    {getCategoryLabel(categoryId)}
+                                    {category}
                                 </button>
                             ))}
                         </div>
@@ -417,7 +487,7 @@ const ServicesEditor = () => {
 
                     {/* Список услуг */}
                     <div className="services-list">
-                        {filteredServices.map((service, index) => {
+                        {filteredServices.map((service) => {
                             const IconComponent = iconMap[service.icon]?.component || FaBolt;
 
                             return (
@@ -646,6 +716,9 @@ const ServicesEditor = () => {
                                             <option key={category} value={category} />
                                         ))}
                                 </datalist>
+                                <small className="form-hint">
+                                    Введите название категории. Оно будет использоваться точно как вы написали.
+                                </small>
                             </div>
 
                             <div className="form-group">
@@ -730,8 +803,8 @@ const ServicesEditor = () => {
                                             <div
                                                 key={icon.key}
                                                 className={`icon-item ${
-                                                    (iconPickerTarget.type === 'service' && editingService?.icon === icon.key) ||
-                                                    (iconPickerTarget.type === 'benefit' && content.benefits[iconPickerTarget.index]?.icon === icon.key)
+                                                    (iconPickerTarget?.type === 'service' && editingService?.icon === icon.key) ||
+                                                    (iconPickerTarget?.type === 'benefit' && content.benefits[iconPickerTarget.index]?.icon === icon.key)
                                                         ? 'selected' : ''
                                                 }`}
                                                 onClick={() => selectIcon(icon.key)}

@@ -117,41 +117,54 @@ const getServicesContent = async (req, res) => {
 const updateServicesContent = async (req, res) => {
     try {
         const updates = req.body;
-        const content = await ServicesContent.findOne();
+        console.log('Received updates:', updates);
+
+        // Находим документ по ID
+        const content = await ServicesContent.findById(updates._id);
 
         if (!content) {
             return res.status(404).json({ message: 'Контент не найден' });
         }
 
-        // Обновляем поля
-        Object.keys(updates).forEach(key => {
-            if (key !== 'services' && key !== 'benefits' && key !== 'cta') {
-                content[key] = updates[key];
-            }
-        });
+        // Обновляем поля вручную, избегая конфликтов версий
+        content.sectionTitle = updates.sectionTitle || content.sectionTitle;
+        content.sectionSubtitle = updates.sectionSubtitle || content.sectionSubtitle;
 
         // Обновляем услуги если есть
         if (updates.services) {
-            content.services = updates.services;
+            // Очищаем массив и добавляем новые услуги
+            content.services = [];
+            updates.services.forEach(service => {
+                // Убираем _id из данных, чтобы mongoose создал новый
+                const { _id, ...serviceData } = service;
+                content.services.push(serviceData);
+            });
         }
 
         // Обновляем преимущества если есть
         if (updates.benefits) {
-            content.benefits = updates.benefits;
+            content.benefits = [];
+            updates.benefits.forEach(benefit => {
+                const { _id, ...benefitData } = benefit;
+                content.benefits.push(benefitData);
+            });
         }
 
         // Обновляем CTA если есть
         if (updates.cta) {
-            content.cta = { ...content.cta, ...updates.cta };
+            const { _id, ...ctaData } = updates.cta;
+            content.cta = { ...content.cta, ...ctaData };
         }
 
         content.updatedAt = Date.now();
-        await content.save();
+
+        // Используем save с отключенной проверкой версии
+        await content.save({ versionKey: false });
 
         res.json(content);
     } catch (error) {
         console.error('Error in updateServicesContent:', error);
-        res.status(500).json({ message: 'Ошибка при обновлении контента услуг' });
+        res.status(500).json({ message: 'Ошибка при обновлении контента услуг: ' + error.message });
     }
 };
 
@@ -167,18 +180,25 @@ const createService = async (req, res) => {
         // Генерируем новый ID
         const maxId = Math.max(...content.services.map(s => s.id), 0);
         const newService = {
-            ...req.body,
             id: maxId + 1,
-            active: true
+            title: req.body.title,
+            description: req.body.description || '',
+            icon: req.body.icon || 'FaBolt',
+            category: req.body.category,
+            features: Array.isArray(req.body.features) ? req.body.features : [],
+            price: req.body.price,
+            duration: req.body.duration,
+            active: req.body.active !== undefined ? req.body.active : true,
+            order: req.body.order || content.services.length + 1
         };
 
         content.services.push(newService);
-        await content.save();
+        await content.save({ versionKey: false });
 
         res.json(newService);
     } catch (error) {
         console.error('Error in createService:', error);
-        res.status(500).json({ message: 'Ошибка при создании услуги' });
+        res.status(500).json({ message: 'Ошибка при создании услуги: ' + error.message });
     }
 };
 
@@ -193,7 +213,7 @@ const deleteService = async (req, res) => {
         }
 
         content.services = content.services.filter(s => s.id !== serviceId);
-        await content.save();
+        await content.save({ versionKey: false });
 
         res.json({ message: 'Услуга удалена', services: content.services });
     } catch (error) {

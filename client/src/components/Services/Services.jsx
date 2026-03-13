@@ -114,20 +114,15 @@ const Services = () => {
         }));
     };
 
-    // Получить уникальные категории из услуг
+    // Получить уникальные категории из услуг (сохраняя оригинальные названия)
     const getUniqueCategories = () => {
         if (!content?.services) return [];
         const categories = content.services
             .map(s => s.category)
-            .filter((value, index, self) => value && self.indexOf(value) === index)
-            .sort();
-        return ['all', ...categories];
-    };
+            .filter(category => category && category.trim() !== '')
+            .filter((value, index, self) => self.indexOf(value) === index);
 
-    // Получить отображаемое название категории
-    const getCategoryLabel = (categoryId) => {
-        if (categoryId === 'all') return 'Все услуги';
-        return categoryId;
+        return categories.sort((a, b) => a.localeCompare(b, 'ru'));
     };
 
     if (loading) {
@@ -154,16 +149,23 @@ const Services = () => {
                     <p className="services-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
-                {/* Фильтры категорий - динамически из услуг */}
-                {categories.length > 1 && (
+                {/* Фильтры категорий - используем оригинальные названия */}
+                {categories.length > 0 && (
                     <div className="services-category-filters">
-                        {categories.map(categoryId => (
+                        <button
+                            key="all"
+                            className={`services-category-filter ${activeCategory === 'all' ? 'active' : ''}`}
+                            onClick={() => setActiveCategory('all')}
+                        >
+                            Все услуги
+                        </button>
+                        {categories.map(category => (
                             <button
-                                key={categoryId}
-                                className={`services-category-filter ${activeCategory === categoryId ? 'active' : ''}`}
-                                onClick={() => setActiveCategory(categoryId)}
+                                key={category}
+                                className={`services-category-filter ${activeCategory === category ? 'active' : ''}`}
+                                onClick={() => setActiveCategory(category)}
                             >
-                                {getCategoryLabel(categoryId)}
+                                {category}
                             </button>
                         ))}
                     </div>
