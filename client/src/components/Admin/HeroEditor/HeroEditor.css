@@ -433,3 +433,67 @@
         justify-content: flex-start;
     }
 }
+
+
+
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.cancel-btn {
+    padding: 12px 30px;
+    background: #e74c3c;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.cancel-btn:hover:not(:disabled) {
+    background: #c0392b;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(231, 76, 60, 0.3);
+}
+
+.cancel-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.unsaved-changes-warning {
+    background: #fff3cd;
+    color: #856404;
+    padding: 15px;
+    border-radius: 5px;
+    margin-bottom: 20px;
+    border-left: 4px solid #ffc107;
+    animation: slideIn 0.3s ease;
+}
+
+.pending-badge {
+    display: inline-block;
+    background: #ffc107;
+    color: #856404;
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 3px;
+    margin-left: 10px;
+    font-weight: normal;
+    vertical-align: middle;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translateY(-20px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}

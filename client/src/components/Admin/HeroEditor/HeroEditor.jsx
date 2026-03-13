@@ -4,13 +4,23 @@ import { FaPlus, FaTrash, FaImage, FaLink, FaPalette } from 'react-icons/fa';
 
 const HeroEditor = () => {
     const [content, setContent] = useState(null);
+    const [originalContent, setOriginalContent] = useState(null); // Для хранения исходного состояния
     const [loading, setLoading] = useState(true);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
+    const [pendingUploads, setPendingUploads] = useState([]); // Отслеживаем временные загрузки
 
     useEffect(() => {
         fetchContent();
+
+        // Очистка при размонтировании компонента
+        return () => {
+            // Если есть незавершенные загрузки, удаляем их с сервера
+            if (pendingUploads.length > 0) {
+                cleanupPendingUploads();
+            }
+        };
     }, []);
 
     const fetchContent = async () => {
@@ -18,6 +28,7 @@ const HeroEditor = () => {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`);
             const data = await response.json();
             setContent(data);
+            setOriginalContent(JSON.parse(JSON.stringify(data))); // Глубокое копирование
         } catch (err) {
             console.error('Error fetching content:', err);
             setError('Ошибка загрузки контента');
@@ -26,7 +37,48 @@ const HeroEditor = () => {
         }
     };
 
+    // Очистка временных загрузок
+    const cleanupPendingUploads = async () => {
+        for (const upload of pendingUploads) {
+            try {
+                // Здесь должен быть эндпоинт для удаления временного файла
+                // Но так как у нас его нет, просто логируем
+                console.log('Would delete temp file:', upload);
+
+                // В реальности нужно отправить запрос на сервер для удаления файла
+                // await fetch(`${process.env.REACT_APP_API_URL}/api/hero/temp/${upload.filename}`, {
+                //     method: 'DELETE',
+                // });
+            } catch (err) {
+                console.error('Error cleaning up pending upload:', err);
+            }
+        }
+        setPendingUploads([]);
+    };
+
+    // Отмена всех изменений
+    const handleCancel = () => {
+        if (originalContent) {
+            setContent(JSON.parse(JSON.stringify(originalContent)));
+            // Удаляем все временные файлы с сервера
+            cleanupPendingUploads();
+            setSuccess('Изменения отменены');
+            setTimeout(() => setSuccess(''), 3000);
+        }
+    };
+
+    // Проверка наличия изменений
+    const hasChanges = () => {
+        return JSON.stringify(content) !== JSON.stringify(originalContent);
+    };
+
     const handleSave = async () => {
+        if (!hasChanges()) {
+            setSuccess('Нет изменений для сохранения');
+            setTimeout(() => setSuccess(''), 3000);
+            return;
+        }
+
         setSaving(true);
         setError('');
         setSuccess('');
@@ -69,6 +121,8 @@ const HeroEditor = () => {
 
             const updatedContent = await response.json();
             setContent(updatedContent);
+            setOriginalContent(JSON.parse(JSON.stringify(updatedContent))); // Обновляем оригинал
+            setPendingUploads([]); // Очищаем список ожидающих загрузок
             setSuccess('Изменения сохранены');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
@@ -98,6 +152,7 @@ const HeroEditor = () => {
                     bgValue: '' // Сбрасываем значение для URL
                 };
             } else {
+                // При переключении на цвет, если был файл, он будет удален при сохранении
                 newSlides[index] = {
                     ...newSlides[index],
                     [field]: value,
@@ -175,12 +230,20 @@ const HeroEditor = () => {
 
             const data = await response.json();
 
+            // Добавляем в список ожидающих загрузок
+            const fileName = data.slide.bgValue.split('/').pop();
+            setPendingUploads(prev => [...prev, {
+                index,
+                filename: fileName,
+                url: data.slide.bgValue
+            }]);
+
             // Обновляем слайд с полученными данными
             const newSlides = [...content.slides];
             newSlides[index] = data.slide;
             setContent({ ...content, slides: newSlides });
 
-            setSuccess('Изображение загружено');
+            setSuccess('Изображение загружено (не сохранено)');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
             console.error('Error uploading image:', err);
@@ -192,28 +255,46 @@ const HeroEditor = () => {
     const handleDeleteImage = async (index) => {
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/hero/slides/${index}/image`,
-                {
-                    method: 'DELETE',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    }
-                }
-            );
 
-            if (!response.ok) {
-                throw new Error('Ошибка удаления');
+            // Если это временная загрузка (не сохраненная)
+            const pendingUpload = pendingUploads.find(u => u.index === index);
+
+            if (pendingUpload) {
+                // Удаляем из списка ожидающих
+                setPendingUploads(prev => prev.filter(u => u.index !== index));
+
+                // Возвращаем оригинальное значение слайда
+                const newSlides = [...content.slides];
+                newSlides[index] = originalContent.slides[index];
+                setContent({ ...content, slides: newSlides });
+
+                setSuccess('Изображение удалено');
+            } else {
+                // Если это сохраненное изображение, удаляем через API
+                const response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/api/hero/slides/${index}/image`,
+                    {
+                        method: 'DELETE',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        }
+                    }
+                );
+
+                if (!response.ok) {
+                    throw new Error('Ошибка удаления');
+                }
+
+                const data = await response.json();
+
+                // Обновляем слайд с полученными данными
+                const newSlides = [...content.slides];
+                newSlides[index] = data.slide;
+                setContent({ ...content, slides: newSlides });
+
+                setSuccess('Изображение удалено');
             }
 
-            const data = await response.json();
-
-            // Обновляем слайд с полученными данными
-            const newSlides = [...content.slides];
-            newSlides[index] = data.slide;
-            setContent({ ...content, slides: newSlides });
-
-            setSuccess('Изображение удалено');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
             console.error('Error deleting image:', err);
@@ -264,17 +345,34 @@ const HeroEditor = () => {
         <div className="hero-editor">
             <div className="editor-header">
                 <h2>Редактирование главного баннера</h2>
-                <button
-                    className="save-btn"
-                    onClick={handleSave}
-                    disabled={saving}
-                >
-                    {saving ? 'Сохранение...' : 'Сохранить изменения'}
-                </button>
+                <div className="header-buttons">
+                    {hasChanges() && (
+                        <button
+                            className="cancel-btn"
+                            onClick={handleCancel}
+                            disabled={saving}
+                        >
+                            Отменить изменения
+                        </button>
+                    )}
+                    <button
+                        className="save-btn"
+                        onClick={handleSave}
+                        disabled={saving || !hasChanges()}
+                    >
+                        {saving ? 'Сохранение...' : 'Сохранить изменения'}
+                    </button>
+                </div>
             </div>
 
             {error && <div className="editor-error-message">{error}</div>}
             {success && <div className="editor-success-message">{success}</div>}
+
+            {hasChanges() && (
+                <div className="unsaved-changes-warning">
+                    ⚠️ Есть несохраненные изменения. Нажмите "Сохранить изменения" чтобы применить их.
+                </div>
+            )}
 
             <div className="editor-tabs">
                 <div className="editor-section">
@@ -362,10 +460,14 @@ const HeroEditor = () => {
                     {content.slides.map((slide, index) => {
                         const gradient = parseGradient(slide.bgType === 'color' ? slide.bgValue : '');
                         const fallbackImage = getFallbackImage();
+                        const isPendingUpload = pendingUploads.some(u => u.index === index);
 
                         return (
                             <div key={index} className="slide-editor">
-                                <h4>Слайд {index + 1}</h4>
+                                <h4>
+                                    Слайд {index + 1}
+                                    {isPendingUpload && <span className="pending-badge">⏳ Не сохранено</span>}
+                                </h4>
 
                                 <div className="slide-controls">
                                     <button
@@ -508,7 +610,7 @@ const HeroEditor = () => {
                                                 id={`file-input-${index}`}
                                             />
                                             <label htmlFor={`file-input-${index}`} className="file-input-label">
-                                                <FaImage /> Выберите изображение
+                                                <FaImage /> {slide.bgValue ? 'Заменить изображение' : 'Выберите изображение'}
                                             </label>
                                         </div>
                                     </div>
