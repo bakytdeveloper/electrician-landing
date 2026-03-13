@@ -644,3 +644,162 @@
         padding: 20px;
     }
 }
+
+
+
+/* Категории */
+.category-actions {
+    display: flex;
+    gap: 5px;
+}
+
+.edit-category-btn {
+    background: none;
+    border: none;
+    color: #3498db;
+    cursor: pointer;
+    padding: 5px;
+    transition: all 0.3s;
+}
+
+.edit-category-btn:hover {
+    color: #2980b9;
+    transform: scale(1.1);
+}
+
+/* Иконки */
+.benefit-icon.clickable {
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.benefit-icon.clickable:hover {
+    transform: scale(1.1);
+    filter: brightness(0.9);
+}
+
+.icon-selector {
+    margin-bottom: 10px;
+}
+
+.selected-icon {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.selected-icon:hover {
+    border-color: #3498db;
+    background: #f0f0f0;
+}
+
+/* Модальное окно иконок */
+.modal-content.large {
+    max-width: 800px;
+    width: 90%;
+}
+
+.modal-content.small {
+    max-width: 400px;
+}
+
+.icon-picker-body {
+    max-height: 60vh;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.icon-category {
+    margin-bottom: 30px;
+}
+
+.icon-category h4 {
+    color: #333;
+    margin-bottom: 15px;
+    padding-bottom: 5px;
+    border-bottom: 2px solid #f0f0f0;
+}
+
+.icon-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+    gap: 10px;
+}
+
+.icon-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: all 0.3s;
+    text-align: center;
+}
+
+.icon-item:hover {
+    border-color: #3498db;
+    transform: translateY(-2px);
+    box-shadow: 0 5px 10px rgba(0,0,0,0.1);
+}
+
+.icon-item.selected {
+    border-color: #27ae60;
+    background: #d4edda;
+}
+
+.icon-preview {
+    margin-bottom: 5px;
+    color: #333;
+}
+
+.icon-name {
+    font-size: 11px;
+    color: #666;
+}
+
+/* Адаптивность для модального окна иконок */
+@media (max-width: 768px) {
+    .icon-grid {
+        grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+    }
+
+    .icon-name {
+        font-size: 10px;
+    }
+}
+
+
+
+/* Категория в списке услуг */
+.service-category {
+    background: rgba(52, 152, 219, 0.1);
+    color: #3498db;
+    padding: 4px 10px;
+    border-radius: 3px;
+    font-size: 13px;
+    font-weight: 600;
+    margin-right: 10px;
+}
+
+.service-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    align-items: center;
+}
+
+/* Стили для datalist (подсказки при вводе) */
+input[list] {
+    width: 100%;
+}
+
+datalist {
+    display: none;
+}

@@ -1,8 +1,21 @@
 import React, { useState, useEffect } from 'react';
 import './ServicesEditor.css';
-import { FaPlus, FaTrash, FaEdit, FaSave, FaTimes, FaArrowUp, FaArrowDown } from 'react-icons/fa';
-import * as Icons from 'react-icons/fa';
-import * as MdIcons from 'react-icons/md';
+import {
+    FaPlus, FaTrash, FaEdit, FaTimes,
+    FaBolt, FaTools, FaWrench, FaCheckCircle, FaClock, FaTruck,
+    FaPlug, FaLightbulb, FaSolarPanel, FaFan, FaCog, FaShieldAlt,
+    FaHammer, FaPaintRoller, FaHome, FaBuilding, FaIndustry
+} from 'react-icons/fa';
+import {
+    MdOutlineElectricalServices, MdSecurity, MdHomeRepairService,
+    MdOutlineBolt, MdOutlinePower, MdOutlineSolarPower,
+    MdOutlineConstruction, MdOutlineHandyman, MdOutlinePlumbing,
+    MdOutlineSecurity, MdOutlineSurroundSound, MdOutlineWifi
+} from 'react-icons/md';
+import {
+    GiElectric, GiPowerGenerator, GiCircuitry, GiSolarPower,
+    GiLightBulb, GiElectricalResistance, GiElectricWhip
+} from 'react-icons/gi';
 
 const ServicesEditor = () => {
     const [content, setContent] = useState(null);
@@ -14,26 +27,56 @@ const ServicesEditor = () => {
     const [activeCategory, setActiveCategory] = useState('all');
     const [editingService, setEditingService] = useState(null);
     const [showServiceModal, setShowServiceModal] = useState(false);
+    const [showIconPicker, setShowIconPicker] = useState(false);
+    const [iconPickerTarget, setIconPickerTarget] = useState(null);
 
-    // Маппинг иконок
+    // Расширенный маппинг иконок
     const iconMap = {
-        FaBolt: Icons.FaBolt,
-        FaTools: Icons.FaTools,
-        FaWrench: Icons.FaWrench,
-        FaCheckCircle: Icons.FaCheckCircle,
-        FaClock: Icons.FaClock,
-        FaTruck: Icons.FaTruck,
-        MdOutlineElectricalServices: MdIcons.MdOutlineElectricalServices,
-        MdHomeRepairService: MdIcons.MdHomeRepairService,
-        MdSecurity: MdIcons.MdSecurity
+        // Fa иконки
+        FaBolt: { component: FaBolt, name: 'Молния', category: 'fa' },
+        FaTools: { component: FaTools, name: 'Инструменты', category: 'fa' },
+        FaWrench: { component: FaWrench, name: 'Гаечный ключ', category: 'fa' },
+        FaCheckCircle: { component: FaCheckCircle, name: 'Галочка', category: 'fa' },
+        FaClock: { component: FaClock, name: 'Часы', category: 'fa' },
+        FaTruck: { component: FaTruck, name: 'Грузовик', category: 'fa' },
+        FaPlug: { component: FaPlug, name: 'Вилка', category: 'fa' },
+        FaLightbulb: { component: FaLightbulb, name: 'Лампочка', category: 'fa' },
+        FaSolarPanel: { component: FaSolarPanel, name: 'Солнечная панель', category: 'fa' },
+        FaFan: { component: FaFan, name: 'Вентилятор', category: 'fa' },
+        FaCog: { component: FaCog, name: 'Шестеренка', category: 'fa' },
+        FaShieldAlt: { component: FaShieldAlt, name: 'Щит', category: 'fa' },
+        FaHammer: { component: FaHammer, name: 'Молоток', category: 'fa' },
+        FaPaintRoller: { component: FaPaintRoller, name: 'Валик', category: 'fa' },
+        FaHome: { component: FaHome, name: 'Дом', category: 'fa' },
+        FaBuilding: { component: FaBuilding, name: 'Здание', category: 'fa' },
+        FaIndustry: { component: FaIndustry, name: 'Завод', category: 'fa' },
+
+        // Md иконки
+        MdOutlineElectricalServices: { component: MdOutlineElectricalServices, name: 'Электрика', category: 'md' },
+        MdSecurity: { component: MdSecurity, name: 'Безопасность', category: 'md' },
+        MdHomeRepairService: { component: MdHomeRepairService, name: 'Ремонт дома', category: 'md' },
+        MdOutlineBolt: { component: MdOutlineBolt, name: 'Разряд', category: 'md' },
+        MdOutlinePower: { component: MdOutlinePower, name: 'Питание', category: 'md' },
+        MdOutlineSolarPower: { component: MdOutlineSolarPower, name: 'Солнечная энергия', category: 'md' },
+        MdOutlineConstruction: { component: MdOutlineConstruction, name: 'Строительство', category: 'md' },
+        MdOutlineHandyman: { component: MdOutlineHandyman, name: 'Мастер', category: 'md' },
+        MdOutlinePlumbing: { component: MdOutlinePlumbing, name: 'Сантехника', category: 'md' },
+        MdOutlineSecurity: { component: MdOutlineSecurity, name: 'Безопасность', category: 'md' },
+        MdOutlineSurroundSound: { component: MdOutlineSurroundSound, name: 'Аудио', category: 'md' },
+        MdOutlineWifi: { component: MdOutlineWifi, name: 'Wi-Fi', category: 'md' },
+
+        // Gi иконки
+        GiElectric: { component: GiElectric, name: 'Электричество', category: 'gi' },
+        GiPowerGenerator: { component: GiPowerGenerator, name: 'Генератор', category: 'gi' },
+        GiCircuitry: { component: GiCircuitry, name: 'Схема', category: 'gi' },
+        GiSolarPower: { component: GiSolarPower, name: 'Солнечная батарея', category: 'gi' },
+        GiLightBulb: { component: GiLightBulb, name: 'Лампочка', category: 'gi' },
+        GiElectricalResistance: { component: GiElectricalResistance, name: 'Сопротивление', category: 'gi' },
+        GiElectricWhip: { component: GiElectricWhip, name: 'Провод', category: 'gi' }
     };
 
     useEffect(() => {
         fetchContent();
-
-        return () => {
-            // Очистка при размонтировании
-        };
     }, []);
 
     const fetchContent = async () => {
@@ -103,19 +146,13 @@ const ServicesEditor = () => {
     };
 
     // Управление услугами
-    const handleServiceChange = (index, field, value) => {
-        const newServices = [...content.services];
-        newServices[index] = { ...newServices[index], [field]: value };
-        setContent({ ...content, services: newServices });
-    };
-
     const handleAddService = () => {
         setEditingService({
             id: Date.now(),
             title: '',
             description: '',
             icon: 'FaBolt',
-            category: 'installation',
+            category: '',
             features: [''],
             price: '',
             duration: '',
@@ -159,8 +196,8 @@ const ServicesEditor = () => {
     };
 
     const handleSaveService = async () => {
-        if (!editingService.title || !editingService.price || !editingService.duration) {
-            setError('Заполните обязательные поля');
+        if (!editingService.title || !editingService.price || !editingService.duration || !editingService.category) {
+            setError('Заполните все обязательные поля');
             setTimeout(() => setError(''), 3000);
             return;
         }
@@ -245,12 +282,57 @@ const ServicesEditor = () => {
         setEditingService({ ...editingService, features: newFeatures });
     };
 
+    // Открыть выбор иконки
+    const openIconPicker = (target) => {
+        setIconPickerTarget(target);
+        setShowIconPicker(true);
+    };
+
+    // Выбрать иконку
+    const selectIcon = (iconKey) => {
+        if (iconPickerTarget.type === 'service') {
+            setEditingService({ ...editingService, icon: iconKey });
+        } else if (iconPickerTarget.type === 'benefit') {
+            handleBenefitChange(iconPickerTarget.index, 'icon', iconKey);
+        }
+        setShowIconPicker(false);
+        setIconPickerTarget(null);
+    };
+
+    // Получить уникальные категории из услуг
+    const getUniqueCategories = () => {
+        if (!content?.services) return [];
+        const categories = content.services
+            .map(s => s.category)
+            .filter((value, index, self) => value && self.indexOf(value) === index)
+            .sort();
+        return ['all', ...categories];
+    };
+
+    // Получить отображаемое название категории
+    const getCategoryLabel = (categoryId) => {
+        if (categoryId === 'all') return 'Все услуги';
+        return categoryId;
+    };
+
     if (loading) return <div className="editor-loading">Загрузка...</div>;
     if (!content) return <div className="editor-error">Ошибка загрузки</div>;
 
+    const categories = getUniqueCategories();
     const filteredServices = activeCategory === 'all'
         ? content.services
         : content.services.filter(s => s.category === activeCategory);
+
+    // Группируем иконки по категориям для отображения
+    const iconsByCategory = {
+        'fa': { name: 'Font Awesome', icons: [] },
+        'md': { name: 'Material Design', icons: [] },
+        'gi': { name: 'Game Icons', icons: [] }
+    };
+
+    Object.entries(iconMap).forEach(([key, value]) => {
+        iconsByCategory[value.category].icons.push({ key, ...value });
+    });
 
     return (
         <div className="services-editor">
@@ -309,28 +391,6 @@ const ServicesEditor = () => {
                     </div>
                 </div>
 
-                {/* Категории */}
-                <div className="editor-section">
-                    <h3>Категории услуг</h3>
-                    <div className="categories-list">
-                        {content.categories
-                            .filter(c => c.id !== 'all')
-                            .map((category, index) => (
-                                <div key={category.id} className="category-item">
-                                    <span className="category-label">{category.label}</span>
-                                    <span className="category-id">{category.id}</span>
-                                    <button
-                                        className="delete-category-btn"
-                                        onClick={() => handleDeleteCategory(category.id)}
-                                        disabled={category.id === 'all'}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            ))}
-                    </div>
-                </div>
-
                 {/* Услуги */}
                 <div className="editor-section">
                     <div className="section-header">
@@ -340,23 +400,25 @@ const ServicesEditor = () => {
                         </button>
                     </div>
 
-                    {/* Фильтры категорий */}
-                    <div className="category-filters">
-                        {content.categories.map(category => (
-                            <button
-                                key={category.id}
-                                className={`category-filter ${activeCategory === category.id ? 'active' : ''}`}
-                                onClick={() => setActiveCategory(category.id)}
-                            >
-                                {category.label}
-                            </button>
-                        ))}
-                    </div>
+                    {/* Фильтры категорий - динамически из услуг */}
+                    {categories.length > 1 && (
+                        <div className="category-filters">
+                            {categories.map(categoryId => (
+                                <button
+                                    key={categoryId}
+                                    className={`category-filter ${activeCategory === categoryId ? 'active' : ''}`}
+                                    onClick={() => setActiveCategory(categoryId)}
+                                >
+                                    {getCategoryLabel(categoryId)}
+                                </button>
+                            ))}
+                        </div>
+                    )}
 
                     {/* Список услуг */}
                     <div className="services-list">
                         {filteredServices.map((service, index) => {
-                            const IconComponent = iconMap[service.icon] || Icons.FaBolt;
+                            const IconComponent = iconMap[service.icon]?.component || FaBolt;
 
                             return (
                                 <div key={service.id} className="service-item">
@@ -367,6 +429,7 @@ const ServicesEditor = () => {
                                         <div className="service-info">
                                             <h4>{service.title}</h4>
                                             <div className="service-meta">
+                                                <span className="service-category">{service.category}</span>
                                                 <span className="service-price">{service.price}</span>
                                                 <span className="service-duration">{service.duration}</span>
                                                 <span className={`service-status ${service.active ? 'active' : 'inactive'}`}>
@@ -406,11 +469,14 @@ const ServicesEditor = () => {
 
                     <div className="benefits-list">
                         {content.benefits.map((benefit, index) => {
-                            const IconComponent = iconMap[benefit.icon] || Icons.FaCheckCircle;
+                            const IconComponent = iconMap[benefit.icon]?.component || FaCheckCircle;
 
                             return (
                                 <div key={index} className="benefit-item">
-                                    <div className="benefit-icon">
+                                    <div
+                                        className="benefit-icon clickable"
+                                        onClick={() => openIconPicker({ type: 'benefit', index })}
+                                    >
                                         <IconComponent />
                                     </div>
                                     <div className="benefit-fields">
@@ -426,14 +492,6 @@ const ServicesEditor = () => {
                                             onChange={(e) => handleBenefitChange(index, 'description', e.target.value)}
                                             placeholder="Описание"
                                         />
-                                        <select
-                                            value={benefit.icon}
-                                            onChange={(e) => handleBenefitChange(index, 'icon', e.target.value)}
-                                        >
-                                            <option value="FaCheckCircle">Галочка</option>
-                                            <option value="FaClock">Часы</option>
-                                            <option value="FaTruck">Грузовик</option>
-                                        </select>
                                         <label className="checkbox-label">
                                             <input
                                                 type="checkbox"
@@ -572,34 +630,39 @@ const ServicesEditor = () => {
                             </div>
 
                             <div className="form-group">
-                                <label>Категория</label>
-                                <select
+                                <label>Категория *</label>
+                                <input
+                                    type="text"
                                     value={editingService.category}
                                     onChange={(e) => setEditingService({ ...editingService, category: e.target.value })}
-                                >
-                                    {content.categories
-                                        .filter(c => c.id !== 'all')
+                                    placeholder="Например: Монтаж, Ремонт, Обслуживание"
+                                    list="category-suggestions"
+                                />
+                                <datalist id="category-suggestions">
+                                    {content.services
+                                        .map(s => s.category)
+                                        .filter((value, index, self) => value && self.indexOf(value) === index)
                                         .map(category => (
-                                            <option key={category.id} value={category.id}>
-                                                {category.label}
-                                            </option>
+                                            <option key={category} value={category} />
                                         ))}
-                                </select>
+                                </datalist>
                             </div>
 
                             <div className="form-group">
                                 <label>Иконка</label>
-                                <select
-                                    value={editingService.icon}
-                                    onChange={(e) => setEditingService({ ...editingService, icon: e.target.value })}
-                                >
-                                    <option value="FaBolt">Молния</option>
-                                    <option value="FaTools">Инструменты</option>
-                                    <option value="FaWrench">Гаечный ключ</option>
-                                    <option value="MdOutlineElectricalServices">Электрика</option>
-                                    <option value="MdHomeRepairService">Ремонт дома</option>
-                                    <option value="MdSecurity">Безопасность</option>
-                                </select>
+                                <div className="icon-selector">
+                                    <div
+                                        className="selected-icon"
+                                        onClick={() => openIconPicker({ type: 'service' })}
+                                    >
+                                        {iconMap[editingService.icon] && (
+                                            <>
+                                                {React.createElement(iconMap[editingService.icon].component, { size: 24 })}
+                                                <span>{iconMap[editingService.icon].name}</span>
+                                            </>
+                                        )}
+                                    </div>
+                                </div>
                             </div>
 
                             <div className="form-group">
@@ -642,6 +705,46 @@ const ServicesEditor = () => {
                             <button className="save-modal-btn" onClick={handleSaveService}>
                                 Сохранить
                             </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Модальное окно выбора иконок */}
+            {showIconPicker && (
+                <div className="modal-overlay">
+                    <div className="modal-content large">
+                        <div className="modal-header">
+                            <h3>Выберите иконку</h3>
+                            <button className="close-btn" onClick={() => setShowIconPicker(false)}>
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <div className="modal-body icon-picker-body">
+                            {Object.entries(iconsByCategory).map(([categoryKey, category]) => (
+                                <div key={categoryKey} className="icon-category">
+                                    <h4>{category.name}</h4>
+                                    <div className="icon-grid">
+                                        {category.icons.map(icon => (
+                                            <div
+                                                key={icon.key}
+                                                className={`icon-item ${
+                                                    (iconPickerTarget.type === 'service' && editingService?.icon === icon.key) ||
+                                                    (iconPickerTarget.type === 'benefit' && content.benefits[iconPickerTarget.index]?.icon === icon.key)
+                                                        ? 'selected' : ''
+                                                }`}
+                                                onClick={() => selectIcon(icon.key)}
+                                            >
+                                                <div className="icon-preview">
+                                                    {React.createElement(icon.component, { size: 24 })}
+                                                </div>
+                                                <span className="icon-name">{icon.name}</span>
+                                            </div>
+                                        ))}
+                                    </div>
+                                </div>
+                            ))}
                         </div>
                     </div>
                 </div>

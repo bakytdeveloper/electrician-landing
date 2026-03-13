@@ -6,17 +6,46 @@ import {
     FaCheckCircle,
     FaClock,
     FaTruck,
-    FaArrowRight
+    FaArrowRight,
+    FaPlug,
+    FaLightbulb,
+    FaSolarPanel,
+    FaFan,
+    FaCog,
+    FaShieldAlt,
+    FaHammer,
+    FaPaintRoller,
+    FaHome,
+    FaBuilding,
+    FaIndustry
 } from 'react-icons/fa';
 import {
     MdOutlineElectricalServices,
     MdSecurity,
     MdHomeRepairService,
+    MdOutlineBolt,
+    MdOutlinePower,
+    MdOutlineSolarPower,
+    MdOutlineConstruction,
+    MdOutlineHandyman,
+    MdOutlinePlumbing,
+    MdOutlineSecurity,
+    MdOutlineSurroundSound,
+    MdOutlineWifi
 } from 'react-icons/md';
+import {
+    GiElectric,
+    GiPowerGenerator,
+    GiCircuitry,
+    GiSolarPower,
+    GiLightBulb,
+    GiElectricalResistance,
+    GiElectricWhip
+} from 'react-icons/gi';
 import './Services.css';
 import Button from '../common/Button/Button';
 
-// Маппинг иконок
+// Расширенный маппинг иконок для клиентской части
 const iconMap = {
     FaBolt: FaBolt,
     FaTools: FaTools,
@@ -24,9 +53,36 @@ const iconMap = {
     FaCheckCircle: FaCheckCircle,
     FaClock: FaClock,
     FaTruck: FaTruck,
+    FaPlug: FaPlug,
+    FaLightbulb: FaLightbulb,
+    FaSolarPanel: FaSolarPanel,
+    FaFan: FaFan,
+    FaCog: FaCog,
+    FaShieldAlt: FaShieldAlt,
+    FaHammer: FaHammer,
+    FaPaintRoller: FaPaintRoller,
+    FaHome: FaHome,
+    FaBuilding: FaBuilding,
+    FaIndustry: FaIndustry,
     MdOutlineElectricalServices: MdOutlineElectricalServices,
+    MdSecurity: MdSecurity,
     MdHomeRepairService: MdHomeRepairService,
-    MdSecurity: MdSecurity
+    MdOutlineBolt: MdOutlineBolt,
+    MdOutlinePower: MdOutlinePower,
+    MdOutlineSolarPower: MdOutlineSolarPower,
+    MdOutlineConstruction: MdOutlineConstruction,
+    MdOutlineHandyman: MdOutlineHandyman,
+    MdOutlinePlumbing: MdOutlinePlumbing,
+    MdOutlineSecurity: MdOutlineSecurity,
+    MdOutlineSurroundSound: MdOutlineSurroundSound,
+    MdOutlineWifi: MdOutlineWifi,
+    GiElectric: GiElectric,
+    GiPowerGenerator: GiPowerGenerator,
+    GiCircuitry: GiCircuitry,
+    GiSolarPower: GiSolarPower,
+    GiLightBulb: GiLightBulb,
+    GiElectricalResistance: GiElectricalResistance,
+    GiElectricWhip: GiElectricWhip
 };
 
 const Services = () => {
@@ -58,6 +114,22 @@ const Services = () => {
         }));
     };
 
+    // Получить уникальные категории из услуг
+    const getUniqueCategories = () => {
+        if (!content?.services) return [];
+        const categories = content.services
+            .map(s => s.category)
+            .filter((value, index, self) => value && self.indexOf(value) === index)
+            .sort();
+        return ['all', ...categories];
+    };
+
+    // Получить отображаемое название категории
+    const getCategoryLabel = (categoryId) => {
+        if (categoryId === 'all') return 'Все услуги';
+        return categoryId;
+    };
+
     if (loading) {
         return <div className="services-loading">Загрузка...</div>;
     }
@@ -66,13 +138,10 @@ const Services = () => {
         return null;
     }
 
+    const categories = getUniqueCategories();
     const filteredServices = activeCategory === 'all'
         ? content.services.filter(s => s.active !== false)
         : content.services.filter(s => s.category === activeCategory && s.active !== false);
-
-    const activeCategories = content.categories.filter(c =>
-        c.id === 'all' || content.services.some(s => s.category === c.id && s.active !== false)
-    );
 
     const activeBenefits = content.benefits.filter(b => b.active !== false);
 
@@ -85,18 +154,20 @@ const Services = () => {
                     <p className="services-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
-                {/* Фильтры категорий */}
-                <div className="services-category-filters">
-                    {activeCategories.map(category => (
-                        <button
-                            key={category.id}
-                            className={`services-category-filter ${activeCategory === category.id ? 'active' : ''}`}
-                            onClick={() => setActiveCategory(category.id)}
-                        >
-                            {category.label}
-                        </button>
-                    ))}
-                </div>
+                {/* Фильтры категорий - динамически из услуг */}
+                {categories.length > 1 && (
+                    <div className="services-category-filters">
+                        {categories.map(categoryId => (
+                            <button
+                                key={categoryId}
+                                className={`services-category-filter ${activeCategory === categoryId ? 'active' : ''}`}
+                                onClick={() => setActiveCategory(categoryId)}
+                            >
+                                {getCategoryLabel(categoryId)}
+                            </button>
+                        ))}
+                    </div>
+                )}
 
                 {/* Карточки услуг */}
                 <div className="services-grid">

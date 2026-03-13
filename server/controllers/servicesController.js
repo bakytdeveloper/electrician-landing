@@ -1,6 +1,5 @@
 const ServicesContent = require('./../models/ServicesContent');
 
-
 // Получение текущего контента
 const getServicesContent = async (req, res) => {
     try {
@@ -9,20 +8,13 @@ const getServicesContent = async (req, res) => {
         // Если контента нет, создаем с дефолтными значениями
         if (!content) {
             content = await ServicesContent.create({
-                categories: [
-                    { id: 'installation', label: 'Монтаж', order: 1 },
-                    { id: 'maintenance', label: 'Обслуживание', order: 2 },
-                    { id: 'repair', label: 'Ремонт', order: 3 },
-                    { id: 'consultation', label: 'Консультации', order: 4 },
-                    { id: 'all', label: 'Все услуги', order: 5 }
-                ],
                 services: [
                     {
                         id: 1,
                         title: 'Монтаж электропроводки',
                         description: 'Полный комплекс работ по прокладке и замене электропроводки в квартирах, домах и офисах.',
                         icon: 'FaBolt',
-                        category: 'installation',
+                        category: 'Монтаж',
                         features: ['Скрытая проводка', 'Открытая проводка', 'Замена проводки', 'Дизайн-проект'],
                         price: 'от 2 500 ₸',
                         duration: 'от 4 часов',
@@ -33,7 +25,7 @@ const getServicesContent = async (req, res) => {
                         title: 'Установка электрощитов',
                         description: 'Сборка и установка распределительных щитов с автоматическими выключателями и УЗО.',
                         icon: 'MdOutlineElectricalServices',
-                        category: 'installation',
+                        category: 'Монтаж',
                         features: ['Сборка щита', 'Монтаж автоматов', 'Подключение УЗО', 'Маркировка'],
                         price: 'от 3 500 ₸',
                         duration: 'от 3 часов',
@@ -44,7 +36,7 @@ const getServicesContent = async (req, res) => {
                         title: 'Монтаж розеток и выключателей',
                         description: 'Установка и замена розеток, выключателей, диммеров и других электроустановочных изделий.',
                         icon: 'MdHomeRepairService',
-                        category: 'installation',
+                        category: 'Монтаж',
                         features: ['Евро розетки', 'Проходные выключатели', 'Сенсорные панели', 'Влагозащищенные'],
                         price: 'от 450 ₸/шт',
                         duration: 'от 30 мин',
@@ -55,7 +47,7 @@ const getServicesContent = async (req, res) => {
                         title: 'Обсл.электрооборудования',
                         description: 'Регулярное техническое обслуживание электросистем для предотвращения аварийных ситуаций.',
                         icon: 'FaTools',
-                        category: 'maintenance',
+                        category: 'Обслуживание',
                         features: ['Диагностика', 'Профилактика', 'Замена изношенных частей', 'Настройка'],
                         price: 'от 1 800 ₸',
                         duration: 'от 2 часов',
@@ -66,7 +58,7 @@ const getServicesContent = async (req, res) => {
                         title: 'Ремонт бытовой техники',
                         description: 'Диагностика и ремонт стиральных машин, холодильников, плит и другой бытовой техники.',
                         icon: 'FaWrench',
-                        category: 'repair',
+                        category: 'Ремонт',
                         features: ['Диагностика', 'Запчасти в наличии', 'Гарантия на ремонт', 'Выезд мастера'],
                         price: 'от 1 200 ₸',
                         duration: 'от 1 часа',
@@ -77,11 +69,11 @@ const getServicesContent = async (req, res) => {
                         title: 'Аварийные работы',
                         description: 'Круглосуточный выезд для устранения аварийных ситуаций и восстановления электроснабжения.',
                         icon: 'MdSecurity',
-                        category: 'maintenance',
+                        category: 'Аварийные',
                         features: ['Круглосуточно', 'Быстрый выезд', 'Экстренный ремонт', 'Выезд в течение часа'],
                         price: 'от 3 000 ₸',
                         duration: 'от 30 мин',
-                        order: 2
+                        order: 1
                     }
                 ],
                 benefits: [
@@ -103,7 +95,14 @@ const getServicesContent = async (req, res) => {
                         description: 'Выезд мастера и диагностика - бесплатно',
                         active: true
                     }
-                ]
+                ],
+                cta: {
+                    title: 'Нужна консультация электрика?',
+                    description: 'Оставьте заявку и получите бесплатную консультацию по вашему вопросу',
+                    buttonText: 'Получить консультацию',
+                    phoneText: 'Или позвоните: +7 (999) 123-45-67',
+                    phoneNumber: '+79991234567'
+                }
             });
         }
 
@@ -126,15 +125,10 @@ const updateServicesContent = async (req, res) => {
 
         // Обновляем поля
         Object.keys(updates).forEach(key => {
-            if (key !== 'services' && key !== 'categories' && key !== 'benefits' && key !== 'cta') {
+            if (key !== 'services' && key !== 'benefits' && key !== 'cta') {
                 content[key] = updates[key];
             }
         });
-
-        // Обновляем категории если есть
-        if (updates.categories) {
-            content.categories = updates.categories;
-        }
 
         // Обновляем услуги если есть
         if (updates.services) {
@@ -208,60 +202,9 @@ const deleteService = async (req, res) => {
     }
 };
 
-// Создание категории
-const createCategory = async (req, res) => {
-    try {
-        const content = await ServicesContent.findOne();
-
-        if (!content) {
-            return res.status(404).json({ message: 'Контент не найден' });
-        }
-
-        content.categories.push(req.body);
-        await content.save();
-
-        res.json(content.categories);
-    } catch (error) {
-        console.error('Error in createCategory:', error);
-        res.status(500).json({ message: 'Ошибка при создании категории' });
-    }
-};
-
-// Удаление категории
-const deleteCategory = async (req, res) => {
-    try {
-        const categoryId = req.params.id;
-        const content = await ServicesContent.findOne();
-
-        if (!content) {
-            return res.status(404).json({ message: 'Контент не найден' });
-        }
-
-        // Не удаляем категорию 'all' и проверяем, есть ли услуги в этой категории
-        if (categoryId === 'all') {
-            return res.status(400).json({ message: 'Нельзя удалить категорию "Все услуги"' });
-        }
-
-        const servicesInCategory = content.services.filter(s => s.category === categoryId);
-        if (servicesInCategory.length > 0) {
-            return res.status(400).json({ message: 'Нельзя удалить категорию, в которой есть услуги' });
-        }
-
-        content.categories = content.categories.filter(c => c.id !== categoryId);
-        await content.save();
-
-        res.json(content.categories);
-    } catch (error) {
-        console.error('Error in deleteCategory:', error);
-        res.status(500).json({ message: 'Ошибка при удалении категории' });
-    }
-};
-
 module.exports = {
     getServicesContent,
     updateServicesContent,
     createService,
-    deleteService,
-    createCategory,
-    deleteCategory
+    deleteService
 };

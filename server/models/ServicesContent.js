@@ -20,8 +20,7 @@ const serviceSchema = new mongoose.Schema({
     },
     category: {
         type: String,
-        enum: ['installation', 'maintenance', 'repair', 'consultation'],
-        required: true
+        required: true // Теперь это просто строка, не enum
     },
     features: [{
         type: String
@@ -37,22 +36,6 @@ const serviceSchema = new mongoose.Schema({
     active: {
         type: Boolean,
         default: true
-    },
-    order: {
-        type: Number,
-        default: 0
-    }
-});
-
-const categorySchema = new mongoose.Schema({
-    id: {
-        type: String,
-        required: true,
-        unique: true
-    },
-    label: {
-        type: String,
-        required: true
     },
     order: {
         type: Number,
@@ -111,7 +94,6 @@ const servicesContentSchema = new mongoose.Schema({
         type: String,
         default: 'Профессиональные услуги электрика любой сложности. Работаем качественно, быстро и с гарантией.'
     },
-    categories: [categorySchema],
     services: [serviceSchema],
     benefits: [benefitSchema],
     cta: {
