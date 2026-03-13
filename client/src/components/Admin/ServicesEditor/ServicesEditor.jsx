@@ -312,7 +312,7 @@ const ServicesEditor = () => {
         }
     };
 
-    
+
     // Управление преимуществами
     const handleBenefitChange = (index, field, value) => {
         const newBenefits = [...content.benefits];
