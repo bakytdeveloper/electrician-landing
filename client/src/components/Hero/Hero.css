@@ -28,6 +28,8 @@
     background-position: center;
     opacity: 0;
     transition: opacity 1s ease-in-out;
+    /* Фиксируем фон при скролле (эффект параллакса) */
+    background-attachment: fixed;
 }
 
 .hero-slide.active {
@@ -418,6 +420,10 @@
         padding: 50px 0 60px;
         margin-top: 40px;
     }
+
+    /*.hero-slide {*/
+    /*    background-attachment: scroll;*/
+    /*}*/
 
     .hero-title {
         font-size: 2.2rem;
