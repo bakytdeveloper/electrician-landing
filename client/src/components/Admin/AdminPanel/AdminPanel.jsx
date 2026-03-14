@@ -3,6 +3,7 @@ import './AdminPanel.css';
 import HeroEditor from '../HeroEditor/HeroEditor';
 import ServicesEditor from '../ServicesEditor/ServicesEditor';
 import PortfolioEditor from '../PortfolioEditor/PortfolioEditor';
+import AboutEditor from '../AboutEditor/AboutEditor';
 
 import { FaSignOutAlt, FaCog } from 'react-icons/fa';
 
@@ -69,7 +70,7 @@ const AdminPanel = ({ onLogout }) => {
                         className={activeTab === 'about' ? 'active' : ''}
                         onClick={() => setActiveTab('about')}
                     >
-                        О компании
+                        О нас
                     </button>
                 </nav>
 
@@ -83,6 +84,7 @@ const AdminPanel = ({ onLogout }) => {
                 {activeTab === 'hero' && <HeroEditor />}
                 {activeTab === 'services' && <ServicesEditor />}
                 {activeTab === 'portfolio' && <PortfolioEditor />}
+                {activeTab === 'about' && <AboutEditor />}
                 {/* Другие редакторы будут добавлены позже */}
             </div>
         </div>

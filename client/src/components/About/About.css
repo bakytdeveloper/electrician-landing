@@ -355,6 +355,10 @@
     flex-shrink: 0;
 }
 
+.about-timeline-text {
+    text-align: left;
+}
+
 .about-timeline-text h4 {
     color: var(--secondary-color);
     margin-bottom: 8px;
