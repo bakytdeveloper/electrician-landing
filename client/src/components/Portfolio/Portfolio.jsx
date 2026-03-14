@@ -10,7 +10,7 @@ import {
     FaIndustry,
     FaStore
 } from 'react-icons/fa';
-import { MdApartment, MdZoomIn } from 'react-icons/md';
+import { MdApartment, MdZoomIn, MdZoomOut } from 'react-icons/md';
 import './Portfolio.css';
 
 // Маппинг иконок для популярных категорий (опционально)
@@ -34,7 +34,17 @@ const Portfolio = () => {
     const [canScrollLeft, setCanScrollLeft] = useState(false);
     const [canScrollRight, setCanScrollRight] = useState(true);
 
+    // Состояния для перетаскивания увеличенного изображения
+    const [isDragging, setIsDragging] = useState(false);
+    const [dragStart, setDragStart] = useState({ x: 0, y: 0 });
+    const [imagePosition, setImagePosition] = useState({ x: 0, y: 0 });
+    const [imageDimensions, setImageDimensions] = useState({ width: 0, height: 0 });
+    const [containerDimensions, setContainerDimensions] = useState({ width: 0, height: 0 });
+
     const sliderRef = useRef(null);
+    const dragImageRef = useRef(null);
+    const containerRef = useRef(null);
+    const wheelHandlerRef = useRef(null);
 
     useEffect(() => {
         fetchContent();
@@ -107,6 +117,72 @@ const Portfolio = () => {
         }
     }, [activeFilter]);
 
+    // Обновление размеров при изменении изображения или зуме
+    useEffect(() => {
+        if (isModalOpen && dragImageRef.current && containerRef.current) {
+            updateDimensions();
+        }
+    }, [isModalOpen, currentIndex, isZoomed]);
+
+    // Добавляем и удаляем обработчик колесика
+    useEffect(() => {
+        if (isModalOpen && isZoomed && containerRef.current) {
+            const container = containerRef.current;
+
+            // Создаем обработчик с опцией { passive: false }
+            const wheelHandler = (e) => {
+                e.preventDefault();
+
+                // Изменяем позицию изображения при скролле
+                const deltaX = e.deltaX * 0.5;
+                const deltaY = e.deltaY * 0.5;
+
+                setImagePosition(prev => {
+                    const scale = 1.5; // Масштаб при зуме
+                    const maxX = Math.max(0, (imageDimensions.width * scale - containerDimensions.width) / 2);
+                    const maxY = Math.max(0, (imageDimensions.height * scale - containerDimensions.height) / 2);
+
+                    const newX = Math.min(maxX, Math.max(-maxX, prev.x - deltaX));
+                    const newY = Math.min(maxY, Math.max(-maxY, prev.y - deltaY));
+
+                    return { x: newX, y: newY };
+                });
+            };
+
+            // Сохраняем обработчик в ref для последующего удаления
+            wheelHandlerRef.current = wheelHandler;
+
+            // Добавляем обработчик с опцией { passive: false }
+            container.addEventListener('wheel', wheelHandler, { passive: false });
+
+            return () => {
+                if (container && wheelHandlerRef.current) {
+                    container.removeEventListener('wheel', wheelHandlerRef.current);
+                }
+            };
+        }
+    }, [isModalOpen, isZoomed, containerDimensions, imageDimensions]);
+
+    const updateDimensions = () => {
+        if (dragImageRef.current && containerRef.current) {
+            const img = dragImageRef.current;
+            const container = containerRef.current;
+
+            setImageDimensions({
+                width: img.naturalWidth,
+                height: img.naturalHeight
+            });
+
+            setContainerDimensions({
+                width: container.clientWidth,
+                height: container.clientHeight
+            });
+
+            // Сброс позиции при смене изображения или выходе из зума
+            setImagePosition({ x: 0, y: 0 });
+        }
+    };
+
     const scroll = (direction) => {
         if (sliderRef.current) {
             const scrollAmount = 400;
@@ -158,6 +234,8 @@ const Portfolio = () => {
         setSelectedImage(item);
         setCurrentIndex(index);
         setIsModalOpen(true);
+        setIsZoomed(false);
+        setImagePosition({ x: 0, y: 0 });
         document.body.style.overflow = 'hidden';
     };
 
@@ -165,19 +243,68 @@ const Portfolio = () => {
         setIsModalOpen(false);
         setSelectedImage(null);
         setIsZoomed(false);
+        setImagePosition({ x: 0, y: 0 });
         document.body.style.overflow = 'auto';
+    };
+
+    const toggleZoom = () => {
+        setIsZoomed(!isZoomed);
+        setImagePosition({ x: 0, y: 0 }); // Сброс позиции при переключении зума
     };
 
     const nextImage = () => {
         if (selectedImage && currentIndex < selectedImage.images.length - 1) {
             setCurrentIndex(currentIndex + 1);
+            setIsZoomed(false);
+            setImagePosition({ x: 0, y: 0 });
         }
     };
 
     const prevImage = () => {
         if (currentIndex > 0) {
             setCurrentIndex(currentIndex - 1);
+            setIsZoomed(false);
+            setImagePosition({ x: 0, y: 0 });
         }
+    };
+
+    // Обработчики для перетаскивания увеличенного изображения
+    const handleMouseDown = (e) => {
+        if (!isZoomed) return;
+
+        e.preventDefault();
+        setIsDragging(true);
+        setDragStart({
+            x: e.clientX - imagePosition.x,
+            y: e.clientY - imagePosition.y
+        });
+    };
+
+    const handleMouseMove = (e) => {
+        if (!isDragging || !isZoomed) return;
+
+        e.preventDefault();
+
+        const newX = e.clientX - dragStart.x;
+        const newY = e.clientY - dragStart.y;
+
+        // Ограничиваем перемещение, чтобы изображение не уходило за пределы контейнера
+        const scale = 1.5; // Масштаб при зуме
+        const maxX = Math.max(0, (imageDimensions.width * scale - containerDimensions.width) / 2);
+        const maxY = Math.max(0, (imageDimensions.height * scale - containerDimensions.height) / 2);
+
+        const boundedX = Math.min(maxX, Math.max(-maxX, newX));
+        const boundedY = Math.min(maxY, Math.max(-maxY, newY));
+
+        setImagePosition({ x: boundedX, y: boundedY });
+    };
+
+    const handleMouseUp = () => {
+        setIsDragging(false);
+    };
+
+    const handleMouseLeave = () => {
+        setIsDragging(false);
     };
 
     const handleKeyDown = (e) => {
@@ -185,16 +312,27 @@ const Portfolio = () => {
 
         switch(e.key) {
             case 'Escape':
-                closeModal();
+                if (isZoomed) {
+                    setIsZoomed(false);
+                    setImagePosition({ x: 0, y: 0 });
+                } else {
+                    closeModal();
+                }
                 break;
             case 'ArrowLeft':
-                prevImage();
+                if (!isZoomed) prevImage();
                 break;
             case 'ArrowRight':
-                nextImage();
+                if (!isZoomed) nextImage();
                 break;
-            case ' ':
-                setIsZoomed(!isZoomed);
+            case '+':
+            case '=':
+                e.preventDefault();
+                if (!isZoomed) toggleZoom();
+                break;
+            case '-':
+                e.preventDefault();
+                if (isZoomed) toggleZoom();
                 break;
             default:
                 break;
@@ -206,7 +344,7 @@ const Portfolio = () => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isModalOpen, currentIndex, isZoomed, handleKeyDown]);
+    }, [isModalOpen, currentIndex, isZoomed, selectedImage]);
 
     if (loading) {
         return <div className="portfolio-loading">Загрузка...</div>;
@@ -334,7 +472,7 @@ const Portfolio = () => {
                                     <div className="portfolio-meta">
                                         <div className="meta-item">
                                             <span className="meta-label">Площадь:</span>
-                                            <span className="meta-value">{item.area}м²</span>
+                                            <span className="meta-value">{item.area}</span>
                                         </div>
                                         <div className="meta-item">
                                             <span className="meta-label">Срок:</span>
@@ -373,26 +511,49 @@ const Portfolio = () => {
 
                         <div className="modal-main">
                             <div className="image-viewer">
-                                <button
-                                    className="nav-button prev-button"
-                                    onClick={prevImage}
-                                    disabled={currentIndex === 0}
-                                >
-                                    <FaArrowLeft />
-                                </button>
+                                {!isZoomed && (
+                                    <>
+                                        <button
+                                            className="nav-button prev-button"
+                                            onClick={prevImage}
+                                            disabled={currentIndex === 0}
+                                        >
+                                            <FaArrowLeft />
+                                        </button>
+                                        <button
+                                            className="nav-button next-button"
+                                            onClick={nextImage}
+                                            disabled={!selectedImage.images || currentIndex === selectedImage.images.length - 1}
+                                        >
+                                            <FaArrowRight />
+                                        </button>
+                                    </>
+                                )}
 
                                 <div
+                                    ref={containerRef}
                                     className={`modal-image-container ${isZoomed ? 'zoomed' : ''}`}
-                                    onClick={() => setIsZoomed(!isZoomed)}
+                                    onMouseDown={handleMouseDown}
+                                    onMouseMove={handleMouseMove}
+                                    onMouseUp={handleMouseUp}
+                                    onMouseLeave={handleMouseLeave}
+                                    style={{ cursor: isZoomed ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in' }}
                                 >
                                     {selectedImage.images &&
                                     selectedImage.images[currentIndex] &&
                                     !imageErrors[`${selectedImage.id}-${currentIndex}`] ? (
                                         <img
+                                            ref={dragImageRef}
                                             src={selectedImage.images[currentIndex].url}
                                             alt={getAltText(selectedImage, currentIndex)}
                                             className="modal-main-image"
+                                            style={{
+                                                transform: isZoomed ? `translate(${imagePosition.x}px, ${imagePosition.y}px) scale(1.5)` : 'none',
+                                                transition: isDragging ? 'none' : 'transform 0.3s ease'
+                                            }}
                                             onError={() => handleImageError(selectedImage.id, currentIndex)}
+                                            onLoad={updateDimensions}
+                                            draggable={false}
                                         />
                                     ) : (
                                         <div className="modal-image-placeholder">
@@ -405,97 +566,101 @@ const Portfolio = () => {
                                         </div>
                                     )}
 
-                                    <button className="zoom-button">
-                                        <MdZoomIn />
-                                    </button>
-                                </div>
+                                    {!isZoomed && (
+                                        <button className="zoom-button" onClick={toggleZoom}>
+                                            <MdZoomIn />
+                                        </button>
+                                    )}
 
+                                    {isZoomed && (
+                                        <button className="zoom-button" onClick={toggleZoom}>
+                                            <MdZoomOut />
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            {!isZoomed && (
+                                <div className="modal-sidebar">
+                                    <div className="project-details">
+                                        <h4>Детали проекта</h4>
+
+                                        <div className="detail-item">
+                                            <span className="detail-label">Категория:</span>
+                                            <span className="detail-value">{selectedImage.category}</span>
+                                        </div>
+
+                                        <div className="detail-item">
+                                            <span className="detail-label">Площадь:</span>
+                                            <span className="detail-value">{selectedImage.area}</span>
+                                        </div>
+
+                                        <div className="detail-item">
+                                            <span className="detail-label">Срок выполнения:</span>
+                                            <span className="detail-value">{selectedImage.duration}</span>
+                                        </div>
+
+                                        <div className="detail-item">
+                                            <span className="detail-label">Дата выполнения:</span>
+                                            <span className="detail-value">{selectedImage.date}</span>
+                                        </div>
+                                    </div>
+
+                                    <div className="project-features">
+                                        <h4>Выполненные работы</h4>
+                                        <ul className="features-list">
+                                            {selectedImage.features?.map((feature, index) => (
+                                                <li key={index} className="feature-item">
+                                                    <span className="feature-check">✓</span>
+                                                    {feature}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                    </div>
+
+                                    <div className="image-thumbnails">
+                                        <h4>Все фото проекта</h4>
+                                        <div className="thumbnails-grid">
+                                            {selectedImage.images?.map((img, index) => (
+                                                <button
+                                                    key={index}
+                                                    className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
+                                                    onClick={() => setCurrentIndex(index)}
+                                                >
+                                                    {img && !imageErrors[`${selectedImage.id}-${index}`] ? (
+                                                        <img
+                                                            src={img.url}
+                                                            alt={img.altText || `Фото ${index + 1}`}
+                                                            className="thumbnail-image"
+                                                            onError={() => handleImageError(selectedImage.id, index)}
+                                                        />
+                                                    ) : (
+                                                        <div className="thumbnail-number">{index + 1}</div>
+                                                    )}
+                                                </button>
+                                            ))}
+                                        </div>
+                                    </div>
+                                </div>
+                            )}
+                        </div>
+
+                        {!isZoomed && (
+                            <div className="modal-footer">
+                                <button className="modal-action-btn" onClick={closeModal}>
+                                    Закрыть
+                                </button>
                                 <button
-                                    className="nav-button next-button"
-                                    onClick={nextImage}
-                                    disabled={!selectedImage.images || currentIndex === selectedImage.images.length - 1}
+                                    className="modal-action-btn primary"
+                                    onClick={() => {
+                                        closeModal();
+                                        document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                                    }}
                                 >
-                                    <FaArrowRight />
+                                    Заказать подобный проект
                                 </button>
                             </div>
-
-                            <div className="modal-sidebar">
-                                <div className="project-details">
-                                    <h4>Детали проекта</h4>
-
-                                    <div className="detail-item">
-                                        <span className="detail-label">Категория:</span>
-                                        <span className="detail-value">{selectedImage.category}</span>
-                                    </div>
-
-                                    <div className="detail-item">
-                                        <span className="detail-label">Площадь:</span>
-                                        <span className="detail-value">{selectedImage.area}м²</span>
-                                    </div>
-
-                                    <div className="detail-item">
-                                        <span className="detail-label">Срок выполнения:</span>
-                                        <span className="detail-value">{selectedImage.duration}</span>
-                                    </div>
-
-                                    <div className="detail-item">
-                                        <span className="detail-label">Дата выполнения:</span>
-                                        <span className="detail-value">{selectedImage.date}</span>
-                                    </div>
-                                </div>
-
-                                <div className="project-features">
-                                    <h4>Выполненные работы</h4>
-                                    <ul className="features-list">
-                                        {selectedImage.features?.map((feature, index) => (
-                                            <li key={index} className="feature-item">
-                                                <span className="feature-check">✓</span>
-                                                {feature}
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-
-                                <div className="image-thumbnails">
-                                    <h4>Все фото проекта</h4>
-                                    <div className="thumbnails-grid">
-                                        {selectedImage.images?.map((img, index) => (
-                                            <button
-                                                key={index}
-                                                className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
-                                                onClick={() => setCurrentIndex(index)}
-                                            >
-                                                {img && !imageErrors[`${selectedImage.id}-${index}`] ? (
-                                                    <img
-                                                        src={img.url}
-                                                        alt={img.altText || `Фото ${index + 1}`}
-                                                        className="thumbnail-image"
-                                                        onError={() => handleImageError(selectedImage.id, index)}
-                                                    />
-                                                ) : (
-                                                    <div className="thumbnail-number">{index + 1}</div>
-                                                )}
-                                            </button>
-                                        ))}
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="modal-footer">
-                            <button className="modal-action-btn" onClick={closeModal}>
-                                Закрыть
-                            </button>
-                            <button
-                                className="modal-action-btn primary"
-                                onClick={() => {
-                                    closeModal();
-                                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                                }}
-                            >
-                                Заказать подобный проект
-                            </button>
-                        </div>
+                        )}
                     </div>
 
                     <div className="modal-overlay" onClick={closeModal} />
