@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     FaSearch,
     FaExpand,
@@ -20,6 +20,10 @@ const Portfolio = () => {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [isZoomed, setIsZoomed] = useState(false);
     const [imageErrors, setImageErrors] = useState({});
+    const [canScrollLeft, setCanScrollLeft] = useState(false);
+    const [canScrollRight, setCanScrollRight] = useState(true);
+
+    const sliderRef = useRef(null);
 
     const categories = [
         { id: 'all', label: 'Все работы', icon: <FaSearch /> },
@@ -30,7 +34,7 @@ const Portfolio = () => {
         { id: 'commercial', label: 'Коммерческие', icon: <FaStore /> },
     ];
 
-    // Примеры изображений - можно использовать локальные или URL
+    // Примеры изображений
     const portfolioItems = [
         {
             id: 1,
@@ -38,19 +42,14 @@ const Portfolio = () => {
             description: 'Замена старой алюминиевой проводки на медную, установка современного электрощита с УЗО и автоматами.',
             category: 'apartments',
             images: [
-                // Или URL из интернета
                 'https://avatars.mds.yandex.net/i?id=3a3970ebdae3a325bdae846745b94986_l-5236752-images-thumbs&ref=rim&n=13&w=732&h=429',
                 'https://decorexpro.com/images/article/orig/2018/05/otoplenie-doma-ekonomnye-sposoby-i-varianty-23.jpg',
                 'https://avatars.mds.yandex.net/i?id=ee7c85c3cae7c822c7ce7c4edd74116f_l-9211697-images-thumbs&ref=rim&n=13&w=644&h=429',
-                // Локальные изображения (относительные пути)
-                // '/images/works/apartment-1.jpg',
-
             ],
             features: ['Медная проводка', 'Электрощит Legrand', '35 розеток', 'Гарантия 5 лет'],
             date: '15.12.2023',
             area: '85 м²',
             duration: '3 дня',
-            // Добавляем альтернативный текст для доступности
             altTexts: ['Монтаж проводки в квартире', 'Установленный электрощит']
         },
         {
@@ -59,7 +58,6 @@ const Portfolio = () => {
             description: 'Монтаж проводки с нуля в новом доме, установка уличного освещения и автоматических ворот.',
             category: 'houses',
             images: [
-                // Пример URL из интернета
                 'https://avatars.mds.yandex.net/get-ydo/4421910/2a0000018d79328effbd0bf54054d36f6154/diploma',
                 'https://avatars.mds.yandex.net/i?id=30a4073eca9c7f207b7d54b12b3b62e6_l-4827941-images-thumbs&n=13',
                 'https://i.ytimg.com/vi/K9oAuS0ZSrM/maxresdefault.jpg',
@@ -78,7 +76,7 @@ const Portfolio = () => {
             category: 'offices',
             images: [
                 'https://img.freepik.com/free-photo/male-electrician-working-electrical-panel-male-electrician-overalls_169016-67274.jpg?t=st=1765813868~exp=1765817468~hmac=ca024d8f86938c3abbb4aaa2197a190ac2f3ec2bf9ed0d4be754c9c4e7faeedc&w=2000',
-                'https://img.freepik.com/free-photo/male-electrician-working-electrical-panel-male-electrician-overalls_169016-67433.jpg?t=st=1765813920~exp=1765817520~hmac=bd0c0026454fb0fc98cba1113468fe5a7abec82449c92af4312757f7cdd0a709&w=1480' // Пример смешанного использования
+                'https://img.freepik.com/free-photo/male-electrician-working-electrical-panel-male-electrician-overalls_169016-67433.jpg?t=st=1765813920~exp=1765817520~hmac=bd0c0026454fb0fc98cba1113468fe5a7abec82449c92af4312757f7cdd0a709&w=1480'
             ],
             features: ['Щиток ABB', 'УЗИП', 'Групповые автоматы', 'Мониторинг энергопотребления'],
             date: '22.10.2023',
@@ -106,7 +104,6 @@ const Portfolio = () => {
             description: 'Аварийный ремонт электрощита с полной заменой поврежденных автоматов и восстановлением питания.',
             category: 'houses',
             images: [
-                // Можно использовать абсолютные пути или CDN
                 'https://avatars.mds.yandex.net/i?id=7da152d96abd0a9875600e87168e0179_l-4079990-images-thumbs&n=13',
                 'https://avatars.mds.yandex.net/i?id=74a99342a7ac057dcd09b4f27ad2c271_l-10414886-images-thumbs&ref=rim&n=13&w=644&h=429'
             ],
@@ -133,7 +130,80 @@ const Portfolio = () => {
         },
     ];
 
-    // Функция для обработки ошибок загрузки изображений
+    // Получаем количество элементов в каждой категории
+    const getCategoryCount = (categoryId) => {
+        if (categoryId === 'all') return portfolioItems.length;
+        return portfolioItems.filter(item => item.category === categoryId).length;
+    };
+
+    const filteredItems = activeFilter === 'all'
+        ? portfolioItems
+        : portfolioItems.filter(item => item.category === activeFilter);
+
+    // Проверка возможности прокрутки
+    const checkScroll = () => {
+        if (sliderRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+            setCanScrollLeft(scrollLeft > 0);
+            setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // 10px допуска
+        }
+    };
+
+    useEffect(() => {
+        const slider = sliderRef.current;
+        if (slider) {
+            checkScroll();
+            slider.addEventListener('scroll', checkScroll);
+            window.addEventListener('resize', checkScroll);
+
+            return () => {
+                slider.removeEventListener('scroll', checkScroll);
+                window.removeEventListener('resize', checkScroll);
+            };
+        }
+    }, [filteredItems]);
+
+    // Сброс позиции скролла при смене фильтра
+    useEffect(() => {
+        if (sliderRef.current) {
+            sliderRef.current.scrollLeft = 0;
+        }
+    }, [activeFilter]);
+
+    const scroll = (direction) => {
+        if (sliderRef.current) {
+            const scrollAmount = 400; // Ширина карточки + отступ
+            const newScrollLeft = sliderRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+            sliderRef.current.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    // Обработка касаний для мобильных устройств
+    const touchStartX = useRef(0);
+    const touchEndX = useRef(0);
+
+    const handleTouchStart = (e) => {
+        touchStartX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchMove = (e) => {
+        touchEndX.current = e.touches[0].clientX;
+    };
+
+    const handleTouchEnd = () => {
+        const swipeDistance = touchEndX.current - touchStartX.current;
+        if (Math.abs(swipeDistance) > 50) { // Минимальное расстояние для свайпа
+            if (swipeDistance > 0) {
+                scroll('left');
+            } else {
+                scroll('right');
+            }
+        }
+    };
+
     const handleImageError = (itemId, imgIndex, event) => {
         event.target.style.display = 'none';
         setImageErrors(prev => ({
@@ -142,7 +212,6 @@ const Portfolio = () => {
         }));
     };
 
-    // Функция для получения альтернативного текста
     const getAltText = (item, index) => {
         if (item.altTexts && item.altTexts[index]) {
             return item.altTexts[index];
@@ -150,12 +219,10 @@ const Portfolio = () => {
         return `${item.title} - фото ${index + 1}`;
     };
 
-    // Проверяем, есть ли ошибка для конкретного изображения
     const hasImageError = (itemId, imgIndex) => {
         return imageErrors[`${itemId}-${imgIndex}`] === true;
     };
 
-    // Компонент для отображения изображения с обработкой ошибок
     const ImageWithFallback = ({ src, alt, className, itemId, imgIndex }) => {
         const [isLoading, setIsLoading] = useState(true);
         const [hasError, setHasError] = useState(false);
@@ -201,10 +268,6 @@ const Portfolio = () => {
             />
         );
     };
-
-    const filteredItems = activeFilter === 'all'
-        ? portfolioItems
-        : portfolioItems.filter(item => item.category === activeFilter);
 
     const openModal = (item, index) => {
         setSelectedImage(item);
@@ -260,33 +323,21 @@ const Portfolio = () => {
         };
     }, [isModalOpen, currentIndex, isZoomed]);
 
-    const stats = [
-        { number: '250+', label: 'Выполненных проектов' },
-        { number: '98%', label: 'Довольных клиентов' },
-        { number: '5 лет', label: 'Максимальная гарантия' },
-        { number: '24/7', label: 'Аварийный выезд' },
-    ];
-
     return (
         <section id="portfolio" className="portfolio">
             <div className="container">
                 {/* Заголовок секции */}
-                <div className="section-header">
-                    <h2 className="section-title">Наши работы</h2>
-                    <p className="section-subtitle">
+                {/*  <div className="services-section-header">
+                    <h2 className="services-section-title">{content.sectionTitle}</h2>
+                    <p className="services-section-subtitle">{content.sectionSubtitle}</p>
+                </div>
+*/}
+                <div className="profile-section-header">
+                    <h2 className="profile-section-title">Наши работы</h2>
+                    <p className="profile-section-subtitle">
                         Посмотрите примеры наших работ. Каждый проект - это индивидуальный подход и гарантия качества.
                     </p>
                 </div>
-
-                {/*/!* Счетчики статистики *!/*/}
-                {/*<div className="portfolio-stats">*/}
-                {/*    {stats.map((stat, index) => (*/}
-                {/*        <div key={index} className="stat-card">*/}
-                {/*            <div className="stat-number">{stat.number}</div>*/}
-                {/*            <div className="stat-label">{stat.label}</div>*/}
-                {/*        </div>*/}
-                {/*    ))}*/}
-                {/*</div>*/}
 
                 {/* Фильтры */}
                 <div className="portfolio-filters">
@@ -299,245 +350,261 @@ const Portfolio = () => {
                             >
                                 <span className="filter-icon">{category.icon}</span>
                                 <span className="filter-label">{category.label}</span>
+                                <span className="filter-count">{getCategoryCount(category.id)}</span>
                             </button>
                         ))}
                     </div>
                 </div>
 
-                {/* Галерея */}
-                <div className="portfolio-grid">
-                    {filteredItems.map((item, index) => (
-                        <div
-                            key={item.id}
-                            className="portfolio-item"
-                            onClick={() => openModal(item, 0)}
+                {/* Слайдер */}
+                <div className="portfolio-slider-container">
+                    {/* Кнопки навигации для десктопа */}
+                    {canScrollLeft && (
+                        <button
+                            className="slider-nav-button prev"
+                            onClick={() => scroll('left')}
+                            aria-label="Предыдущие работы"
                         >
-                            <div className="portfolio-image-container">
-                                {/* Основное изображение проекта */}
-                                {item.images[0] && !hasImageError(item.id, 0) ? (
-                                    <div className="portfolio-image-wrapper">
-                                        <ImageWithFallback
-                                            src={item.images[0]}
-                                            alt={getAltText(item, 0)}
-                                            className="portfolio-image"
-                                            itemId={item.id}
-                                            imgIndex={0}
-                                        />
-                                    </div>
-                                ) : (
-                                    <div className="portfolio-image-placeholder">
-                                        <div className="image-number">{index + 1}</div>
-                                        <div className="image-category">{item.category}</div>
-                                    </div>
-                                )}
-                                <div className="portfolio-overlay">
-                                    <button className="view-button">
-                                        <FaExpand />
-                                        Посмотреть
-                                    </button>
-                                </div>
-                                <div className="portfolio-badge">
-                                    {item.images.length} фото
-                                </div>
-                            </div>
+                            <FaArrowLeft />
+                        </button>
+                    )}
 
-                            <div className="portfolio-content">
-                                <h3 className="portfolio-title">{item.title}</h3>
-                                <p className="portfolio-description">{item.description}</p>
+                    {canScrollRight && (
+                        <button
+                            className="slider-nav-button next"
+                            onClick={() => scroll('right')}
+                            aria-label="Следующие работы"
+                        >
+                            <FaArrowRight />
+                        </button>
+                    )}
 
-                                <div className="portfolio-features">
-                                    {item.features.slice(0, 2).map((feature, idx) => (
-                                        <span key={idx} className="feature-tag">{feature}</span>
-                                    ))}
-                                    {item.features.length > 2 && (
-                                        <span className="feature-tag more">+{item.features.length - 2} еще</span>
-                                    )}
-                                </div>
-
-                                <div className="portfolio-meta">
-                                    <div className="meta-item">
-                                        <span className="meta-label">Площадь:</span>
-                                        <span className="meta-value">{item.area}</span>
-                                    </div>
-                                    <div className="meta-item">
-                                        <span className="meta-label">Срок:</span>
-                                        <span className="meta-value">{item.duration}</span>
-                                    </div>
-                                    <div className="meta-item">
-                                        <span className="meta-label">Дата:</span>
-                                        <span className="meta-value">{item.date}</span>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Модальное окно для просмотра */}
-                {isModalOpen && selectedImage && (
-                    <div className="portfolio-modal">
-                        <div className={`modal-content ${isZoomed ? 'zoomed' : ''}`}>
-                            <button className="modal-close" onClick={closeModal}>
-                                <FaTimes />
-                            </button>
-
-                            <div className="modal-header">
-                                <h3 className="modal-title">{selectedImage.title}</h3>
-                                <p className="modal-subtitle">{selectedImage.description}</p>
-                            </div>
-
-                            <div className="modal-main">
-                                <div className="image-viewer">
-                                    <button
-                                        className="nav-button prev-button"
-                                        onClick={prevImage}
-                                        disabled={currentIndex === 0}
-                                    >
-                                        <FaArrowLeft />
-                                    </button>
-
-                                    <div
-                                        className={`modal-image-container ${isZoomed ? 'zoomed' : ''}`}
-                                        onClick={() => setIsZoomed(!isZoomed)}
-                                    >
-                                        {/* Основное изображение в модальном окне */}
-                                        {selectedImage.images[currentIndex] &&
-                                        !hasImageError(selectedImage.id, currentIndex) ? (
-                                            <img
-                                                src={selectedImage.images[currentIndex]}
-                                                alt={getAltText(selectedImage, currentIndex)}
-                                                className="modal-main-image"
-                                                onError={(e) => handleImageError(selectedImage.id, currentIndex, e)}
+                    {/* Горизонтальный скролл контейнер */}
+                    <div
+                        className="portfolio-slider"
+                        ref={sliderRef}
+                        onTouchStart={handleTouchStart}
+                        onTouchMove={handleTouchMove}
+                        onTouchEnd={handleTouchEnd}
+                    >
+                        {filteredItems.map((item, index) => (
+                            <div
+                                key={item.id}
+                                className="portfolio-item"
+                                onClick={() => openModal(item, 0)}
+                            >
+                                <div className="portfolio-image-container">
+                                    {item.images[0] && !hasImageError(item.id, 0) ? (
+                                        <div className="portfolio-image-wrapper">
+                                            <ImageWithFallback
+                                                src={item.images[0]}
+                                                alt={getAltText(item, 0)}
+                                                className="portfolio-image"
+                                                itemId={item.id}
+                                                imgIndex={0}
                                             />
-                                        ) : (
-                                            <div className="modal-image-placeholder">
-                                                <div className="placeholder-text">
-                                                    {isZoomed ? 'Изображение увеличено' : 'Нажмите для увеличения'}
-                                                </div>
-                                                <div className="image-counter">
-                                                    {currentIndex + 1} / {selectedImage.images.length}
-                                                </div>
-                                            </div>
-                                        )}
-
-                                        <button className="zoom-button">
-                                            <MdZoomIn />
+                                        </div>
+                                    ) : (
+                                        <div className="portfolio-image-placeholder">
+                                            <div className="image-number">{index + 1}</div>
+                                            <div className="image-category">{item.category}</div>
+                                        </div>
+                                    )}
+                                    <div className="portfolio-overlay">
+                                        <button className="view-button">
+                                            <FaExpand />
+                                            Посмотреть
                                         </button>
                                     </div>
+                                    <div className="portfolio-badge">
+                                        {item.images.length} фото
+                                    </div>
+                                </div>
 
-                                    <button
-                                        className="nav-button next-button"
-                                        onClick={nextImage}
-                                        disabled={currentIndex === selectedImage.images.length - 1}
-                                    >
-                                        <FaArrowRight />
+                                <div className="portfolio-content">
+                                    <h3 className="portfolio-title">{item.title}</h3>
+                                    <p className="portfolio-description">{item.description}</p>
+
+                                    <div className="portfolio-features">
+                                        {item.features.slice(0, 2).map((feature, idx) => (
+                                            <span key={idx} className="feature-tag">{feature}</span>
+                                        ))}
+                                        {item.features.length > 2 && (
+                                            <span className="feature-tag more">+{item.features.length - 2} еще</span>
+                                        )}
+                                    </div>
+
+                                    <div className="portfolio-meta">
+                                        <div className="meta-item">
+                                            <span className="meta-label">Площадь:</span>
+                                            <span className="meta-value">{item.area}</span>
+                                        </div>
+                                        <div className="meta-item">
+                                            <span className="meta-label">Срок:</span>
+                                            <span className="meta-value">{item.duration}</span>
+                                        </div>
+                                        <div className="meta-item">
+                                            <span className="meta-label">Дата:</span>
+                                            <span className="meta-value">{item.date}</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        ))}
+                    </div>
+                </div>
+
+                {/* Индикатор количества карточек */}
+                <div className="slider-info">
+                    Показано: {filteredItems.length} {filteredItems.length === 1 ? 'работа' :
+                    filteredItems.length >= 2 && filteredItems.length <= 4 ? 'работы' : 'работ'}
+                </div>
+            </div>
+
+            {/* Модальное окно для просмотра */}
+            {isModalOpen && selectedImage && (
+                <div className="portfolio-modal">
+                    <div className={`modal-content ${isZoomed ? 'zoomed' : ''}`}>
+                        <button className="modal-close" onClick={closeModal}>
+                            <FaTimes />
+                        </button>
+
+                        <div className="modal-header">
+                            <h3 className="modal-title">{selectedImage.title}</h3>
+                            <p className="modal-subtitle">{selectedImage.description}</p>
+                        </div>
+
+                        <div className="modal-main">
+                            <div className="image-viewer">
+                                <button
+                                    className="nav-button prev-button"
+                                    onClick={prevImage}
+                                    disabled={currentIndex === 0}
+                                >
+                                    <FaArrowLeft />
+                                </button>
+
+                                <div
+                                    className={`modal-image-container ${isZoomed ? 'zoomed' : ''}`}
+                                    onClick={() => setIsZoomed(!isZoomed)}
+                                >
+                                    {selectedImage.images[currentIndex] &&
+                                    !hasImageError(selectedImage.id, currentIndex) ? (
+                                        <img
+                                            src={selectedImage.images[currentIndex]}
+                                            alt={getAltText(selectedImage, currentIndex)}
+                                            className="modal-main-image"
+                                            onError={(e) => handleImageError(selectedImage.id, currentIndex, e)}
+                                        />
+                                    ) : (
+                                        <div className="modal-image-placeholder">
+                                            <div className="placeholder-text">
+                                                {isZoomed ? 'Изображение увеличено' : 'Нажмите для увеличения'}
+                                            </div>
+                                            <div className="image-counter">
+                                                {currentIndex + 1} / {selectedImage.images.length}
+                                            </div>
+                                        </div>
+                                    )}
+
+                                    <button className="zoom-button">
+                                        <MdZoomIn />
                                     </button>
                                 </div>
 
-                                <div className="modal-sidebar">
-                                    <div className="project-details">
-                                        <h4>Детали проекта</h4>
+                                <button
+                                    className="nav-button next-button"
+                                    onClick={nextImage}
+                                    disabled={currentIndex === selectedImage.images.length - 1}
+                                >
+                                    <FaArrowRight />
+                                </button>
+                            </div>
 
-                                        <div className="detail-item">
-                                            <span className="detail-label">Категория:</span>
-                                            <span className="detail-value">
-                                                {categories.find(c => c.id === selectedImage.category)?.label}
-                                            </span>
-                                        </div>
+                            <div className="modal-sidebar">
+                                <div className="project-details">
+                                    <h4>Детали проекта</h4>
 
-                                        <div className="detail-item">
-                                            <span className="detail-label">Площадь:</span>
-                                            <span className="detail-value">{selectedImage.area}</span>
-                                        </div>
-
-                                        <div className="detail-item">
-                                            <span className="detail-label">Срок выполнения:</span>
-                                            <span className="detail-value">{selectedImage.duration}</span>
-                                        </div>
-
-                                        <div className="detail-item">
-                                            <span className="detail-label">Дата выполнения:</span>
-                                            <span className="detail-value">{selectedImage.date}</span>
-                                        </div>
+                                    <div className="detail-item">
+                                        <span className="detail-label">Категория:</span>
+                                        <span className="detail-value">
+                                            {categories.find(c => c.id === selectedImage.category)?.label}
+                                        </span>
                                     </div>
 
-                                    <div className="project-features">
-                                        <h4>Выполненные работы</h4>
-                                        <ul className="features-list">
-                                            {selectedImage.features.map((feature, index) => (
-                                                <li key={index} className="feature-item">
-                                                    <span className="feature-check">✓</span>
-                                                    {feature}
-                                                </li>
-                                            ))}
-                                        </ul>
+                                    <div className="detail-item">
+                                        <span className="detail-label">Площадь:</span>
+                                        <span className="detail-value">{selectedImage.area}</span>
                                     </div>
 
-                                    <div className="image-thumbnails">
-                                        <h4>Все фото проекта</h4>
-                                        <div className="thumbnails-grid">
-                                            {selectedImage.images.map((img, index) => (
-                                                <button
-                                                    key={index}
-                                                    className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
-                                                    onClick={() => setCurrentIndex(index)}
-                                                >
-                                                    {img && !hasImageError(selectedImage.id, index) ? (
-                                                        <img
-                                                            src={img}
-                                                            alt={getAltText(selectedImage, index)}
-                                                            className="thumbnail-image"
-                                                            onError={(e) => handleImageError(selectedImage.id, index, e)}
-                                                        />
-                                                    ) : (
-                                                        <div className="thumbnail-number">{index + 1}</div>
-                                                    )}
-                                                </button>
-                                            ))}
-                                        </div>
+                                    <div className="detail-item">
+                                        <span className="detail-label">Срок выполнения:</span>
+                                        <span className="detail-value">{selectedImage.duration}</span>
+                                    </div>
+
+                                    <div className="detail-item">
+                                        <span className="detail-label">Дата выполнения:</span>
+                                        <span className="detail-value">{selectedImage.date}</span>
+                                    </div>
+                                </div>
+
+                                <div className="project-features">
+                                    <h4>Выполненные работы</h4>
+                                    <ul className="features-list">
+                                        {selectedImage.features.map((feature, index) => (
+                                            <li key={index} className="feature-item">
+                                                <span className="feature-check">✓</span>
+                                                {feature}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                </div>
+
+                                <div className="image-thumbnails">
+                                    <h4>Все фото проекта</h4>
+                                    <div className="thumbnails-grid">
+                                        {selectedImage.images.map((img, index) => (
+                                            <button
+                                                key={index}
+                                                className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
+                                                onClick={() => setCurrentIndex(index)}
+                                            >
+                                                {img && !hasImageError(selectedImage.id, index) ? (
+                                                    <img
+                                                        src={img}
+                                                        alt={getAltText(selectedImage, index)}
+                                                        className="thumbnail-image"
+                                                        onError={(e) => handleImageError(selectedImage.id, index, e)}
+                                                    />
+                                                ) : (
+                                                    <div className="thumbnail-number">{index + 1}</div>
+                                                )}
+                                            </button>
+                                        ))}
                                     </div>
                                 </div>
                             </div>
-
-                            <div className="modal-footer">
-                                <button className="modal-action-btn" onClick={closeModal}>
-                                    Закрыть
-                                </button>
-                                <button
-                                    className="modal-action-btn primary"
-                                    onClick={() => {
-                                        closeModal();
-                                        document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                                    }}
-                                >
-                                    Заказать подобный проект
-                                </button>
-                            </div>
                         </div>
 
-                        <div className="modal-overlay" onClick={closeModal} />
+                        <div className="modal-footer">
+                            <button className="modal-action-btn" onClick={closeModal}>
+                                Закрыть
+                            </button>
+                            <button
+                                className="modal-action-btn primary"
+                                onClick={() => {
+                                    closeModal();
+                                    document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
+                                }}
+                            >
+                                Заказать подобный проект
+                            </button>
+                        </div>
                     </div>
-                )}
 
-                {/*/!* Призыв к действию *!/*/}
-                {/*<div className="portfolio-cta">*/}
-                {/*    <div className="cta-content">*/}
-                {/*        <h3>Хотите такой же результат?</h3>*/}
-                {/*        <p>Оставьте заявку и получите бесплатную смету на ваш проект</p>*/}
-                {/*    </div>*/}
-                {/*    <div className="cta-buttons">*/}
-                {/*        <button*/}
-                {/*            className="cta-btn primary"*/}
-                {/*            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}*/}
-                {/*        >*/}
-                {/*            Получить смету*/}
-                {/*        </button>*/}
-                {/*        <a href="tel:+79991234567" className="cta-btn secondary">*/}
-                {/*            Обсудить по телефону*/}
-                {/*        </a>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
-            </div>
+                    <div className="modal-overlay" onClick={closeModal} />
+                </div>
+            )}
         </section>
     );
 };

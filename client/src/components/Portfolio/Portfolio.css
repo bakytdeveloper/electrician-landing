@@ -1,24 +1,28 @@
 .portfolio {
-    padding: 50px 0;
+    padding: 60px 0;
     background-color: var(--white);
     position: relative;
+    overflow: hidden;
 }
 
+
 /* Заголовок секции */
-.section-header {
+
+/* Заголовок секции */
+.profile-section-header {
     text-align: center;
     max-width: 800px;
     margin: 0 auto 60px;
 }
 
-.section-title {
+.profile-section-title {
     color: var(--secondary-color);
     margin-bottom: 20px;
     position: relative;
     display: inline-block;
 }
-/*Ж Ё Л Т Ы Й  Ф О Н*/
-.section-title::after {
+
+.profile-section-title::after {
     content: '';
     position: absolute;
     bottom: -15px;
@@ -29,41 +33,43 @@
     background-color: var(--primary-color);
 }
 
-.section-subtitle {
+.profile-section-subtitle {
     color: var(--gray-color);
     font-size: 1.1rem;
     line-height: 1.6;
     margin-top: 30px;
 }
 
+
 /* Фильтры */
 .portfolio-filters {
-    margin-bottom: 40px;
+    margin-bottom: 30px;
+    padding: 0 20px;
 }
 
 .filter-buttons {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    gap: 15px;
-    max-width: 900px;
+    gap: 12px;
+    max-width: 1000px;
     margin: 0 auto;
 }
 
 .filter-button {
-    display: flex;
+    display: inline-flex;
     align-items: center;
-    gap: 10px;
-    padding: 12px 24px;
+    gap: 8px;
+    padding: 10px 20px;
     border: 2px solid var(--light-gray);
     background: var(--white);
-    border-radius: 50px;
+    border-radius: 40px;
     font-family: 'Roboto', sans-serif;
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--secondary-color);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     white-space: nowrap;
 }
 
@@ -91,49 +97,128 @@
     font-size: 0.95rem;
 }
 
-/* Статистика */
-.portfolio-stats {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-    gap: 30px;
-    margin-bottom: 60px;
-    padding: 40px;
-    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+.filter-count {
+    background-color: rgba(0, 0, 0, 0.1);
+    padding: 2px 8px;
     border-radius: 20px;
+    font-size: 0.8rem;
+    margin-left: 5px;
+}
+
+.filter-button.active .filter-count {
+    background-color: rgba(255, 255, 255, 0.2);
     color: var(--white);
 }
 
-.stat-card {
-    text-align: center;
-    padding: 20px;
-    background: rgba(255, 255, 255, 0.1);
+/* Контейнер слайдера */
+.portfolio-slider-container {
+    position: relative;
+    margin: 30px 0 20px;
+    padding: 0 50px;
+}
+
+/* Горизонтальный скролл */
+.portfolio-slider {
+    display: flex;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    gap: 25px;
+    padding: 15px 5px 25px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--light-gray);
+    -webkit-overflow-scrolling: touch;
+}
+
+.portfolio-slider::-webkit-scrollbar {
+    height: 6px;
+}
+
+.portfolio-slider::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 10px;
+}
+
+.portfolio-slider::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+.portfolio-slider::-webkit-scrollbar-thumb:hover {
+    background: var(--primary-dark);
+}
+
+/* Карточки в слайдере */
+.portfolio-slider .portfolio-item {
+    flex: 0 0 350px;
+    min-width: 300px;
+    max-width: 350px;
+    margin: 0;
+    background: var(--white);
     border-radius: 15px;
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.2);
-    transition: var(--transition);
+    overflow: hidden;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 1px solid rgba(0, 0, 0, 0.05);
 }
 
-.stat-card:hover {
-    transform: translateY(-5px);
-    background: rgba(255, 255, 255, 0.15);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+.portfolio-slider .portfolio-item:hover {
+    transform: translateY(-8px);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
 }
 
-.stat-number {
-    font-size: 2.5rem;
-    font-weight: 700;
-    margin-bottom: 10px;
+/* Кнопки навигации */
+.slider-nav-button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--primary-color);
     color: var(--primary-color);
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    z-index: 10;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
-.stat-label {
-    font-size: 1rem;
-    opacity: 0.9;
-    line-height: 1.4;
+.slider-nav-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: translateY(-50%) scale(1.1);
 }
 
-/* Галерея */
+.slider-nav-button.prev {
+    left: 0;
+}
+
+.slider-nav-button.next {
+    right: 0;
+}
+
+.slider-nav-button:active {
+    transform: translateY(-50%) scale(0.95);
+}
+
+/* Информация о количестве */
+.slider-info {
+    text-align: center;
+    color: var(--gray-color);
+    font-size: 0.95rem;
+    margin: 25px auto 0;
+    padding: 8px 25px;
+    background: rgba(248, 183, 57, 0.1);
+    border-radius: 30px;
+    display: inline-block;
+    width: auto;
+}
+
+/* Старые стили для карточек (оставляем для совместимости) */
 .portfolio-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
@@ -159,9 +244,27 @@
 
 .portfolio-image-container {
     position: relative;
-    height: 250px;
+    height: 240px;
     overflow: hidden;
     background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+}
+
+.portfolio-image-wrapper {
+    width: 100%;
+    height: 100%;
+    position: relative;
+    overflow: hidden;
+}
+
+.portfolio-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.portfolio-item:hover .portfolio-image {
+    transform: scale(1.05);
 }
 
 .portfolio-image-placeholder {
@@ -246,11 +349,11 @@
 
 .portfolio-badge {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     background: rgba(0, 0, 0, 0.7);
     color: var(--white);
-    padding: 5px 12px;
+    padding: 4px 10px;
     border-radius: 20px;
     font-size: 0.8rem;
     backdrop-filter: blur(5px);
@@ -258,15 +361,15 @@
 }
 
 .portfolio-content {
-    padding: 25px;
+    padding: 20px;
 }
 
 .portfolio-title {
     color: var(--secondary-color);
-    margin-bottom: 15px;
-    font-size: 1.3rem;
-    line-height: 1.3;
-    height: 3.9em;
+    margin-bottom: 12px;
+    font-size: 1.2rem;
+    line-height: 1.4;
+    height: 3.4em;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 2;
@@ -275,10 +378,10 @@
 
 .portfolio-description {
     color: var(--gray-color);
-    line-height: 1.6;
-    margin-bottom: 20px;
-    font-size: 0.95rem;
-    height: 4.8em;
+    line-height: 1.5;
+    margin-bottom: 15px;
+    font-size: 0.9rem;
+    height: 4.5em;
     overflow: hidden;
     display: -webkit-box;
     -webkit-line-clamp: 3;
@@ -288,16 +391,16 @@
 .portfolio-features {
     display: flex;
     flex-wrap: wrap;
-    gap: 10px;
-    margin-bottom: 20px;
+    gap: 8px;
+    margin-bottom: 15px;
 }
 
 .feature-tag {
     background: rgba(248, 183, 57, 0.1);
     color: var(--primary-color);
-    padding: 6px 12px;
+    padding: 5px 10px;
     border-radius: 15px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 500;
 }
 
@@ -309,8 +412,8 @@
 .portfolio-meta {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
-    gap: 15px;
-    padding-top: 20px;
+    gap: 10px;
+    padding-top: 15px;
     border-top: 1px solid var(--light-gray);
 }
 
@@ -323,14 +426,98 @@
 
 .meta-label {
     color: var(--gray-color);
-    font-size: 0.8rem;
-    margin-bottom: 5px;
+    font-size: 0.75rem;
+    margin-bottom: 4px;
 }
 
 .meta-value {
     color: var(--secondary-color);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.85rem;
+}
+
+/* Статистика */
+.portfolio-stats {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 30px;
+    margin-bottom: 60px;
+    padding: 40px;
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    border-radius: 20px;
+    color: var(--white);
+}
+
+.stat-card {
+    text-align: center;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 15px;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: var(--transition);
+}
+
+.stat-card:hover {
+    transform: translateY(-5px);
+    background: rgba(255, 255, 255, 0.15);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.stat-number {
+    font-size: 2.5rem;
+    font-weight: 700;
+    margin-bottom: 10px;
+    color: var(--primary-color);
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+.stat-label {
+    font-size: 1rem;
+    opacity: 0.9;
+    line-height: 1.4;
+}
+
+/* Стили для загрузки изображений */
+.image-loading {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
+    background-size: 200% 100%;
+    animation: loading 1.5s infinite;
+}
+
+@keyframes loading {
+    0% { background-position: 200% 0; }
+    100% { background-position: -200% 0; }
+}
+
+.loading-spinner {
+    width: 30px;
+    height: 30px;
+    border: 3px solid #f3f3f3;
+    border-top: 3px solid var(--primary-color);
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.image-error {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: #f8d7da;
+    color: #721c24;
+}
+
+.error-placeholder {
+    padding: 20px;
+    text-align: center;
 }
 
 /* Модальное окно */
@@ -353,7 +540,7 @@
     left: 0;
     right: 0;
     bottom: 0;
-    background: rgba(0, 0, 0, 0.8);
+    background: rgba(0, 0, 0, 0.85);
     backdrop-filter: blur(5px);
 }
 
@@ -379,11 +566,11 @@
 
 .modal-close {
     position: absolute;
-    top: 20px;
-    right: 20px;
+    top: 15px;
+    right: 15px;
     width: 40px;
     height: 40px;
-    background: rgba(0, 0, 0, 0.5);
+    background: rgba(0, 0, 0, 0.6);
     border: none;
     border-radius: 50%;
     color: var(--white);
@@ -393,25 +580,26 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
 .modal-close:hover {
-    background: var(--accent-color);
+    background: var(--primary-color);
     transform: rotate(90deg);
 }
 
 .modal-header {
-    padding: 30px 30px 20px;
+    padding: 25px 30px 15px;
     border-bottom: 1px solid var(--light-gray);
 }
 
 .modal-title {
     color: var(--secondary-color);
-    margin-bottom: 10px;
+    margin-bottom: 8px;
     font-size: 1.8rem;
+    line-height: 1.3;
 }
 
 .modal-subtitle {
@@ -435,14 +623,15 @@
     position: relative;
     display: flex;
     align-items: center;
-    padding: 30px;
+    padding: 25px;
     background: var(--light-color);
+    min-height: 400px;
 }
 
 .nav-button {
-    width: 50px;
-    height: 50px;
-    background: rgba(0, 0, 0, 0.5);
+    width: 44px;
+    height: 44px;
+    background: rgba(0, 0, 0, 0.6);
     border: none;
     border-radius: 50%;
     color: var(--white);
@@ -451,7 +640,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
     z-index: 10;
@@ -470,19 +659,32 @@
 
 .modal-image-container {
     flex: 1;
-    height: 400px;
-    margin: 0 20px;
-    border-radius: 10px;
+    height: 450px;
+    margin: 0 15px;
+    border-radius: 12px;
     overflow: hidden;
     position: relative;
     cursor: zoom-in;
     background: linear-gradient(45deg, var(--secondary-color), var(--secondary-light));
-    transition: var(--transition);
+    transition: all 0.3s ease;
 }
 
 .modal-image-container.zoomed {
     cursor: zoom-out;
-    height: 70vh;
+    height: 65vh;
+}
+
+.modal-main-image {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    cursor: zoom-in;
+    transition: transform 0.3s ease;
+}
+
+.modal-image-container.zoomed .modal-main-image {
+    cursor: zoom-out;
+    transform: scale(1.5);
 }
 
 .modal-image-placeholder {
@@ -501,15 +703,16 @@
     margin-bottom: 20px;
     opacity: 0.8;
     text-align: center;
+    padding: 0 20px;
 }
 
 .image-counter {
     position: absolute;
-    bottom: 20px;
-    right: 20px;
+    bottom: 15px;
+    right: 15px;
     background: rgba(0, 0, 0, 0.7);
     color: var(--white);
-    padding: 5px 15px;
+    padding: 4px 12px;
     border-radius: 20px;
     font-size: 0.9rem;
     backdrop-filter: blur(5px);
@@ -518,8 +721,8 @@
 
 .zoom-button {
     position: absolute;
-    bottom: 20px;
-    left: 20px;
+    bottom: 15px;
+    left: 15px;
     width: 40px;
     height: 40px;
     background: rgba(0, 0, 0, 0.7);
@@ -531,7 +734,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     backdrop-filter: blur(5px);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
@@ -542,7 +745,7 @@
 }
 
 .modal-sidebar {
-    padding: 30px;
+    padding: 25px;
     overflow-y: auto;
     border-left: 1px solid var(--light-gray);
     background: #f8f9fa;
@@ -555,35 +758,37 @@
 .project-details,
 .project-features,
 .image-thumbnails {
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .project-details h4,
 .project-features h4,
 .image-thumbnails h4 {
     color: var(--secondary-color);
-    margin-bottom: 20px;
-    font-size: 1.2rem;
-    padding-bottom: 10px;
+    margin-bottom: 15px;
+    font-size: 1.1rem;
+    padding-bottom: 8px;
     border-bottom: 2px solid var(--primary-color);
 }
 
 .detail-item {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 15px;
-    padding-bottom: 15px;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
     border-bottom: 1px solid var(--light-gray);
 }
 
 .detail-label {
     color: var(--gray-color);
     font-weight: 500;
+    font-size: 0.9rem;
 }
 
 .detail-value {
     color: var(--secondary-color);
     font-weight: 600;
+    font-size: 0.9rem;
 }
 
 .features-list {
@@ -593,22 +798,22 @@
 .feature-item {
     display: flex;
     align-items: center;
-    gap: 10px;
-    margin-bottom: 12px;
+    gap: 8px;
+    margin-bottom: 10px;
     color: var(--secondary-color);
-    font-size: 0.95rem;
+    font-size: 0.9rem;
 }
 
 .feature-check {
     color: var(--primary-color);
     font-weight: 700;
-    font-size: 1.1rem;
+    font-size: 1rem;
 }
 
 .thumbnails-grid {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 10px;
+    gap: 8px;
 }
 
 .thumbnail {
@@ -618,7 +823,7 @@
     background: linear-gradient(45deg, #667eea, #764ba2);
     cursor: pointer;
     position: relative;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     overflow: hidden;
 }
 
@@ -630,6 +835,18 @@
 .thumbnail.active {
     border: 3px solid var(--primary-color);
     box-shadow: 0 0 0 3px rgba(248, 183, 57, 0.3);
+}
+
+.thumbnail-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.thumbnail:hover .thumbnail-image {
+    transform: scale(1.1);
 }
 
 .thumbnail-number {
@@ -644,24 +861,25 @@
 }
 
 .modal-footer {
-    padding: 20px 30px;
+    padding: 15px 25px;
     border-top: 1px solid var(--light-gray);
     display: flex;
-    gap: 15px;
+    gap: 12px;
     justify-content: flex-end;
     background: var(--white);
 }
 
 .modal-action-btn {
-    padding: 12px 24px;
+    padding: 10px 22px;
     border: 2px solid var(--light-gray);
     background: none;
     border-radius: 8px;
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
+    font-size: 0.9rem;
     color: var(--secondary-color);
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s ease;
 }
 
 .modal-action-btn:hover {
@@ -689,6 +907,7 @@
     color: var(--white);
     position: relative;
     overflow: hidden;
+    margin-top: 40px;
 }
 
 .portfolio-cta::before {
@@ -704,13 +923,14 @@
 .cta-content {
     position: relative;
     z-index: 1;
-    margin-bottom: 30px;
+    margin-bottom: 25px;
 }
 
 .cta-content h3 {
-    font-size: 2.2rem;
-    margin-bottom: 20px;
+    font-size: 2rem;
+    margin-bottom: 15px;
     color: var(--white);
+    line-height: 1.3;
 }
 
 .cta-content p {
@@ -730,15 +950,16 @@
 }
 
 .cta-btn {
-    padding: 15px 30px;
+    padding: 14px 28px;
     border: none;
     border-radius: 50px;
     font-family: 'Roboto', sans-serif;
     font-weight: 600;
     font-size: 1rem;
     cursor: pointer;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     text-decoration: none;
+    display: inline-block;
 }
 
 .cta-btn.primary {
@@ -788,32 +1009,60 @@
     }
 }
 
-.portfolio-grid > * {
-    animation: fadeIn 0.6s ease-out forwards;
+/* Адаптивность */
+@media (max-width: 1400px) {
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 330px;
+    }
 }
 
-/* Адаптивность */
 @media (max-width: 1200px) {
-    .portfolio-grid {
-        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 310px;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 45px;
     }
 
     .modal-main {
-        grid-template-columns: 1fr;
-        max-height: none;
-    }
-
-    .modal-sidebar {
-        border-left: none;
-        border-top: 1px solid var(--light-gray);
-        max-height: 400px;
-        overflow-y: auto;
+        grid-template-columns: 1fr 300px;
     }
 }
 
 @media (max-width: 992px) {
     .portfolio {
-        padding: 80px 0;
+        padding: 50px 0;
+    }
+
+    .section-title {
+        font-size: 2.2rem;
+    }
+
+    .section-subtitle {
+        font-size: 1rem;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 40px;
+    }
+
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 300px;
+    }
+
+    .slider-nav-button {
+        width: 42px;
+        height: 42px;
+    }
+
+    .filter-buttons {
+        gap: 10px;
+    }
+
+    .filter-button {
+        padding: 9px 18px;
+        font-size: 0.9rem;
     }
 
     .portfolio-stats {
@@ -830,28 +1079,154 @@
         font-size: 1.8rem;
     }
 
-    .filter-buttons {
-        gap: 10px;
+    .modal-main {
+        grid-template-columns: 1fr;
+        max-height: none;
+        overflow-y: auto;
     }
 
-    .filter-button {
-        padding: 10px 20px;
-        font-size: 0.9rem;
+    .modal-sidebar {
+        border-left: none;
+        border-top: 1px solid var(--light-gray);
+        max-height: 350px;
+    }
+
+    .image-viewer {
+        min-height: 350px;
+    }
+
+    .modal-image-container {
+        height: 350px;
     }
 }
 
 @media (max-width: 768px) {
     .portfolio {
-        padding: 10px 0;
+        padding: 40px 0;
     }
 
-    .portfolio-grid {
-        grid-template-columns: 1fr;
-        gap: 20px;
+    .section-header {
+        margin-bottom: 30px;
+    }
+
+    .section-title {
+        font-size: 2rem;
+        margin-bottom: 15px;
     }
 
     .section-subtitle {
-        font-size: 1rem;
+        font-size: 0.95rem;
+        margin-top: 20px;
+        padding: 0 10px;
+    }
+
+    .portfolio-filters {
+        margin-bottom: 25px;
+        padding: 0 15px;
+    }
+
+    .filter-buttons {
+        gap: 8px;
+    }
+
+    .filter-button {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    .filter-icon {
+        font-size: 0.9rem;
+    }
+
+    .filter-label {
+        font-size: 0.85rem;
+    }
+
+    .filter-count {
+        padding: 2px 6px;
+        font-size: 0.7rem;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 35px;
+        margin: 20px 0 15px;
+    }
+
+    .portfolio-slider {
+        gap: 15px;
+        padding: 10px 5px 20px;
+    }
+
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 270px;
+        min-width: 250px;
+    }
+
+    .portfolio-image-container {
+        height: 200px;
+    }
+
+    .portfolio-content {
+        padding: 15px;
+    }
+
+    .portfolio-title {
+        font-size: 1.1rem;
+        margin-bottom: 8px;
+        height: 3.2em;
+    }
+
+    .portfolio-description {
+        font-size: 0.85rem;
+        margin-bottom: 12px;
+        height: 4.2em;
+    }
+
+    .portfolio-features {
+        gap: 6px;
+        margin-bottom: 12px;
+    }
+
+    .feature-tag {
+        padding: 4px 8px;
+        font-size: 0.75rem;
+    }
+
+    .portfolio-meta {
+        padding-top: 12px;
+        gap: 5px;
+    }
+
+    .meta-label {
+        font-size: 0.7rem;
+    }
+
+    .meta-value {
+        font-size: 0.8rem;
+    }
+
+    .portfolio-badge {
+        top: 10px;
+        right: 10px;
+        padding: 3px 8px;
+        font-size: 0.7rem;
+    }
+
+    .slider-nav-button {
+        display: none; /* Скрываем кнопки на планшетах и мобильных */
+    }
+
+    .slider-info {
+        font-size: 0.9rem;
+        padding: 6px 20px;
+        margin-top: 15px;
+    }
+
+    .portfolio-stats {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 15px;
+        padding: 25px 15px;
     }
 
     .stat-number {
@@ -862,60 +1237,9 @@
         font-size: 0.9rem;
     }
 
-    .image-viewer {
-        padding: 20px;
-        flex-direction: column;
-    }
-
-    .nav-button {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-    }
-
-    .prev-button {
-        left: 20px;
-    }
-
-    .next-button {
-        right: 20px;
-    }
-
-    .modal-image-container {
-        margin: 20px 0;
-        height: 300px;
-    }
-
-    .modal-header {
-        padding: 20px;
-    }
-
-    .modal-title {
-        font-size: 1.5rem;
-    }
-
-    .cta-buttons {
-        flex-direction: column;
-        align-items: center;
-    }
-
-    .cta-btn {
-        width: 100%;
-        max-width: 300px;
-    }
-
-    .portfolio-meta {
-        display: none;
-    }
-}
-
-@media (max-width: 576px) {
-    .portfolio-stats {
-        grid-template-columns: 1fr;
-    }
-
     .portfolio-cta {
-        padding: 30px 20px;
+        padding: 35px 20px;
+        margin-top: 30px;
     }
 
     .cta-content h3 {
@@ -926,8 +1250,246 @@
         font-size: 1rem;
     }
 
-    .modal-content {
-        margin: 10px;
+    .cta-btn {
+        padding: 12px 24px;
+        font-size: 0.95rem;
+    }
+
+    .modal-header {
+        padding: 20px 20px 12px;
+    }
+
+    .modal-title {
+        font-size: 1.5rem;
+    }
+
+    .modal-subtitle {
+        font-size: 0.9rem;
+    }
+
+    .image-viewer {
+        padding: 15px;
+        min-height: 300px;
+        flex-direction: column;
+    }
+
+    .nav-button {
+        position: absolute;
+        top: 50%;
+        transform: translateY(-50%);
+        width: 40px;
+        height: 40px;
+    }
+
+    .prev-button {
+        left: 10px;
+    }
+
+    .next-button {
+        right: 10px;
+    }
+
+    .modal-image-container {
+        margin: 10px 0;
+        height: 280px;
+        width: 100%;
+    }
+
+    .modal-sidebar {
+        padding: 20px;
+        max-height: 300px;
+    }
+
+    .modal-footer {
+        padding: 12px 20px;
+    }
+
+    .modal-action-btn {
+        padding: 8px 18px;
+        font-size: 0.85rem;
+    }
+
+    .thumbnails-grid {
+        grid-template-columns: repeat(3, 1fr);
+    }
+}
+
+@media (max-width: 576px) {
+    .portfolio {
+        padding: 30px 0;
+    }
+
+    .section-header {
+        margin-bottom: 25px;
+    }
+
+    .section-title {
+        font-size: 1.8rem;
+        margin-bottom: 12px;
+    }
+
+    .section-title::after {
+        width: 60px;
+        height: 2px;
+        bottom: -8px;
+    }
+
+    .section-subtitle {
+        font-size: 0.9rem;
+        margin-top: 18px;
+        line-height: 1.5;
+    }
+
+    .portfolio-filters {
+        margin-bottom: 20px;
+        padding: 0 10px;
+    }
+
+    .filter-buttons {
+        gap: 6px;
+    }
+
+    .filter-button {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        gap: 4px;
+        border-width: 1.5px;
+    }
+
+    .filter-icon {
+        font-size: 0.8rem;
+    }
+
+    .filter-label {
+        font-size: 0.75rem;
+    }
+
+    .filter-count {
+        padding: 2px 5px;
+        font-size: 0.65rem;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 30px;
+        margin: 15px 0 10px;
+    }
+
+    .portfolio-slider {
+        gap: 12px;
+        padding: 8px 3px 15px;
+    }
+
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 240px;
+        min-width: 220px;
+    }
+
+    .portfolio-image-container {
+        height: 180px;
+    }
+
+    .portfolio-content {
+        padding: 12px;
+    }
+
+    .portfolio-title {
+        font-size: 1rem;
+        margin-bottom: 6px;
+        height: 3em;
+        -webkit-line-clamp: 2;
+    }
+
+    .portfolio-description {
+        font-size: 0.8rem;
+        margin-bottom: 10px;
+        height: 4em;
+        -webkit-line-clamp: 2;
+    }
+
+    .portfolio-features {
+        margin-bottom: 10px;
+    }
+
+    .feature-tag {
+        padding: 3px 7px;
+        font-size: 0.7rem;
+    }
+
+    .portfolio-meta {
+        padding-top: 10px;
+    }
+
+    .meta-label {
+        font-size: 0.65rem;
+    }
+
+    .meta-value {
+        font-size: 0.75rem;
+    }
+
+    .portfolio-badge {
+        top: 8px;
+        right: 8px;
+        padding: 2px 7px;
+        font-size: 0.65rem;
+    }
+
+    .slider-info {
+        font-size: 0.85rem;
+        padding: 5px 15px;
+        margin-top: 10px;
+    }
+
+    .portfolio-stats {
+        grid-template-columns: 1fr;
+        gap: 12px;
+        padding: 20px 15px;
+        margin-bottom: 30px;
+    }
+
+    .stat-card {
+        padding: 15px;
+    }
+
+    .stat-number {
+        font-size: 1.8rem;
+        margin-bottom: 5px;
+    }
+
+    .stat-label {
+        font-size: 0.85rem;
+    }
+
+    .portfolio-cta {
+        padding: 25px 15px;
+        margin-top: 25px;
+    }
+
+    .cta-content h3 {
+        font-size: 1.4rem;
+        margin-bottom: 10px;
+    }
+
+    .cta-content p {
+        font-size: 0.9rem;
+    }
+
+    .cta-buttons {
+        gap: 10px;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .cta-btn {
+        width: 100%;
+        max-width: 280px;
+        padding: 10px 20px;
+        font-size: 0.9rem;
+        text-align: center;
+    }
+
+    .portfolio-modal {
+        padding: 10px;
     }
 
     .modal-header,
@@ -936,114 +1498,199 @@
         padding: 15px;
     }
 
+    .modal-title {
+        font-size: 1.3rem;
+    }
+
+    .modal-subtitle {
+        font-size: 0.85rem;
+    }
+
+    .image-viewer {
+        padding: 10px;
+        min-height: 250px;
+    }
+
+    .nav-button {
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .prev-button {
+        left: 5px;
+    }
+
+    .next-button {
+        right: 5px;
+    }
+
+    .modal-image-container {
+        height: 220px;
+        margin: 5px 0;
+    }
+
+    .placeholder-text {
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+
+    .image-counter {
+        bottom: 10px;
+        right: 10px;
+        padding: 3px 10px;
+        font-size: 0.8rem;
+    }
+
+    .zoom-button {
+        bottom: 10px;
+        left: 10px;
+        width: 35px;
+        height: 35px;
+        font-size: 1rem;
+    }
+
+    .modal-sidebar {
+        max-height: 250px;
+    }
+
+    .project-details h4,
+    .project-features h4,
+    .image-thumbnails h4 {
+        font-size: 1rem;
+        margin-bottom: 12px;
+    }
+
+    .detail-item {
+        margin-bottom: 8px;
+        padding-bottom: 8px;
+    }
+
+    .detail-label,
+    .detail-value {
+        font-size: 0.85rem;
+    }
+
+    .feature-item {
+        font-size: 0.85rem;
+        margin-bottom: 6px;
+    }
+
     .thumbnails-grid {
         grid-template-columns: repeat(3, 1fr);
+        gap: 6px;
     }
 
-    /*.portfolio-meta {*/
-    /*    grid-template-columns: repeat(2, 1fr);*/
-    /*}*/
-}
+    .modal-footer {
+        flex-direction: column;
+        gap: 8px;
+    }
 
-/* Добавьте эти стили в Portfolio.css */
-
-.portfolio-image-wrapper {
-    width: 100%;
-    height: 100%;
-    position: relative;
-    overflow: hidden;
-    border-radius: 8px 8px 0 0;
-}
-
-.portfolio-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 0.3s ease;
-}
-
-.portfolio-item:hover .portfolio-image {
-    transform: scale(1.05);
-}
-
-/* Стили для загрузки изображений */
-.image-loading {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: linear-gradient(90deg, #f0f0f0 25%, #e0e0e0 50%, #f0f0f0 75%);
-    background-size: 200% 100%;
-    animation: loading 1.5s infinite;
-}
-
-@keyframes loading {
-    0% { background-position: 200% 0; }
-    100% { background-position: -200% 0; }
-}
-
-.loading-spinner {
-    width: 30px;
-    height: 30px;
-    border: 3px solid #f3f3f3;
-    border-top: 3px solid var(--primary-color);
-    border-radius: 50%;
-    animation: spin 1s linear infinite;
-}
-
-@keyframes spin {
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-.image-error {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    background: #f8d7da;
-    color: #721c24;
-}
-
-.error-placeholder {
-    padding: 20px;
-    text-align: center;
-}
-
-/* Модальное окно - изображение */
-.modal-main-image {
-    width: 100%;
-    height: 100%;
-    object-fit: contain;
-    cursor: zoom-in;
-    transition: transform 0.3s ease;
-}
-
-.modal-image-container.zoomed .modal-main-image {
-    cursor: zoom-out;
-    transform: scale(1.5);
-}
-
-/* Миниатюры */
-.thumbnail-image {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: 4px;
-    transition: all 0.3s ease;
-}
-
-.thumbnail:hover .thumbnail-image {
-    transform: scale(1.1);
-}
-
-.thumbnail.active .thumbnail-image {
-    border: 2px solid var(--primary-color);
-    box-shadow: 0 0 10px rgba(var(--secondary-light), 0.5);
-}
-
-/* Адаптивные изображения */
-@media (max-width: 768px) {
-
-    .modal-main-image {
-        object-fit: contain;
+    .modal-action-btn {
+        width: 100%;
+        padding: 10px;
+        text-align: center;
     }
 }
+
+@media (max-width: 400px) {
+    .filter-button {
+        padding: 5px 10px;
+    }
+
+    .filter-label {
+        font-size: 0.7rem;
+    }
+
+    .filter-count {
+        padding: 1px 4px;
+        font-size: 0.6rem;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 20px;
+    }
+
+    .portfolio-slider .portfolio-item {
+        flex: 0 0 210px;
+        min-width: 200px;
+    }
+
+    .portfolio-image-container {
+        height: 160px;
+    }
+
+    .portfolio-content {
+        padding: 10px;
+    }
+
+    .portfolio-title {
+        font-size: 0.95rem;
+    }
+
+    .portfolio-description {
+        font-size: 0.75rem;
+    }
+
+    .feature-tag {
+        font-size: 0.65rem;
+        padding: 2px 6px;
+    }
+
+    .meta-label {
+        font-size: 0.6rem;
+    }
+
+    .meta-value {
+        font-size: 0.7rem;
+    }
+
+    .section-title {
+        font-size: 1.6rem;
+    }
+
+    .modal-image-container {
+        height: 180px;
+    }
+}
+
+/* Для устройств с поддержкой hover */
+@media (hover: hover) {
+    .slider-nav-button:hover {
+        transform: translateY(-50%) scale(1.1);
+    }
+
+    .portfolio-slider .portfolio-item:hover {
+        transform: translateY(-8px);
+    }
+}
+
+/*!* Для темной темы *!*/
+/*@media (prefers-color-scheme: dark) {*/
+/*    .portfolio {*/
+/*        background-color: var(--dark-bg);*/
+/*    }*/
+
+/*    .section-title {*/
+/*        color: var(--dark-text);*/
+/*    }*/
+
+/*    .filter-button {*/
+/*        background: var(--dark-surface);*/
+/*        border-color: var(--dark-border);*/
+/*        color: var(--dark-text);*/
+/*    }*/
+
+/*    .portfolio-slider .portfolio-item {*/
+/*        background: var(--dark-surface);*/
+/*        border-color: var(--dark-border);*/
+/*    }*/
+
+/*    .modal-content {*/
+/*        background: var(--dark-surface);*/
+/*    }*/
+
+/*    .modal-sidebar {*/
+/*        background: var(--dark-bg);*/
+/*    }*/
+/*}*/
