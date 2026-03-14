@@ -3,34 +3,32 @@ const fs = require('fs').promises;
 const path = require('path');
 
 // Создание необходимых директорий
+// Создание необходимых директорий
 const ensureUploadDirectories = async () => {
     const serverDir = path.join(__dirname, '..');
     const uploadsDir = path.join(serverDir, 'uploads');
     const portfolioDir = path.join(uploadsDir, 'portfolio');
+    const tempDir = path.join(uploadsDir, 'temp');
 
     try {
-        // Проверяем и создаем основную папку uploads
-        try {
-            await fs.access(uploadsDir);
-        } catch {
-            await fs.mkdir(uploadsDir, { recursive: true });
-            console.log('Created uploads directory:', uploadsDir);
+        // Проверяем и создаем основные папки
+        for (const dir of [uploadsDir, portfolioDir, tempDir]) {
+            try {
+                await fs.access(dir);
+            } catch {
+                await fs.mkdir(dir, { recursive: true });
+                console.log('Created directory:', dir);
+            }
         }
 
-        // Проверяем и создаем папку portfolio
-        try {
-            await fs.access(portfolioDir);
-        } catch {
-            await fs.mkdir(portfolioDir, { recursive: true });
-            console.log('Created portfolio directory:', portfolioDir);
-        }
-
-        return { uploadsDir, portfolioDir };
+        return { uploadsDir, portfolioDir, tempDir };
     } catch (error) {
         console.error('Error creating directories:', error);
         throw error;
     }
 };
+
+
 
 // Получение текущего контента
 const getPortfolioContent = async (req, res) => {
@@ -199,6 +197,31 @@ const updatePortfolioContent = async (req, res) => {
 };
 
 // Создание нового элемента портфолио
+// Новый контроллер для временной загрузки изображений
+const uploadTempImage = async (req, res) => {
+    try {
+        if (!req.file) {
+            return res.status(400).json({ message: 'Файл не загружен' });
+        }
+
+        console.log('Temp file uploaded:', req.file);
+
+        // Формируем URL для временного файла
+        const imageUrl = `/uploads/temp/${req.file.filename}`;
+
+        res.json({
+            message: 'Временное изображение загружено',
+            imageUrl,
+            filename: req.file.filename,
+            temp: true
+        });
+    } catch (error) {
+        console.error('Error in uploadTempImage:', error);
+        res.status(500).json({ message: 'Ошибка при загрузке временного изображения: ' + error.message });
+    }
+};
+
+// Обновим функцию создания элемента портфолио
 const createPortfolioItem = async (req, res) => {
     try {
         const content = await PortfolioContent.findOne();
@@ -209,12 +232,45 @@ const createPortfolioItem = async (req, res) => {
 
         // Генерируем новый ID
         const maxId = Math.max(...content.items.map(s => s.id), 0);
+        const newId = maxId + 1;
+
+        // Обрабатываем изображения - перемещаем из временной папки в portfolio
+        const images = [];
+        if (req.body.images && Array.isArray(req.body.images)) {
+            for (const img of req.body.images) {
+                if (img.type === 'file' && img.url && img.url.includes('/temp/')) {
+                    // Перемещаем файл из временной папки в portfolio
+                    const fileName = path.basename(img.url);
+                    const tempPath = path.join(__dirname, '../uploads/temp', fileName);
+                    const newPath = path.join(__dirname, '../uploads/portfolio', fileName);
+
+                    try {
+                        await fs.access(tempPath);
+                        await fs.rename(tempPath, newPath);
+                        console.log('Moved temp file to portfolio:', newPath);
+
+                        images.push({
+                            ...img,
+                            url: `/uploads/portfolio/${fileName}`,
+                            type: 'file'
+                        });
+                    } catch (err) {
+                        console.error('Error moving temp file:', err);
+                        // Если файл не найден, добавляем как есть
+                        images.push(img);
+                    }
+                } else {
+                    images.push(img);
+                }
+            }
+        }
+
         const newItem = {
-            id: maxId + 1,
+            id: newId,
             title: req.body.title,
             description: req.body.description || '',
             category: req.body.category,
-            images: req.body.images || [],
+            images: images,
             features: Array.isArray(req.body.features) ? req.body.features : [],
             date: req.body.date,
             area: req.body.area,
@@ -232,6 +288,7 @@ const createPortfolioItem = async (req, res) => {
         res.status(500).json({ message: 'Ошибка при создании элемента портфолио: ' + error.message });
     }
 };
+
 
 // Удаление элемента портфолио
 const deletePortfolioItem = async (req, res) => {
@@ -322,6 +379,16 @@ const uploadPortfolioImage = async (req, res) => {
         // Формируем относительный путь
         const imageUrl = `/uploads/portfolio/${req.file.filename}`;
 
+        // Обновляем изображение в массиве
+        if (item.images && item.images[imageIndex]) {
+            item.images[imageIndex] = {
+                ...item.images[imageIndex],
+                url: imageUrl,
+                type: 'file'
+            };
+            await content.save({ versionKey: false });
+        }
+
         res.json({
             message: 'Изображение загружено',
             imageUrl,
@@ -339,6 +406,19 @@ const uploadPortfolioImage = async (req, res) => {
         res.status(500).json({ message: 'Ошибка при загрузке изображения: ' + error.message });
     }
 };
+
+// Обновим функцию удаления для очистки временных файлов
+const deleteTempImage = async (filename) => {
+    try {
+        const tempPath = path.join(__dirname, '../uploads/temp', filename);
+        await fs.access(tempPath);
+        await fs.unlink(tempPath);
+        console.log('Deleted temp file:', tempPath);
+    } catch (err) {
+        console.log('Temp file not found or error deleting:', err);
+    }
+};
+
 
 // Удаление изображения из портфолио
 const deletePortfolioImage = async (req, res) => {
@@ -381,11 +461,38 @@ const deletePortfolioImage = async (req, res) => {
     }
 };
 
+// Очистка временных файлов (можно вызывать при отмене)
+const cleanupTempFiles = async (req, res) => {
+    try {
+        const { filenames } = req.body;
+        const { tempDir } = await ensureUploadDirectories();
+
+        for (const filename of filenames) {
+            try {
+                const filePath = path.join(tempDir, filename);
+                await fs.access(filePath);
+                await fs.unlink(filePath);
+                console.log('Deleted temp file:', filePath);
+            } catch (err) {
+                console.log('Error deleting temp file:', err);
+            }
+        }
+
+        res.json({ message: 'Временные файлы очищены' });
+    } catch (error) {
+        console.error('Error in cleanupTempFiles:', error);
+        res.status(500).json({ message: 'Ошибка при очистке временных файлов' });
+    }
+};
+
+
 module.exports = {
     getPortfolioContent,
     updatePortfolioContent,
     createPortfolioItem,
     deletePortfolioItem,
     uploadPortfolioImage,
-    deletePortfolioImage
+    deletePortfolioImage,
+    uploadTempImage,
+    cleanupTempFiles
 };

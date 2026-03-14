@@ -3,7 +3,7 @@ import './PortfolioEditor.css';
 import {
     FaPlus, FaTrash, FaEdit, FaTimes, FaImage, FaLink,
     FaSearch, FaHome, FaBuilding,
-    FaIndustry, FaStore
+    FaIndustry, FaStore, FaEye
 } from 'react-icons/fa';
 import {
     MdApartment
@@ -19,6 +19,8 @@ const PortfolioEditor = () => {
     const [activeCategory, setActiveCategory] = useState('all');
     const [editingItem, setEditingItem] = useState(null);
     const [showItemModal, setShowItemModal] = useState(false);
+    const [showPreviewModal, setShowPreviewModal] = useState(false);
+    const [previewItem, setPreviewItem] = useState(null);
     const [pendingUploads, setPendingUploads] = useState([]);
 
     // Маппинг иконок для категорий (только для отображения в фильтрах)
@@ -30,17 +32,59 @@ const PortfolioEditor = () => {
         'Коммерческие': FaStore
     };
 
+    // Функция для создания изображения-заглушки при ошибке
+    const getFallbackImage = (width = 100, height = 80, text = 'Нет фото') => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d');
+
+        // Заливка фона
+        ctx.fillStyle = '#f0f0f0';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+        // Рамка
+        ctx.strokeStyle = '#d0d0d0';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(0, 0, canvas.width, canvas.height);
+
+        // Иконка (простая камера)
+        ctx.fillStyle = '#999';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2 - 10, 15, 0, Math.PI * 2);
+        ctx.fill();
+
+        ctx.fillStyle = '#666';
+        ctx.beginPath();
+        ctx.arc(canvas.width / 2, canvas.height / 2 - 10, 8, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Текст
+        ctx.fillStyle = '#666';
+        ctx.font = 'bold 10px Arial';
+        ctx.textAlign = 'center';
+        ctx.fillText(text, canvas.width / 2, canvas.height - 15);
+
+        return canvas.toDataURL();
+    };
+
     // Очистка временных загрузок
     const cleanupPendingUploads = useCallback(async () => {
         for (const upload of pendingUploads) {
             try {
-                console.log('Would delete temp file:', upload);
+                // Если это временная загрузка и элемент не был сохранен, удаляем файл
+                if (upload.temp) {
+                    // Здесь можно добавить запрос на сервер для удаления временного файла
+                    // Но пока просто логируем
+                    console.log('Would delete temp file:', upload.filename);
+                }
             } catch (err) {
                 console.error('Error cleaning up pending upload:', err);
             }
         }
         setPendingUploads([]);
     }, [pendingUploads]);
+
 
     useEffect(() => {
         fetchContent();
@@ -92,18 +136,21 @@ const PortfolioEditor = () => {
                 items: content.items.map(item => {
                     const { _id, ...itemData } = item;
 
-                    // Фильтруем изображения - оставляем только те, у которых есть URL
+                    // Обрабатываем изображения
                     if (itemData.images) {
                         itemData.images = itemData.images
                             .map(img => {
                                 const { _id, ...imgData } = img;
-                                // Извлекаем относительный путь из полного URL
-                                if (imgData.url && imgData.url.includes('/uploads')) {
+                                // Для файлов оставляем как есть (относительный путь)
+                                // Для URL оставляем полный URL
+                                if (imgData.type === 'file' && imgData.url && imgData.url.includes('/uploads')) {
+                                    // Убеждаемся, что путь относительный
                                     const urlParts = imgData.url.split('/uploads');
                                     if (urlParts.length > 1) {
                                         imgData.url = `/uploads${urlParts[1]}`;
                                     }
                                 }
+                                // Для URL типа оставляем URL как есть (он может быть внешним)
                                 return imgData;
                             })
                             .filter(img => img.url && img.url.trim() !== ''); // Оставляем только с непустым URL
@@ -154,6 +201,12 @@ const PortfolioEditor = () => {
             setSuccess('Изменения отменены');
             setTimeout(() => setSuccess(''), 3000);
         }
+    };
+
+    // Предпросмотр элемента
+    const handlePreview = (item) => {
+        setPreviewItem(item);
+        setShowPreviewModal(true);
     };
 
     // Управление элементами портфолио
@@ -235,7 +288,21 @@ const PortfolioEditor = () => {
         const featuresToSave = editingItem.features.filter(f => f && f.trim() !== '');
 
         // Фильтруем изображения - оставляем только те, у которых есть URL
-        const imagesToSave = (editingItem.images || []).filter(img => img.url && img.url.trim() !== '');
+        const imagesToSave = (editingItem.images || [])
+            .filter(img => img.url && img.url.trim() !== '')
+            .map(img => {
+                // Для файлов убеждаемся, что путь относительный
+                if (img.type === 'file' && img.url && img.url.includes('/uploads')) {
+                    const urlParts = img.url.split('/uploads');
+                    if (urlParts.length > 1) {
+                        return {
+                            ...img,
+                            url: `/uploads${urlParts[1]}`
+                        };
+                    }
+                }
+                return img;
+            });
 
         const itemToSave = {
             id: editingItem.id,
@@ -295,7 +362,12 @@ const PortfolioEditor = () => {
 
     // Управление изображениями
     const handleAddImage = () => {
-        const newImages = [...(editingItem.images || []), { url: '', type: 'url', altText: '', order: (editingItem.images || []).length }];
+        const newImages = [...(editingItem.images || []), {
+            url: '',
+            type: 'url',
+            altText: '',
+            order: (editingItem.images || []).length
+        }];
         setEditingItem({ ...editingItem, images: newImages });
     };
 
@@ -312,27 +384,42 @@ const PortfolioEditor = () => {
     };
 
     const handleImageUpload = async (index, file) => {
-        if (!editingItem.id) {
-            setError('Сначала сохраните элемент');
-            setTimeout(() => setError(''), 3000);
-            return;
-        }
+        // Проверяем, является ли элемент новым (временным)
+        const isNewItem = editingItem.isNew || typeof editingItem.id === 'string' || editingItem.id.toString().length > 10; // Date.now() дает длинное число
 
         const formData = new FormData();
         formData.append('image', file);
 
         try {
             const token = localStorage.getItem('adminToken');
-            const response = await fetch(
-                `${process.env.REACT_APP_API_URL}/api/portfolio/items/${editingItem.id}/images/${index}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${token}`
-                    },
-                    body: formData
-                }
-            );
+
+            let response;
+
+            if (isNewItem) {
+                // Для нового элемента используем временный endpoint
+                response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/api/portfolio/items/temp/images`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                    }
+                );
+            } else {
+                // Для существующего элемента используем обычный endpoint
+                response = await fetch(
+                    `${process.env.REACT_APP_API_URL}/api/portfolio/items/${editingItem.id}/images/${index}`,
+                    {
+                        method: 'POST',
+                        headers: {
+                            'Authorization': `Bearer ${token}`
+                        },
+                        body: formData
+                    }
+                );
+            }
 
             if (!response.ok) {
                 throw new Error('Ошибка загрузки');
@@ -344,7 +431,8 @@ const PortfolioEditor = () => {
                 itemId: editingItem.id,
                 index,
                 filename: data.filename,
-                url: data.imageUrl
+                url: data.imageUrl,
+                temp: isNewItem // Помечаем как временную загрузку
             }]);
 
             const newImages = [...editingItem.images];
@@ -355,7 +443,7 @@ const PortfolioEditor = () => {
             };
             setEditingItem({ ...editingItem, images: newImages });
 
-            setSuccess('Изображение загружено (не сохранено)');
+            setSuccess(isNewItem ? 'Изображение временно загружено (сохраните элемент для окончательного размещения)' : 'Изображение загружено');
             setTimeout(() => setSuccess(''), 3000);
         } catch (err) {
             console.error('Error uploading image:', err);
@@ -437,6 +525,7 @@ const PortfolioEditor = () => {
     const filteredItems = activeCategory === 'all'
         ? content.items
         : content.items.filter(i => i.category === activeCategory);
+    const fallbackImage = getFallbackImage(100, 80, 'Нет фото');
 
     return (
         <div className="portfolio-editor">
@@ -542,11 +631,11 @@ const PortfolioEditor = () => {
                                                 alt={item.title}
                                                 onError={(e) => {
                                                     e.target.onerror = null;
-                                                    e.target.src = 'https://via.placeholder.com/100x80?text=Нет+фото';
+                                                    e.target.src = fallbackImage;
                                                 }}
                                             />
                                         ) : (
-                                            <div className="no-image">Нет фото</div>
+                                            <img src={fallbackImage} alt="Нет фото" />
                                         )}
                                     </div>
                                     <div className="item-info">
@@ -564,6 +653,13 @@ const PortfolioEditor = () => {
                                         </div>
                                     </div>
                                     <div className="item-actions">
+                                        <button
+                                            className="preview-btn"
+                                            onClick={() => handlePreview(item)}
+                                            title="Предпросмотр"
+                                        >
+                                            <FaEye />
+                                        </button>
                                         <button
                                             className="edit-btn"
                                             onClick={() => handleEditItem(item)}
@@ -696,6 +792,19 @@ const PortfolioEditor = () => {
                                                     onChange={(e) => handleImageChange(idx, 'url', e.target.value)}
                                                     placeholder="https://example.com/image.jpg"
                                                 />
+                                                {image.url && (
+                                                    <div className="image-preview-small">
+                                                        <img
+                                                            src={image.url}
+                                                            alt={`Предпросмотр ${idx + 1}`}
+                                                            onError={(e) => {
+                                                                e.target.onerror = null;
+                                                                e.target.src = getFallbackImage(100, 80, 'Ошибка');
+                                                            }}
+                                                            style={{ maxWidth: '100px', maxHeight: '80px', marginTop: '10px' }}
+                                                        />
+                                                    </div>
+                                                )}
                                             </div>
                                         )}
 
@@ -703,7 +812,14 @@ const PortfolioEditor = () => {
                                             <div className="image-file-upload">
                                                 {image.url && (
                                                     <div className="image-preview">
-                                                        <img src={image.url} alt={`Изображение ${idx + 1}`} />
+                                                        <img
+                                                            src={image.url}
+                                                            alt={`Изображение ${idx + 1}`}
+                                                            onError={(e) => {
+                                                                e.target.onerror = null;
+                                                                e.target.src = getFallbackImage(200, 150, 'Ошибка');
+                                                            }}
+                                                        />
                                                         <button
                                                             className="remove-image-btn"
                                                             onClick={() => handleDeleteImage(idx)}
@@ -724,7 +840,7 @@ const PortfolioEditor = () => {
                                                         id={`image-upload-${idx}`}
                                                     />
                                                     <label htmlFor={`image-upload-${idx}`} className="file-input-label">
-                                                        <FaImage /> Выбрать файл
+                                                        <FaImage /> {image.url ? 'Заменить файл' : 'Выбрать файл'}
                                                     </label>
                                                 </div>
                                             </div>
@@ -739,15 +855,15 @@ const PortfolioEditor = () => {
                                             />
                                         </div>
 
-                                        {image.url && image.url.trim() !== '' && (
-                                            <button
-                                                className="remove-image-btn"
-                                                onClick={() => handleDeleteImage(idx)}
-                                                style={{ marginTop: '10px' }}
-                                            >
-                                                <FaTrash /> Удалить изображение
-                                            </button>
-                                        )}
+                                        {/*{image.url && image.url.trim() !== '' && (*/}
+                                        {/*    <button*/}
+                                        {/*        className="remove-image-btn"*/}
+                                        {/*        onClick={() => handleDeleteImage(idx)}*/}
+                                        {/*        style={{ marginTop: '10px' }}*/}
+                                        {/*    >*/}
+                                        {/*        <FaTrash /> */}
+                                        {/*    </button>*/}
+                                        {/*)}*/}
                                     </div>
                                 ))}
                                 <button className="add-feature-btn" onClick={handleAddImage}>
@@ -795,6 +911,99 @@ const PortfolioEditor = () => {
                             </button>
                             <button className="save-modal-btn" onClick={handleSaveItem}>
                                 Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Модальное окно предпросмотра */}
+            {showPreviewModal && previewItem && (
+                <div className="modal-overlay">
+                    <div className="modal-content large">
+                        <div className="modal-header">
+                            <h3>Предпросмотр: {previewItem.title}</h3>
+                            <button className="close-btn" onClick={() => setShowPreviewModal(false)}>
+                                <FaTimes />
+                            </button>
+                        </div>
+
+                        <div className="modal-body preview-body">
+                            <div className="preview-card">
+                                <div className="preview-images">
+                                    <h4>Изображения:</h4>
+                                    <div className="preview-image-grid">
+                                        {previewItem.images && previewItem.images.length > 0 ? (
+                                            previewItem.images.map((img, idx) => (
+                                                <div key={idx} className="preview-image-item">
+                                                    <img
+                                                        src={img.url}
+                                                        alt={img.altText || `Изображение ${idx + 1}`}
+                                                        onError={(e) => {
+                                                            e.target.onerror = null;
+                                                            e.target.src = getFallbackImage(150, 150, 'Ошибка');
+                                                        }}
+                                                    />
+                                                    <span className="preview-image-type">
+                                                        {img.type === 'file' ? 'Файл' : 'URL'}
+                                                    </span>
+                                                </div>
+                                            ))
+                                        ) : (
+                                            <div className="no-images">Нет изображений</div>
+                                        )}
+                                    </div>
+                                </div>
+
+                                <div className="preview-info">
+                                    <div className="preview-field">
+                                        <strong>Категория:</strong> {previewItem.category}
+                                    </div>
+                                    <div className="preview-field">
+                                        <strong>Описание:</strong> {previewItem.description}
+                                    </div>
+                                    <div className="preview-field">
+                                        <strong>Площадь:</strong> {previewItem.area}
+                                    </div>
+                                    <div className="preview-field">
+                                        <strong>Длительность:</strong> {previewItem.duration}
+                                    </div>
+                                    <div className="preview-field">
+                                        <strong>Дата:</strong> {previewItem.date}
+                                    </div>
+                                    <div className="preview-field">
+                                        <strong>Статус:</strong>
+                                        <span className={`status-badge ${previewItem.active ? 'active' : 'inactive'}`}>
+                                            {previewItem.active ? 'Активно' : 'Неактивно'}
+                                        </span>
+                                    </div>
+
+                                    {previewItem.features && previewItem.features.length > 0 && (
+                                        <div className="preview-field">
+                                            <strong>Выполненные работы:</strong>
+                                            <ul className="preview-features-list">
+                                                {previewItem.features.map((feature, idx) => (
+                                                    <li key={idx}>{feature}</li>
+                                                ))}
+                                            </ul>
+                                        </div>
+                                    )}
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="modal-footer">
+                            <button className="cancel-modal-btn" onClick={() => setShowPreviewModal(false)}>
+                                Закрыть
+                            </button>
+                            <button
+                                className="edit-modal-btn"
+                                onClick={() => {
+                                    setShowPreviewModal(false);
+                                    handleEditItem(previewItem);
+                                }}
+                            >
+                                <FaEdit /> Редактировать
                             </button>
                         </div>
                     </div>
