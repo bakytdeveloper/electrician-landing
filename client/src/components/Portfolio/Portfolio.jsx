@@ -472,7 +472,7 @@ const Portfolio = () => {
                                     <div className="portfolio-meta">
                                         <div className="meta-item">
                                             <span className="meta-label">Площадь:</span>
-                                            <span className="meta-value">{item.area}</span>
+                                            <span className="meta-value">{item.area}м²</span>
                                         </div>
                                         <div className="meta-item">
                                             <span className="meta-label">Срок:</span>
@@ -604,7 +604,7 @@ const Portfolio = () => {
 
                                         <div className="detail-item">
                                             <span className="detail-label">Площадь:</span>
-                                            <span className="detail-value">{selectedImage.area}</span>
+                                            <span className="detail-value">{selectedImage.area}м²</span>
                                         </div>
 
                                         <div className="detail-item">
