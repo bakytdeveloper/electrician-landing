@@ -456,6 +456,8 @@ const PortfolioEditor = () => {
         if (editingItem.isNew) {
             const newImages = editingItem.images.filter((_, i) => i !== index);
             setEditingItem({ ...editingItem, images: newImages });
+            setSuccess('Изображение удалено');
+            setTimeout(() => setSuccess(''), 3000);
             return;
         }
 
@@ -487,6 +489,7 @@ const PortfolioEditor = () => {
         } else {
             const newImages = editingItem.images.filter((_, i) => i !== index);
             setEditingItem({ ...editingItem, images: newImages });
+            setSuccess('Изображение удалено');
         }
 
         setTimeout(() => setSuccess(''), 3000);
@@ -767,105 +770,89 @@ const PortfolioEditor = () => {
                             {/* Изображения */}
                             <div className="form-group">
                                 <label>Изображения</label>
-                                {editingItem.images && editingItem.images.map((image, idx) => (
-                                    <div key={idx} className="image-editor">
-                                        <div className="image-type-selector">
-                                            <button
-                                                className={`type-btn ${image.type === 'url' ? 'active' : ''}`}
-                                                onClick={() => handleImageTypeChange(idx, 'url')}
-                                            >
-                                                <FaLink /> URL
-                                            </button>
-                                            <button
-                                                className={`type-btn ${image.type === 'file' ? 'active' : ''}`}
-                                                onClick={() => handleImageTypeChange(idx, 'file')}
-                                            >
-                                                <FaImage /> Файл
-                                            </button>
-                                        </div>
+                                <div className="images-grid">
+                                    {editingItem.images && editingItem.images.map((image, idx) => (
+                                        <div key={idx} className="image-editor-card">
+                                            <div className="image-type-selector">
+                                                <button
+                                                    className={`type-btn ${image.type === 'url' ? 'active' : ''}`}
+                                                    onClick={() => handleImageTypeChange(idx, 'url')}
+                                                >
+                                                    <FaLink /> URL
+                                                </button>
+                                                <button
+                                                    className={`type-btn ${image.type === 'file' ? 'active' : ''}`}
+                                                    onClick={() => handleImageTypeChange(idx, 'file')}
+                                                >
+                                                    <FaImage /> Файл
+                                                </button>
+                                            </div>
 
-                                        {image.type === 'url' && (
-                                            <div className="image-url-input">
-                                                <input
-                                                    type="url"
-                                                    value={image.url}
-                                                    onChange={(e) => handleImageChange(idx, 'url', e.target.value)}
-                                                    placeholder="https://example.com/image.jpg"
-                                                />
-                                                {image.url && (
+                                            {image.type === 'url' && (
+                                                <div className="image-url-input">
+                                                    <input
+                                                        type="url"
+                                                        value={image.url}
+                                                        onChange={(e) => handleImageChange(idx, 'url', e.target.value)}
+                                                        placeholder="https://example.com/image.jpg"
+                                                    />
+                                                </div>
+                                            )}
+
+                                            {image.type === 'file' && (
+                                                <div className="image-file-upload">
+                                                    <div className="file-input-wrapper">
+                                                        <input
+                                                            type="file"
+                                                            accept="image/*"
+                                                            onChange={(e) => {
+                                                                if (e.target.files[0]) {
+                                                                    handleImageUpload(idx, e.target.files[0]);
+                                                                }
+                                                            }}
+                                                            id={`image-upload-${idx}`}
+                                                        />
+                                                        <label htmlFor={`image-upload-${idx}`} className="file-input-label">
+                                                            <FaImage /> {image.url ? 'Заменить файл' : 'Выбрать файл'}
+                                                        </label>
+                                                    </div>
+                                                </div>
+                                            )}
+
+                                            {/* Предпросмотр изображения - одинаковый для всех типов */}
+                                            {image.url && image.url.trim() !== '' && (
+                                                <div className="image-preview-container">
                                                     <div className="image-preview-small">
                                                         <img
                                                             src={image.url}
-                                                            alt={`Предпросмотр ${idx + 1}`}
+                                                            alt={image.altText || `Предпросмотр ${idx + 1}`}
                                                             onError={(e) => {
                                                                 e.target.onerror = null;
                                                                 e.target.src = getFallbackImage(100, 80, 'Ошибка');
-                                                            }}
-                                                            style={{ maxWidth: '100px', maxHeight: '80px', marginTop: '10px' }}
-                                                        />
-                                                    </div>
-                                                )}
-                                            </div>
-                                        )}
-
-                                        {image.type === 'file' && (
-                                            <div className="image-file-upload">
-                                                {image.url && (
-                                                    <div className="image-preview">
-                                                        <img
-                                                            src={image.url}
-                                                            alt={`Изображение ${idx + 1}`}
-                                                            onError={(e) => {
-                                                                e.target.onerror = null;
-                                                                e.target.src = getFallbackImage(200, 150, 'Ошибка');
                                                             }}
                                                         />
                                                         <button
                                                             className="remove-image-btn"
                                                             onClick={() => handleDeleteImage(idx)}
+                                                            title="Удалить изображение"
                                                         >
                                                             <FaTimes />
                                                         </button>
                                                     </div>
-                                                )}
-                                                <div className="file-input-wrapper">
-                                                    <input
-                                                        type="file"
-                                                        accept="image/*"
-                                                        onChange={(e) => {
-                                                            if (e.target.files[0]) {
-                                                                handleImageUpload(idx, e.target.files[0]);
-                                                            }
-                                                        }}
-                                                        id={`image-upload-${idx}`}
-                                                    />
-                                                    <label htmlFor={`image-upload-${idx}`} className="file-input-label">
-                                                        <FaImage /> {image.url ? 'Заменить файл' : 'Выбрать файл'}
-                                                    </label>
                                                 </div>
+                                            )}
+
+                                            <div className="image-alt-input">
+                                                <input
+                                                    type="text"
+                                                    value={image.altText || ''}
+                                                    onChange={(e) => handleImageChange(idx, 'altText', e.target.value)}
+                                                    placeholder="Alt текст (для SEO)"
+                                                />
                                             </div>
-                                        )}
-
-                                        <div className="image-alt-input">
-                                            <input
-                                                type="text"
-                                                value={image.altText || ''}
-                                                onChange={(e) => handleImageChange(idx, 'altText', e.target.value)}
-                                                placeholder="Alt текст (для SEO)"
-                                            />
                                         </div>
-
-                                        {/*{image.url && image.url.trim() !== '' && (*/}
-                                        {/*    <button*/}
-                                        {/*        className="remove-image-btn"*/}
-                                        {/*        onClick={() => handleDeleteImage(idx)}*/}
-                                        {/*        style={{ marginTop: '10px' }}*/}
-                                        {/*    >*/}
-                                        {/*        <FaTrash /> */}
-                                        {/*    </button>*/}
-                                        {/*)}*/}
-                                    </div>
-                                ))}
+                                    ))}
+                                </div>
                                 <button className="add-feature-btn" onClick={handleAddImage}>
                                     <FaPlus /> Добавить изображение
                                 </button>
