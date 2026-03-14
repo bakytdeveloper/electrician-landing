@@ -537,6 +537,12 @@ const Portfolio = () => {
                                     onMouseMove={handleMouseMove}
                                     onMouseUp={handleMouseUp}
                                     onMouseLeave={handleMouseLeave}
+                                    onClick={() => {
+                                        // Если изображение увеличено, клик по нему уменьшает его
+                                        if (isZoomed) {
+                                            toggleZoom();
+                                        }
+                                    }}
                                     style={{ cursor: isZoomed ? (isDragging ? 'grabbing' : 'grab') : 'zoom-in' }}
                                 >
                                     {selectedImage.images &&
@@ -558,7 +564,7 @@ const Portfolio = () => {
                                     ) : (
                                         <div className="modal-image-placeholder">
                                             <div className="placeholder-text">
-                                                {isZoomed ? 'Изображение увеличено' : 'Нажмите для увеличения'}
+                                                {isZoomed ? 'Кликните для уменьшения' : 'Нажмите для увеличения'}
                                             </div>
                                             <div className="image-counter">
                                                 {currentIndex + 1} / {selectedImage.images?.length || 0}
@@ -567,13 +573,19 @@ const Portfolio = () => {
                                     )}
 
                                     {!isZoomed && (
-                                        <button className="zoom-button" onClick={toggleZoom}>
+                                        <button className="zoom-button" onClick={(e) => {
+                                            e.stopPropagation(); // Предотвращаем всплытие события
+                                            toggleZoom();
+                                        }}>
                                             <MdZoomIn />
                                         </button>
                                     )}
 
                                     {isZoomed && (
-                                        <button className="zoom-button" onClick={toggleZoom}>
+                                        <button className="zoom-button" onClick={(e) => {
+                                            e.stopPropagation(); // Предотвращаем всплытие события
+                                            toggleZoom();
+                                        }}>
                                             <MdZoomOut />
                                         </button>
                                     )}
