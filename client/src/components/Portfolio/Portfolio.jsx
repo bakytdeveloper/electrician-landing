@@ -327,11 +327,7 @@ const Portfolio = () => {
         <section id="portfolio" className="portfolio">
             <div className="container">
                 {/* Заголовок секции */}
-                {/*  <div className="services-section-header">
-                    <h2 className="services-section-title">{content.sectionTitle}</h2>
-                    <p className="services-section-subtitle">{content.sectionSubtitle}</p>
-                </div>
-*/}
+
                 <div className="profile-section-header">
                     <h2 className="profile-section-title">Наши работы</h2>
                     <p className="profile-section-subtitle">
