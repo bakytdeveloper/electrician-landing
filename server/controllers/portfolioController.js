@@ -222,6 +222,7 @@ const uploadTempImage = async (req, res) => {
 };
 
 // Обновим функцию создания элемента портфолио
+// Создание нового элемента портфолио
 const createPortfolioItem = async (req, res) => {
     try {
         const content = await PortfolioContent.findOne();
@@ -238,8 +239,16 @@ const createPortfolioItem = async (req, res) => {
         const images = [];
         if (req.body.images && Array.isArray(req.body.images)) {
             for (const img of req.body.images) {
+                // Создаем базовый объект изображения
+                const imageObj = {
+                    url: img.url,
+                    type: img.type || 'url',
+                    altText: img.altText || '',
+                    order: img.order || 0
+                };
+
+                // Если это файл из временной папки, перемещаем его
                 if (img.type === 'file' && img.url && img.url.includes('/temp/')) {
-                    // Перемещаем файл из временной папки в portfolio
                     const fileName = path.basename(img.url);
                     const tempPath = path.join(__dirname, '../uploads/temp', fileName);
                     const newPath = path.join(__dirname, '../uploads/portfolio', fileName);
@@ -249,21 +258,18 @@ const createPortfolioItem = async (req, res) => {
                         await fs.rename(tempPath, newPath);
                         console.log('Moved temp file to portfolio:', newPath);
 
-                        images.push({
-                            ...img,
-                            url: `/uploads/portfolio/${fileName}`,
-                            type: 'file'
-                        });
+                        imageObj.url = `/uploads/portfolio/${fileName}`;
                     } catch (err) {
                         console.error('Error moving temp file:', err);
-                        // Если файл не найден, добавляем как есть
-                        images.push(img);
+                        // Если файл не найден, оставляем URL как есть
                     }
-                } else {
-                    images.push(img);
                 }
+
+                images.push(imageObj);
             }
         }
+
+        console.log('Images to save:', images); // Для отладки
 
         const newItem = {
             id: newId,
@@ -282,13 +288,14 @@ const createPortfolioItem = async (req, res) => {
         content.items.push(newItem);
         await content.save({ versionKey: false });
 
+        console.log('Saved new item with images:', newItem.images); // Для отладки
+
         res.json(newItem);
     } catch (error) {
         console.error('Error in createPortfolioItem:', error);
         res.status(500).json({ message: 'Ошибка при создании элемента портфолио: ' + error.message });
     }
 };
-
 
 // Удаление элемента портфолио
 const deletePortfolioItem = async (req, res) => {
