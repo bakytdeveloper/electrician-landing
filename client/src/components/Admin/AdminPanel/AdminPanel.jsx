@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import './AdminPanel.css';
 import HeroEditor from '../HeroEditor/HeroEditor';
 import ServicesEditor from '../ServicesEditor/ServicesEditor';
+import PortfolioEditor from '../PortfolioEditor/PortfolioEditor';
+
 import { FaSignOutAlt, FaCog } from 'react-icons/fa';
 
 const AdminPanel = ({ onLogout }) => {
@@ -58,6 +60,12 @@ const AdminPanel = ({ onLogout }) => {
                         Услуги
                     </button>
                     <button
+                        className={activeTab === 'portfolio' ? 'active' : ''}
+                        onClick={() => setActiveTab('portfolio')}
+                    >
+                        Портфолио
+                    </button>
+                    <button
                         className={activeTab === 'about' ? 'active' : ''}
                         onClick={() => setActiveTab('about')}
                     >
@@ -74,6 +82,7 @@ const AdminPanel = ({ onLogout }) => {
             <div className="admin-content">
                 {activeTab === 'hero' && <HeroEditor />}
                 {activeTab === 'services' && <ServicesEditor />}
+                {activeTab === 'portfolio' && <PortfolioEditor />}
                 {/* Другие редакторы будут добавлены позже */}
             </div>
         </div>

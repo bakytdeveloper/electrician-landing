@@ -13,7 +13,18 @@ import {
 import { MdApartment, MdZoomIn } from 'react-icons/md';
 import './Portfolio.css';
 
+// Маппинг иконок для популярных категорий (опционально)
+const iconMap = {
+    'Квартиры': MdApartment,
+    'Частные дома': FaHome,
+    'Офисы': FaBuilding,
+    'Промышленные': FaIndustry,
+    'Коммерческие': FaStore
+};
+
 const Portfolio = () => {
+    const [content, setContent] = useState(null);
+    const [loading, setLoading] = useState(true);
     const [activeFilter, setActiveFilter] = useState('all');
     const [selectedImage, setSelectedImage] = useState(null);
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -25,127 +36,53 @@ const Portfolio = () => {
 
     const sliderRef = useRef(null);
 
-    const categories = [
-        { id: 'all', label: 'Все работы', icon: <FaSearch /> },
-        { id: 'apartments', label: 'Квартиры', icon: <MdApartment /> },
-        { id: 'houses', label: 'Частные дома', icon: <FaHome /> },
-        { id: 'offices', label: 'Офисы', icon: <FaBuilding /> },
-        { id: 'industrial', label: 'Промышленные', icon: <FaIndustry /> },
-        { id: 'commercial', label: 'Коммерческие', icon: <FaStore /> },
-    ];
+    useEffect(() => {
+        fetchContent();
+    }, []);
 
-    // Примеры изображений
-    const portfolioItems = [
-        {
-            id: 1,
-            title: 'Полная замена проводки в квартире',
-            description: 'Замена старой алюминиевой проводки на медную, установка современного электрощита с УЗО и автоматами.',
-            category: 'apartments',
-            images: [
-                'https://avatars.mds.yandex.net/i?id=3a3970ebdae3a325bdae846745b94986_l-5236752-images-thumbs&ref=rim&n=13&w=732&h=429',
-                'https://decorexpro.com/images/article/orig/2018/05/otoplenie-doma-ekonomnye-sposoby-i-varianty-23.jpg',
-                'https://avatars.mds.yandex.net/i?id=ee7c85c3cae7c822c7ce7c4edd74116f_l-9211697-images-thumbs&ref=rim&n=13&w=644&h=429',
-            ],
-            features: ['Медная проводка', 'Электрощит Legrand', '35 розеток'],
-            date: '15.12.2023',
-            area: '85 м²',
-            duration: '3 дня',
-            altTexts: ['Монтаж проводки в квартире', 'Установленный электрощит']
-        },
-        {
-            id: 2,
-            title: 'Электрика в частном доме под ключ',
-            description: 'Монтаж проводки с нуля в новом доме, установка уличного освещения и автоматических ворот.',
-            category: 'houses',
-            images: [
-                'https://avatars.mds.yandex.net/get-ydo/4421910/2a0000018d79328effbd0bf54054d36f6154/diploma',
-                'https://avatars.mds.yandex.net/i?id=30a4073eca9c7f207b7d54b12b3b62e6_l-4827941-images-thumbs&n=13',
-                'https://i.ytimg.com/vi/K9oAuS0ZSrM/maxresdefault.jpg',
-                'https://bigfoto.name/photo/uploads/posts/2023-03/1678279224_bigfoto-name-p-zamena-elektroprovodki-71.jpg',
-            ],
-            features: ['Наружное освещение', 'Автоматические ворота', 'Стабилизатор напряжения', 'Резервный генератор'],
-            date: '05.11.2023',
-            area: '150 м²',
-            duration: '7 дней',
-            altTexts: ['Электрика в частном доме', 'Уличное освещение']
-        },
-        {
-            id: 3,
-            title: 'Модернизация офисного электрощита',
-            description: 'Замена устаревшего электрощита на современный с разделением по группам и установкой УЗИП.',
-            category: 'offices',
-            images: [
-                'https://img.freepik.com/free-photo/male-electrician-working-electrical-panel-male-electrician-overalls_169016-67274.jpg?t=st=1765813868~exp=1765817468~hmac=ca024d8f86938c3abbb4aaa2197a190ac2f3ec2bf9ed0d4be754c9c4e7faeedc&w=2000',
-                'https://img.freepik.com/free-photo/male-electrician-working-electrical-panel-male-electrician-overalls_169016-67433.jpg?t=st=1765813920~exp=1765817520~hmac=bd0c0026454fb0fc98cba1113468fe5a7abec82449c92af4312757f7cdd0a709&w=1480'
-            ],
-            features: ['Щиток ABB', 'УЗИП', 'Групповые автоматы', 'Мониторинг энергопотребления'],
-            date: '22.10.2023',
-            area: '120 м²',
-            duration: '2 дня',
-            altTexts: ['Офисный электрощит', 'Монтажные работы']
-        },
-        {
-            id: 4,
-            title: 'Промышленная электропроводка в цеху',
-            description: 'Прокладка силовых кабелей, установка промышленных розеток и организация освещения.',
-            category: 'industrial',
-            images: [
-                'https://img.freepik.com/premium-photo/electrical-engineers-check-electrical-control-devices-with-multimeter_539854-551.jpg?w=1480'
-            ],
-            features: ['Силовые кабели', 'Промышленные розетки', 'LED освещение', 'Защита от пыли и влаги'],
-            date: '10.09.2023',
-            area: '500 м²',
-            duration: '14 дней',
-            altTexts: ['Промышленная проводка', 'Цеховое освещение']
-        },
-        {
-            id: 5,
-            title: 'Ремонт электрощита после замыкания',
-            description: 'Аварийный ремонт электрощита с полной заменой поврежденных автоматов и восстановлением питания.',
-            category: 'houses',
-            images: [
-                'https://avatars.mds.yandex.net/i?id=7da152d96abd0a9875600e87168e0179_l-4079990-images-thumbs&n=13',
-                'https://avatars.mds.yandex.net/i?id=74a99342a7ac057dcd09b4f27ad2c271_l-10414886-images-thumbs&ref=rim&n=13&w=644&h=429'
-            ],
-            features: ['Аварийный выезд', 'Замена автоматов', 'Диагностика сети', 'Профилактические работы'],
-            date: '03.06.2023',
-            area: '90 м²',
-            duration: '5 часов',
-            altTexts: ['Ремонт электрощита', 'Диагностика электрики']
-        },
-        {
-            id: 6,
-            title: 'Освещение в ресторане',
-            description: 'Проектирование и монтаж декоративного освещения с зонированием и диммированием.',
-            category: 'commercial',
-            images: [
-                'https://img.freepik.com/premium-photo/full-length-portrait-electrician-stepladder-installs-lighting-ceiling-office_493343-27764.jpg?w=1480',
-                'https://img.freepik.com/premium-photo/beautiful-ceiling-with-led-lighting-flat-round_152904-49666.jpg?w=1480'
-            ],
-            features: ['Декоративное освещение', 'Диммирование', 'Зонирование света', 'Энергоэффективность'],
-            date: '20.05.2023',
-            area: '200 м²',
-            duration: '8 дней',
-            altTexts: ['Освещение ресторана', 'Декоративный свет']
-        },
-    ];
-
-    // Получаем количество элементов в каждой категории
-    const getCategoryCount = (categoryId) => {
-        if (categoryId === 'all') return portfolioItems.length;
-        return portfolioItems.filter(item => item.category === categoryId).length;
+    const fetchContent = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/portfolio/content`);
+            const data = await response.json();
+            setContent(data);
+        } catch (error) {
+            console.error('Error fetching portfolio content:', error);
+        } finally {
+            setLoading(false);
+        }
     };
 
-    const filteredItems = activeFilter === 'all'
-        ? portfolioItems
-        : portfolioItems.filter(item => item.category === activeFilter);
+    // Получаем уникальные категории из элементов
+    const getUniqueCategories = () => {
+        if (!content?.items) return [];
+        const categories = content.items
+            .map(item => item.category)
+            .filter(category => category && category.trim() !== '')
+            .filter((value, index, self) => self.indexOf(value) === index);
+        return categories.sort((a, b) => a.localeCompare(b, 'ru'));
+    };
+
+    // Получаем отфильтрованные элементы
+    const getFilteredItems = () => {
+        if (!content?.items) return [];
+        return activeFilter === 'all'
+            ? content.items.filter(item => item.active !== false)
+            : content.items.filter(item => item.category === activeFilter && item.active !== false);
+    };
+
+    // Получаем количество элементов в категории
+    const getCategoryCount = (category) => {
+        if (!content?.items) return 0;
+        if (category === 'all') return content.items.filter(item => item.active !== false).length;
+        return content.items.filter(item => item.category === category && item.active !== false).length;
+    };
 
     // Проверка возможности прокрутки
     const checkScroll = () => {
         if (sliderRef.current) {
             const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
             setCanScrollLeft(scrollLeft > 0);
-            setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10); // 10px допуска
+            setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
         }
     };
 
@@ -161,7 +98,7 @@ const Portfolio = () => {
                 window.removeEventListener('resize', checkScroll);
             };
         }
-    }, [filteredItems]);
+    }, [content]);
 
     // Сброс позиции скролла при смене фильтра
     useEffect(() => {
@@ -172,7 +109,7 @@ const Portfolio = () => {
 
     const scroll = (direction) => {
         if (sliderRef.current) {
-            const scrollAmount = 400; // Ширина карточки + отступ
+            const scrollAmount = 400;
             const newScrollLeft = sliderRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
             sliderRef.current.scrollTo({
                 left: newScrollLeft,
@@ -181,7 +118,6 @@ const Portfolio = () => {
         }
     };
 
-    // Обработка касаний для мобильных устройств
     const touchStartX = useRef(0);
     const touchEndX = useRef(0);
 
@@ -195,7 +131,7 @@ const Portfolio = () => {
 
     const handleTouchEnd = () => {
         const swipeDistance = touchEndX.current - touchStartX.current;
-        if (Math.abs(swipeDistance) > 50) { // Минимальное расстояние для свайпа
+        if (Math.abs(swipeDistance) > 50) {
             if (swipeDistance > 0) {
                 scroll('left');
             } else {
@@ -204,8 +140,7 @@ const Portfolio = () => {
         }
     };
 
-    const handleImageError = (itemId, imgIndex, event) => {
-        event.target.style.display = 'none';
+    const handleImageError = (itemId, imgIndex) => {
         setImageErrors(prev => ({
             ...prev,
             [`${itemId}-${imgIndex}`]: true
@@ -213,60 +148,10 @@ const Portfolio = () => {
     };
 
     const getAltText = (item, index) => {
-        if (item.altTexts && item.altTexts[index]) {
-            return item.altTexts[index];
+        if (item.images && item.images[index] && item.images[index].altText) {
+            return item.images[index].altText;
         }
         return `${item.title} - фото ${index + 1}`;
-    };
-
-    const hasImageError = (itemId, imgIndex) => {
-        return imageErrors[`${itemId}-${imgIndex}`] === true;
-    };
-
-    const ImageWithFallback = ({ src, alt, className, itemId, imgIndex }) => {
-        const [isLoading, setIsLoading] = useState(true);
-        const [hasError, setHasError] = useState(false);
-
-        useEffect(() => {
-            const img = new Image();
-            img.onload = () => setIsLoading(false);
-            img.onerror = () => {
-                setIsLoading(false);
-                setHasError(true);
-                setImageErrors(prev => ({
-                    ...prev,
-                    [`${itemId}-${imgIndex}`]: true
-                }));
-            };
-            img.src = src;
-        }, [src, itemId, imgIndex]);
-
-        if (isLoading) {
-            return (
-                <div className={`${className} image-loading`}>
-                    <div className="loading-spinner"></div>
-                </div>
-            );
-        }
-
-        if (hasError || hasImageError(itemId, imgIndex)) {
-            return (
-                <div className={`${className} image-error`}>
-                    <div className="error-placeholder">
-                        <span>Изображение не загружено</span>
-                    </div>
-                </div>
-            );
-        }
-
-        return (
-            <img
-                src={src}
-                alt={alt}
-                className={className}
-                onError={(e) => handleImageError(itemId, imgIndex, e)}
-            />
-        );
     };
 
     const openModal = (item, index) => {
@@ -321,40 +206,61 @@ const Portfolio = () => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
-    }, [isModalOpen, currentIndex, isZoomed]);
+    }, [isModalOpen, currentIndex, isZoomed, handleKeyDown]);
+
+    if (loading) {
+        return <div className="portfolio-loading">Загрузка...</div>;
+    }
+
+    if (!content) {
+        return null;
+    }
+
+    const categories = getUniqueCategories();
+    const filteredItems = getFilteredItems();
 
     return (
         <section id="portfolio" className="portfolio">
             <div className="container">
                 {/* Заголовок секции */}
-
                 <div className="profile-section-header">
-                    <h2 className="profile-section-title">Наши работы</h2>
-                    <p className="profile-section-subtitle">
-                        Посмотрите примеры наших работ. Каждый проект - это индивидуальный подход и гарантия качества.
-                    </p>
+                    <h2 className="profile-section-title">{content.sectionTitle}</h2>
+                    <p className="profile-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
-                {/* Фильтры */}
-                <div className="portfolio-filters">
-                    <div className="filter-buttons">
-                        {categories.map(category => (
+                {/* Фильтры - используем категории из элементов */}
+                {categories.length > 0 && (
+                    <div className="portfolio-filters">
+                        <div className="filter-buttons">
                             <button
-                                key={category.id}
-                                className={`filter-button ${activeFilter === category.id ? 'active' : ''}`}
-                                onClick={() => setActiveFilter(category.id)}
+                                key="all"
+                                className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
+                                onClick={() => setActiveFilter('all')}
                             >
-                                <span className="filter-icon">{category.icon}</span>
-                                <span className="filter-label">{category.label}</span>
-                                <span className="filter-count">{getCategoryCount(category.id)}</span>
+                                <span className="filter-icon"><FaSearch /></span>
+                                <span className="filter-label">Все работы</span>
+                                <span className="filter-count">{getCategoryCount('all')}</span>
                             </button>
-                        ))}
+                            {categories.map(category => {
+                                const IconComponent = iconMap[category] || FaSearch;
+                                return (
+                                    <button
+                                        key={category}
+                                        className={`filter-button ${activeFilter === category ? 'active' : ''}`}
+                                        onClick={() => setActiveFilter(category)}
+                                    >
+                                        <span className="filter-icon"><IconComponent /></span>
+                                        <span className="filter-label">{category}</span>
+                                        <span className="filter-count">{getCategoryCount(category)}</span>
+                                    </button>
+                                );
+                            })}
+                        </div>
                     </div>
-                </div>
+                )}
 
                 {/* Слайдер */}
                 <div className="portfolio-slider-container">
-                    {/* Кнопки навигации для десктопа */}
                     {canScrollLeft && (
                         <button
                             className="slider-nav-button prev"
@@ -375,7 +281,6 @@ const Portfolio = () => {
                         </button>
                     )}
 
-                    {/* Горизонтальный скролл контейнер */}
                     <div
                         className="portfolio-slider"
                         ref={sliderRef}
@@ -390,14 +295,13 @@ const Portfolio = () => {
                                 onClick={() => openModal(item, 0)}
                             >
                                 <div className="portfolio-image-container">
-                                    {item.images[0] && !hasImageError(item.id, 0) ? (
+                                    {item.images && item.images[0] && !imageErrors[`${item.id}-0`] ? (
                                         <div className="portfolio-image-wrapper">
-                                            <ImageWithFallback
-                                                src={item.images[0]}
+                                            <img
+                                                src={item.images[0].url}
                                                 alt={getAltText(item, 0)}
                                                 className="portfolio-image"
-                                                itemId={item.id}
-                                                imgIndex={0}
+                                                onError={() => handleImageError(item.id, 0)}
                                             />
                                         </div>
                                     ) : (
@@ -413,7 +317,7 @@ const Portfolio = () => {
                                         </button>
                                     </div>
                                     <div className="portfolio-badge">
-                                        {item.images.length} фото
+                                        {item.images?.length || 0} фото
                                     </div>
                                 </div>
 
@@ -422,9 +326,9 @@ const Portfolio = () => {
                                     <p className="portfolio-description">{item.description}</p>
 
                                     <div className="portfolio-features">
-                <span className="feature-tag">
-                    Выполнено работ: {item.features.length}
-                </span>
+                                        <span className="feature-tag">
+                                            Выполнено работ: {item.features?.length || 0}
+                                        </span>
                                     </div>
 
                                     <div className="portfolio-meta">
@@ -481,13 +385,14 @@ const Portfolio = () => {
                                     className={`modal-image-container ${isZoomed ? 'zoomed' : ''}`}
                                     onClick={() => setIsZoomed(!isZoomed)}
                                 >
-                                    {selectedImage.images[currentIndex] &&
-                                    !hasImageError(selectedImage.id, currentIndex) ? (
+                                    {selectedImage.images &&
+                                    selectedImage.images[currentIndex] &&
+                                    !imageErrors[`${selectedImage.id}-${currentIndex}`] ? (
                                         <img
-                                            src={selectedImage.images[currentIndex]}
+                                            src={selectedImage.images[currentIndex].url}
                                             alt={getAltText(selectedImage, currentIndex)}
                                             className="modal-main-image"
-                                            onError={(e) => handleImageError(selectedImage.id, currentIndex, e)}
+                                            onError={() => handleImageError(selectedImage.id, currentIndex)}
                                         />
                                     ) : (
                                         <div className="modal-image-placeholder">
@@ -495,7 +400,7 @@ const Portfolio = () => {
                                                 {isZoomed ? 'Изображение увеличено' : 'Нажмите для увеличения'}
                                             </div>
                                             <div className="image-counter">
-                                                {currentIndex + 1} / {selectedImage.images.length}
+                                                {currentIndex + 1} / {selectedImage.images?.length || 0}
                                             </div>
                                         </div>
                                     )}
@@ -508,7 +413,7 @@ const Portfolio = () => {
                                 <button
                                     className="nav-button next-button"
                                     onClick={nextImage}
-                                    disabled={currentIndex === selectedImage.images.length - 1}
+                                    disabled={!selectedImage.images || currentIndex === selectedImage.images.length - 1}
                                 >
                                     <FaArrowRight />
                                 </button>
@@ -520,9 +425,7 @@ const Portfolio = () => {
 
                                     <div className="detail-item">
                                         <span className="detail-label">Категория:</span>
-                                        <span className="detail-value">
-                                            {categories.find(c => c.id === selectedImage.category)?.label}
-                                        </span>
+                                        <span className="detail-value">{selectedImage.category}</span>
                                     </div>
 
                                     <div className="detail-item">
@@ -544,7 +447,7 @@ const Portfolio = () => {
                                 <div className="project-features">
                                     <h4>Выполненные работы</h4>
                                     <ul className="features-list">
-                                        {selectedImage.features.map((feature, index) => (
+                                        {selectedImage.features?.map((feature, index) => (
                                             <li key={index} className="feature-item">
                                                 <span className="feature-check">✓</span>
                                                 {feature}
@@ -556,18 +459,18 @@ const Portfolio = () => {
                                 <div className="image-thumbnails">
                                     <h4>Все фото проекта</h4>
                                     <div className="thumbnails-grid">
-                                        {selectedImage.images.map((img, index) => (
+                                        {selectedImage.images?.map((img, index) => (
                                             <button
                                                 key={index}
                                                 className={`thumbnail ${currentIndex === index ? 'active' : ''}`}
                                                 onClick={() => setCurrentIndex(index)}
                                             >
-                                                {img && !hasImageError(selectedImage.id, index) ? (
+                                                {img && !imageErrors[`${selectedImage.id}-${index}`] ? (
                                                     <img
-                                                        src={img}
-                                                        alt={getAltText(selectedImage, index)}
+                                                        src={img.url}
+                                                        alt={img.altText || `Фото ${index + 1}`}
                                                         className="thumbnail-image"
-                                                        onError={(e) => handleImageError(selectedImage.id, index, e)}
+                                                        onError={() => handleImageError(selectedImage.id, index)}
                                                     />
                                                 ) : (
                                                     <div className="thumbnail-number">{index + 1}</div>
