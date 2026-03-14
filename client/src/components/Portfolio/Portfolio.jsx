@@ -46,7 +46,7 @@ const Portfolio = () => {
                 'https://decorexpro.com/images/article/orig/2018/05/otoplenie-doma-ekonomnye-sposoby-i-varianty-23.jpg',
                 'https://avatars.mds.yandex.net/i?id=ee7c85c3cae7c822c7ce7c4edd74116f_l-9211697-images-thumbs&ref=rim&n=13&w=644&h=429',
             ],
-            features: ['Медная проводка', 'Электрощит Legrand', '35 розеток', 'Гарантия 5 лет'],
+            features: ['Медная проводка', 'Электрощит Legrand', '35 розеток'],
             date: '15.12.2023',
             area: '85 м²',
             duration: '3 дня',
@@ -422,12 +422,9 @@ const Portfolio = () => {
                                     <p className="portfolio-description">{item.description}</p>
 
                                     <div className="portfolio-features">
-                                        {item.features.slice(0, 2).map((feature, idx) => (
-                                            <span key={idx} className="feature-tag">{feature}</span>
-                                        ))}
-                                        {item.features.length > 2 && (
-                                            <span className="feature-tag more">+{item.features.length - 2} еще</span>
-                                        )}
+                <span className="feature-tag">
+                    Выполнено работ: {item.features.length}
+                </span>
                                     </div>
 
                                     <div className="portfolio-meta">
