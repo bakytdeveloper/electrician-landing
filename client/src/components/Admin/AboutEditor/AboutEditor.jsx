@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from 'react';
+import React, { useState, useEffect } from 'react';
 import './AboutEditor.css';
 import {
     FaPlus, FaTrash, FaEdit, FaTimes, FaArrowUp, FaArrowDown,
