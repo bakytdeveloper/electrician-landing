@@ -19,23 +19,23 @@ const AboutEditor = () => {
     const [success, setSuccess] = useState('');
     const [activeTab, setActiveTab] = useState('general');
 
-    // Маппинг иконок
-    const iconMap = {
-        FaUser: FaUser,
-        FaAward: FaAward,
-        FaCertificate: FaCertificate,
-        FaTools: FaTools,
-        FaShieldAlt: FaShieldAlt,
-        FaClock: FaClock,
-        FaCheckCircle: FaCheckCircle,
-        FaGraduationCap: FaGraduationCap,
-        FaBriefcase: FaBriefcase,
-        FaStar: FaStar,
-        FaQuoteLeft: FaQuoteLeft,
-        MdElectricalServices: MdElectricalServices,
-        MdEngineering: MdEngineering,
-        MdSupportAgent: MdSupportAgent
-    };
+    // // Маппинг иконок
+    // const iconMap = {
+    //     FaUser: FaUser,
+    //     FaAward: FaAward,
+    //     FaCertificate: FaCertificate,
+    //     FaTools: FaTools,
+    //     FaShieldAlt: FaShieldAlt,
+    //     FaClock: FaClock,
+    //     FaCheckCircle: FaCheckCircle,
+    //     FaGraduationCap: FaGraduationCap,
+    //     FaBriefcase: FaBriefcase,
+    //     FaStar: FaStar,
+    //     FaQuoteLeft: FaQuoteLeft,
+    //     MdElectricalServices: MdElectricalServices,
+    //     MdEngineering: MdEngineering,
+    //     MdSupportAgent: MdSupportAgent
+    // };
 
     useEffect(() => {
         fetchContent();
