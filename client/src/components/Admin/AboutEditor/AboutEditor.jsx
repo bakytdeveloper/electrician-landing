@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './AboutEditor.css';
 import {
-    FaPlus, FaTrash, FaEdit,
+    FaPlus, FaTrash,
     FaUser, FaAward, FaCertificate, FaTools, FaShieldAlt,
     FaClock, FaCheckCircle, FaGraduationCap, FaBriefcase,
     FaStar, FaQuoteLeft, FaPhone, FaSave
