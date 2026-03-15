@@ -4,7 +4,7 @@ import {
     FaPlus, FaTrash,
     FaUser, FaAward, FaCertificate, FaTools, FaShieldAlt,
     FaClock, FaCheckCircle, FaGraduationCap, FaBriefcase,
-    FaStar, FaQuoteLeft, FaSave
+    FaStar, FaQuoteLeft
 } from 'react-icons/fa';
 import {
     MdElectricalServices, MdEngineering, MdSupportAgent
