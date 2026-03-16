@@ -405,31 +405,31 @@ const Footer = () => {
                 </button>
 
                 {/* Флоатинг кнопки быстрой связи */}
-                <div className="footer-floating-buttons">
-                    <a
-                        href="tel:+79991234567"
-                        className="footer-floating-button footer-phone-button"
-                        aria-label="Позвонить"
-                    >
-                        <FaPhone />
-                    </a>
-                    <a
-                        href="https://wa.me/79991234567"
-                        className="footer-floating-button footer-whatsapp-button"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        aria-label="WhatsApp"
-                    >
-                        <FaEnvelope />
-                    </a>
-                    <button
-                        className="footer-floating-button footer-callback-button"
-                        onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                        aria-label="Заказать звонок"
-                    >
-                        <FaEnvelope />
-                    </button>
-                </div>
+                {/*<div className="footer-floating-buttons">*/}
+                {/*    <a*/}
+                {/*        href="tel:+79991234567"*/}
+                {/*        className="footer-floating-button footer-phone-button"*/}
+                {/*        aria-label="Позвонить"*/}
+                {/*    >*/}
+                {/*        <FaPhone />*/}
+                {/*    </a>*/}
+                {/*    <a*/}
+                {/*        href="https://wa.me/79991234567"*/}
+                {/*        className="footer-floating-button footer-whatsapp-button"*/}
+                {/*        target="_blank"*/}
+                {/*        rel="noopener noreferrer"*/}
+                {/*        aria-label="WhatsApp"*/}
+                {/*    >*/}
+                {/*        <FaEnvelope />*/}
+                {/*    </a>*/}
+                {/*    <button*/}
+                {/*        className="footer-floating-button footer-callback-button"*/}
+                {/*        onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}*/}
+                {/*        aria-label="Заказать звонок"*/}
+                {/*    >*/}
+                {/*        <FaEnvelope />*/}
+                {/*    </button>*/}
+                {/*</div>*/}
             </footer>
 
             {/* Модальное окно авторизации админа */}

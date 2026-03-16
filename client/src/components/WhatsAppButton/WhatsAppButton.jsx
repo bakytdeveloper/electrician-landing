@@ -169,14 +169,14 @@ const WhatsAppButton = () => {
                 )}
             </div>
 
-            <button
-                className="whatsapp-hide-button"
-                onClick={() => setIsVisible(false)}
-                onMouseEnter={() => !hasInteracted && setShowBubble(true)}
-                aria-label="Скрыть кнопку WhatsApp"
-            >
-                ×
-            </button>
+            {/*<button*/}
+            {/*    className="whatsapp-hide-button"*/}
+            {/*    onClick={() => setIsVisible(false)}*/}
+            {/*    onMouseEnter={() => !hasInteracted && setShowBubble(true)}*/}
+            {/*    aria-label="Скрыть кнопку WhatsApp"*/}
+            {/*>*/}
+            {/*    ×*/}
+            {/*</button>*/}
         </>
     );
 };
