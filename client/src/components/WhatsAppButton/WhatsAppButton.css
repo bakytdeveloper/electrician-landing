@@ -20,7 +20,7 @@
     width: 60px;
     height: 60px;
     border-radius: 50%;
-    background: linear-gradient(135deg, #25D366, #128C7E);
+    background: linear-gradient(135deg, #71baea, #0442f8);
     border: none;
     cursor: pointer;
     display: flex;
@@ -52,7 +52,7 @@
     width: 70px;
     height: 70px;
     border-radius: 50%;
-    border: 2px solid rgba(37, 211, 102, 1);
+    border: 2px solid rgb(66, 124, 239);
     animation: pulse 2s ease-out infinite;
     opacity: 0;
     pointer-events: none;
@@ -157,7 +157,7 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    background: #075E54;
+    background: #02abde;
     border: none;
     color: white;
     cursor: pointer;
@@ -411,7 +411,7 @@
     width: 50px;
     height: 50px;
     border-radius: 50%;
-    background: #075E54;
+    background: #048ffa;
     color: white;
     border: none;
     cursor: pointer;
