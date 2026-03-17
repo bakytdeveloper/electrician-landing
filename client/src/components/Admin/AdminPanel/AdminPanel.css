@@ -104,3 +104,37 @@
     font-size: 18px;
     color: #333;
 }
+
+
+
+.admin-sidebar-buttons {
+    margin-top: auto;
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.site-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    padding: 12px;
+    background: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.site-btn:hover {
+    background: #45a049;
+}
+
+.site-btn svg {
+    font-size: 16px;
+}

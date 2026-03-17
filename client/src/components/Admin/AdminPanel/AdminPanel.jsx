@@ -5,9 +5,9 @@ import ServicesEditor from '../ServicesEditor/ServicesEditor';
 import PortfolioEditor from '../PortfolioEditor/PortfolioEditor';
 import AboutEditor from '../AboutEditor/AboutEditor';
 
-import { FaSignOutAlt, FaCog } from 'react-icons/fa';
+import { FaSignOutAlt, FaCog, FaHome } from 'react-icons/fa';
 
-const AdminPanel = ({ onLogout }) => {
+const AdminPanel = ({ onLogout, onClose }) => {
     const [activeTab, setActiveTab] = useState('hero');
     const [loading, setLoading] = useState(true);
 
@@ -74,10 +74,16 @@ const AdminPanel = ({ onLogout }) => {
                     </button>
                 </nav>
 
-                <button className="logout-btn" onClick={onLogout}>
-                    <FaSignOutAlt />
-                    Выйти
-                </button>
+                <div className="admin-sidebar-buttons">
+                    <button className="site-btn" onClick={onClose}>
+                        <FaHome />
+                        На сайт
+                    </button>
+                    <button className="logout-btn" onClick={onLogout}>
+                        <FaSignOutAlt />
+                        Выйти
+                    </button>
+                </div>
             </div>
 
             <div className="admin-content">
