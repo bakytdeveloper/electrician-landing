@@ -587,8 +587,8 @@
 }
 
 .about-testimonials-controls {
-    display: flex;
-    gap: 15px;
+    /*display: flex;*/
+    /*gap: 15px;*/
 }
 
 .about-scroll-button {
@@ -1135,5 +1135,313 @@
     .about-cta-btn {
         padding: 15px 25px;
         font-size: 1rem;
+    }
+}
+
+/* Отзывы - горизонтальный скролл */
+.about-testimonials-section {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 40px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.08);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.about-testimonials-title {
+    color: var(--secondary-color);
+    font-size: 2rem;
+    margin: 0 0 10px 0;
+    text-align: center;
+    position: relative;
+    padding-bottom: 15px;
+    display: inline-block;
+}
+
+.about-testimonials-title::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: var(--primary-color);
+}
+
+.about-testimonials-container-wrapper {
+    width: 100%;
+    position: relative;
+    margin-bottom: 0;
+}
+
+.about-testimonials-container {
+    overflow-x: auto;
+    overflow-y: hidden;
+    scrollbar-width: none;
+    -ms-overflow-style: none;
+    cursor: grab;
+    scroll-behavior: smooth;
+    width: 100%;
+}
+
+.about-testimonials-container:active {
+    cursor: grabbing;
+}
+
+.about-testimonials-container::-webkit-scrollbar {
+    display: none;
+}
+
+.about-testimonials-track {
+    display: inline-flex;
+    gap: 30px;
+    padding: 10px 20px;
+    min-width: min-content;
+}
+
+.about-testimonial-card {
+    background: #f8f9fa;
+    border-radius: 15px;
+    padding: 30px;
+    border: 1px solid var(--light-gray);
+    transition: var(--transition);
+    width: 380px;
+    flex-shrink: 0;
+    display: flex;
+    flex-direction: column;
+    min-height: 320px;
+}
+
+.about-testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+    border-color: var(--primary-color);
+}
+
+.about-testimonials-controls {
+    display: flex;
+    gap: 50px;
+    justify-content: center;
+    margin-top: 2px;
+}
+
+.about-scroll-button {
+    width: 50px;
+    height: 50px;
+    background: var(--light-color);
+    border: none;
+    border-radius: 50%;
+    color: var(--secondary-color);
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: var(--transition);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+
+.about-scroll-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: scale(1.1);
+    box-shadow: 0 6px 15px rgba(248, 183, 57, 0.3);
+}
+
+.about-scroll-button:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.about-testimonial-header {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.about-client-info {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.about-client-avatar {
+    width: 60px;
+    height: 60px;
+    background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--white);
+    font-weight: 600;
+    font-size: 1.5rem;
+    flex-shrink: 0;
+}
+
+.about-client-details h4 {
+    color: var(--secondary-color);
+    margin-bottom: 5px;
+    font-size: 1.2rem;
+}
+
+.about-client-role {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+    margin-bottom: 3px;
+}
+
+.about-client-project {
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 500;
+}
+
+.about-testimonial-rating {
+    display: flex;
+    gap: 5px;
+    align-self: flex-start;
+}
+
+.about-star {
+    color: var(--light-gray);
+    font-size: 1.1rem;
+}
+
+.about-star.about-filled {
+    color: #ffc107;
+}
+
+.about-testimonial-body {
+    position: relative;
+    margin-bottom: 20px;
+    flex: 1;
+}
+
+.about-quote-left,
+.about-quote-right {
+    position: absolute;
+    color: var(--primary-color);
+    opacity: 0.3;
+    font-size: 1.8rem;
+}
+
+.about-quote-left {
+    top: -10px;
+    left: -10px;
+}
+
+.about-quote-right {
+    bottom: -10px;
+    right: -10px;
+}
+
+.about-testimonial-text {
+    color: var(--gray-color);
+    line-height: 1.6;
+    font-size: 1rem;
+    font-style: italic;
+    margin: 0;
+}
+
+.about-testimonial-footer {
+    text-align: right;
+}
+
+.about-testimonial-date {
+    color: var(--gray-color);
+    font-size: 0.9rem;
+    font-style: italic;
+}
+
+/* Адаптивность для отзывов */
+@media (max-width: 992px) {
+    .about-testimonials-title {
+        font-size: 1.8rem;
+        margin-bottom: 30px;
+    }
+
+    .about-testimonial-card {
+        width: 350px;
+        min-height: 300px;
+    }
+}
+
+@media (max-width: 768px) {
+    .about-testimonials-section {
+        padding: 30px 20px;
+    }
+
+    .about-testimonials-title {
+        font-size: 1.6rem;
+        margin-bottom: 25px;
+    }
+
+    .about-testimonials-track {
+        gap: 20px;
+        padding: 5px 10px;
+    }
+
+    .about-testimonial-card {
+        width: 320px;
+        min-height: 280px;
+        padding: 25px;
+    }
+
+    .about-testimonials-controls {
+        gap: 15px;
+        margin-top: 15px;
+    }
+
+    .about-scroll-button {
+        width: 45px;
+        height: 45px;
+        font-size: 1.1rem;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-testimonials-section {
+        padding: 25px 15px;
+    }
+
+    .about-testimonials-title {
+        font-size: 1.4rem;
+        margin-bottom: 20px;
+    }
+
+    .about-testimonial-card {
+        width: 280px;
+        min-height: 260px;
+        padding: 20px;
+    }
+
+    .about-testimonials-controls {
+        gap: 12px;
+    }
+
+    .about-scroll-button {
+        width: 40px;
+        height: 40px;
+        font-size: 1rem;
+    }
+
+    .about-client-avatar {
+        width: 50px;
+        height: 50px;
+        font-size: 1.3rem;
+    }
+
+    .about-client-details h4 {
+        font-size: 1.1rem;
+    }
+
+    .about-testimonial-text {
+        font-size: 0.95rem;
     }
 }

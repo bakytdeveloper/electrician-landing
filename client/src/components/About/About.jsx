@@ -263,69 +263,70 @@ const About = () => {
                     {/* Отзывы - горизонтальный скролл */}
                     {activeTestimonials.length > 0 && (
                         <div className="about-testimonials-section">
-                            <div className="about-testimonials-header">
-                                <h3>Отзывы клиентов</h3>
-                                <div className="about-testimonials-controls">
-                                    <button
-                                        className="about-scroll-button about-scroll-left"
-                                        onClick={() => scrollTestimonials('left')}
-                                        aria-label="Предыдущие отзывы"
-                                    >
-                                        <FaChevronLeft />
-                                    </button>
-                                    <button
-                                        className="about-scroll-button about-scroll-right"
-                                        onClick={() => scrollTestimonials('right')}
-                                        aria-label="Следующие отзывы"
-                                    >
-                                        <FaChevronRight />
-                                    </button>
+                            <h3 className="about-testimonials-title">Отзывы клиентов</h3>
+
+                            <div className="about-testimonials-container-wrapper">
+                                <div
+                                    className="about-testimonials-container"
+                                    ref={testimonialsRef}
+                                    onTouchStart={handleTouchStart}
+                                    onTouchMove={handleTouchMove}
+                                    onTouchEnd={handleTouchEnd}
+                                >
+                                    <div className="about-testimonials-track">
+                                        {activeTestimonials.map((testimonial, index) => (
+                                            <div key={index} className="about-testimonial-card">
+                                                <div className="about-testimonial-header">
+                                                    <div className="about-client-info">
+                                                        <div className="about-client-avatar">
+                                                            {testimonial.name.charAt(0)}
+                                                        </div>
+                                                        <div className="about-client-details">
+                                                            <h4>{testimonial.name}</h4>
+                                                            <p className="about-client-role">{testimonial.role}</p>
+                                                            <p className="about-client-project">{testimonial.project}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="about-testimonial-rating">
+                                                        {[...Array(5)].map((_, i) => (
+                                                            <FaStar
+                                                                key={i}
+                                                                className={`about-star ${i < testimonial.rating ? 'about-filled' : ''}`}
+                                                            />
+                                                        ))}
+                                                    </div>
+                                                </div>
+
+                                                <div className="about-testimonial-body">
+                                                    <FaQuoteLeft className="about-quote-left" />
+                                                    <p className="about-testimonial-text">{testimonial.text}</p>
+                                                    <FaQuoteRight className="about-quote-right" />
+                                                </div>
+
+                                                <div className="about-testimonial-footer">
+                                                    <span className="about-testimonial-date">{testimonial.date}</span>
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
                                 </div>
                             </div>
 
-                            <div
-                                className="about-testimonials-container"
-                                ref={testimonialsRef}
-                                onTouchStart={handleTouchStart}
-                                onTouchMove={handleTouchMove}
-                                onTouchEnd={handleTouchEnd}
-                            >
-                                <div className="about-testimonials-track">
-                                    {activeTestimonials.map((testimonial, index) => (
-                                        <div key={index} className="about-testimonial-card">
-                                            <div className="about-testimonial-header">
-                                                <div className="about-client-info">
-                                                    <div className="about-client-avatar">
-                                                        {testimonial.name.charAt(0)}
-                                                    </div>
-                                                    <div className="about-client-details">
-                                                        <h4>{testimonial.name}</h4>
-                                                        <p className="about-client-role">{testimonial.role}</p>
-                                                        <p className="about-client-project">{testimonial.project}</p>
-                                                    </div>
-                                                </div>
-                                                <div className="about-testimonial-rating">
-                                                    {[...Array(5)].map((_, i) => (
-                                                        <FaStar
-                                                            key={i}
-                                                            className={`about-star ${i < testimonial.rating ? 'about-filled' : ''}`}
-                                                        />
-                                                    ))}
-                                                </div>
-                                            </div>
-
-                                            <div className="about-testimonial-body">
-                                                <FaQuoteLeft className="about-quote-left" />
-                                                <p className="about-testimonial-text">{testimonial.text}</p>
-                                                <FaQuoteRight className="about-quote-right" />
-                                            </div>
-
-                                            <div className="about-testimonial-footer">
-                                                <span className="about-testimonial-date">{testimonial.date}</span>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
+                            <div className="about-testimonials-controls">
+                                <button
+                                    className="about-scroll-button about-scroll-left"
+                                    onClick={() => scrollTestimonials('left')}
+                                    aria-label="Предыдущие отзывы"
+                                >
+                                    <FaChevronLeft />
+                                </button>
+                                <button
+                                    className="about-scroll-button about-scroll-right"
+                                    onClick={() => scrollTestimonials('right')}
+                                    aria-label="Следующие отзывы"
+                                >
+                                    <FaChevronRight />
+                                </button>
                             </div>
                         </div>
                     )}
