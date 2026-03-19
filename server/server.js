@@ -7,6 +7,7 @@ const contactRoutes = require('./routes/contactRoutes');
 const servicesRoutes = require('./routes/servicesRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
+const priceRoutes = require('./routes/priceRoutes');
 
 const path = require('path');
 const connectDB = require('./config/db');
@@ -32,11 +33,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/hero', heroRoutes);
 app.use('/api/services', servicesRoutes);
 app.use('/api/portfolio', portfolioRoutes);
+app.use('/api/price', priceRoutes);
 app.use('/api/about', aboutRoutes);
-
-
 app.use('/api/contact', contactRoutes);
-// Маршруты
 
 
 app.get('/', (req, res) => {

@@ -6,6 +6,7 @@ import PortfolioEditor from '../PortfolioEditor/PortfolioEditor';
 import AboutEditor from '../AboutEditor/AboutEditor';
 
 import { FaSignOutAlt, FaCog, FaHome } from 'react-icons/fa';
+import PriceEditor from "../PriceEditor/PriceEditor";
 
 const AdminPanel = ({ onLogout, onClose }) => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -72,6 +73,14 @@ const AdminPanel = ({ onLogout, onClose }) => {
                     >
                         О нас
                     </button>
+
+                    <button
+                        className={activeTab === 'price' ? 'active' : ''}
+                        onClick={() => setActiveTab('price')}
+                    >
+                        Прайс-лист
+                    </button>
+
                 </nav>
 
                 <div className="admin-sidebar-buttons">
@@ -91,6 +100,7 @@ const AdminPanel = ({ onLogout, onClose }) => {
                 {activeTab === 'services' && <ServicesEditor />}
                 {activeTab === 'portfolio' && <PortfolioEditor />}
                 {activeTab === 'about' && <AboutEditor />}
+                {activeTab === 'price' && <PriceEditor />}
                 {/* Другие редакторы будут добавлены позже */}
             </div>
         </div>
