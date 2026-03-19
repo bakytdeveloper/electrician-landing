@@ -249,6 +249,10 @@
     .price-order-btn {
         width: 100%;
     }
+
+    .price-section-body {
+        padding: 10px;
+    }
 }
 
 @media (max-width: 576px) {
