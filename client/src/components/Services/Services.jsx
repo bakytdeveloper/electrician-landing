@@ -17,7 +17,8 @@ import {
     FaPaintRoller,
     FaHome,
     FaBuilding,
-    FaIndustry
+    FaIndustry,
+    FaFileInvoice
 } from 'react-icons/fa';
 import {
     MdOutlineElectricalServices,
@@ -44,6 +45,7 @@ import {
 } from 'react-icons/gi';
 import './Services.css';
 import Button from '../common/Button/Button';
+import PriceModal from '../PriceModal/PriceModal';
 
 // Расширенный маппинг иконок для клиентской части
 const iconMap = {
@@ -64,6 +66,7 @@ const iconMap = {
     FaHome: FaHome,
     FaBuilding: FaBuilding,
     FaIndustry: FaIndustry,
+    FaFileInvoice: FaFileInvoice,
     MdOutlineElectricalServices: MdOutlineElectricalServices,
     MdSecurity: MdSecurity,
     MdHomeRepairService: MdHomeRepairService,
@@ -90,6 +93,7 @@ const Services = () => {
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
     const [expandedServices, setExpandedServices] = useState({});
+    const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
 
     useEffect(() => {
         fetchContent();
@@ -282,12 +286,22 @@ const Services = () => {
                         >
                             {content.cta?.buttonText}
                         </Button>
-                        <a href={`tel:${content.cta?.phoneNumber}`} className="services-cta-phone">
-                            {content.cta?.phoneText}
-                        </a>
+                        <button
+                            className="services-cta-phone"
+                            onClick={() => setIsPriceModalOpen(true)}
+                        >
+                            <FaFileInvoice style={{ marginRight: '8px' }} />
+                            Посмотреть прайс-лист
+                        </button>
                     </div>
                 </div>
             </div>
+
+            {/* Модальное окно с прайс-листом */}
+            <PriceModal
+                isOpen={isPriceModalOpen}
+                onClose={() => setIsPriceModalOpen(false)}
+            />
         </section>
     );
 };

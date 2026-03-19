@@ -537,3 +537,28 @@
 .services-grid > *:nth-child(6) { animation-delay: 0.6s; }
 .services-grid > *:nth-child(7) { animation-delay: 0.7s; }
 .services-grid > *:nth-child(8) { animation-delay: 0.8s; }
+
+
+.services-cta-phone {
+    color: var(--white);
+    font-size: 1.2rem;
+    font-weight: 600;
+    text-decoration: none;
+    transition: var(--transition);
+    padding: 12px 20px;
+    border-radius: 12px;
+    background: rgba(255, 255, 255, 0.1);
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-family: inherit;
+}
+
+.services-cta-phone:hover {
+    background: rgba(255, 255, 255, 0.2);
+    color: var(--primary-color);
+    transform: translateY(-2px);
+}
