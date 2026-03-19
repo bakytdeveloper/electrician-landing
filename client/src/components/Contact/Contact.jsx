@@ -80,13 +80,6 @@ const Contact = () => {
             description: 'Ответим в течение 2 часов'
         },
         {
-            icon: <FaMapMarkerAlt />,
-            title: 'Адрес',
-            details: ['Кордай, ул.Весёлая, д. 15'],
-            link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point',
-            // description: 'Принимаем по предварительной записи'
-        },
-        {
             icon: <FaClock />,
             title: 'Время работы',
             details: ['Пн-Пт: 8:00 - 20:00', 'Сб-Вс: 9:00 - 18:00'],
