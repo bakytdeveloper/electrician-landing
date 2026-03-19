@@ -285,8 +285,9 @@
 .services-benefits-header p {
     color: var(--gray-color);
     font-size: 1.1rem;
+
     max-width: 600px;
-    margin: 0 auto;
+    margin: 15px auto;
 }
 
 .services-benefits-grid {

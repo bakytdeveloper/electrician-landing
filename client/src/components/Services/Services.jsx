@@ -243,9 +243,9 @@ const Services = () => {
                 {/* Преимущества */}
                 {activeBenefits.length > 0 && (
                     <div className="services-benefits-section">
-                        <div className="services-benefits-header">
-                            <h3>Почему выбирают нас</h3>
-                            <p>Мы гарантируем качество и надежность всех выполненных работ</p>
+                        <div className="services-benefits-header services-section-header">
+                            <h3 className="services-section-title">Почему выбирают нас</h3>
+                            <p className="services-section-subtitle">Мы гарантируем качество и надежность всех выполненных работ</p>
                         </div>
 
                         <div className="services-benefits-grid">
