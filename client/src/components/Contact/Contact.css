@@ -538,6 +538,11 @@
     font-size: 0.95rem;
 }
 
+.contact-map-header p {
+    padding-bottom: 0;
+    margin-bottom: 0;
+}
+
 .contact-current-time {
     display: flex;
     align-items: center;
