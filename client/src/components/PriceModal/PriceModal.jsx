@@ -100,7 +100,7 @@ const PriceModal = ({ isOpen, onClose }) => {
                                             <tr key={itemIndex}>
                                                 <td>{item.name}</td>
                                                 <td>{item.unit}</td>
-                                                <td className="price-value">{item.price}</td>
+                                                <td className="price-value">{item.price} ₸</td>
                                             </tr>
                                         ))}
                                         </tbody>

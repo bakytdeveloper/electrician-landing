@@ -386,7 +386,7 @@ const PriceEditor = () => {
                                         <div key={itemIndex} className="price-item-row">
                                             <span className="item-name">{item.name}</span>
                                             <span className="item-unit">{item.unit}</span>
-                                            <span className="item-price">{item.price}</span>
+                                            <span className="item-price">{item.price} ₸</span>
                                             <div className="item-actions">
                                                 <button
                                                     className="icon-btn move-btn"
@@ -513,7 +513,7 @@ const PriceEditor = () => {
                                     type="text"
                                     value={editingItem.price}
                                     onChange={(e) => setEditingItem({ ...editingItem, price: e.target.value })}
-                                    placeholder="Например: 1 500 ₸"
+                                    placeholder="Например: 1 500"
                                 />
                             </div>
                         </div>
