@@ -64,7 +64,7 @@
     align-items: center;
     text-align: center;
     justify-content: center;
-    margin-bottom: 20px;
+    margin-bottom: 2px;
     gap: 20px;
 }
 
@@ -166,8 +166,10 @@
     justify-content: center;
     color: var(--white);
     font-size: 1.5rem;
-    margin-bottom: 2px;
+    /*margin-bottom: 2px;*/
     padding: 0;
+    z-index: 111;
+    position: absolute;
 }
 
 .contact-info-content h4 {
@@ -208,9 +210,9 @@
 
 /* Социальные сети */
 .contact-social-section {
-    background: var(--white);
+    background: linear-gradient(135deg, #e9e9ea, #e4e4f8);
     border-radius: 15px;
-    padding: 30px;
+    padding: 25px 30px;
     border: 1px solid rgba(0, 0, 0, 0.05);
     box-shadow: 0 5px 20px rgba(0, 0, 0, 0.05);
 }
