@@ -71,7 +71,7 @@ const Footer = () => {
     const contactInfo = [
         { icon: <FaPhone />, text: '+7 (999) 123-45-67', link: 'tel:+79991234567' },
         { icon: <FaEnvelope />, text: 'info@electromaster.ru', link: 'mailto:info@electromaster.ru' },
-        { icon: <FaMapMarkerAlt />, text: 'Кордай, ул.Электриков, д. 15', link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point' },
+        { icon: <FaMapMarkerAlt />, text: 'г.Алматы, ул.Электриков, д. 15', link: 'https://www.google.com/maps?q=Ak+zhol+border+control+point' },
         { icon: <FaClock />, text: 'Пн-Пт: 8:00-20:00, Сб-Вс: 9:00-18:00', link: '#contact' },
         { icon: <FaLock />, text: 'Админ-панель', link: 'admin' }
     ];
