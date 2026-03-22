@@ -7,6 +7,7 @@ import Button from '../common/Button/Button';
 const Header = ({ openModal }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    // eslint-disable-next-line
     const [isMobile, setIsMobile] = useState(false);
 
     useEffect(() => {
@@ -154,13 +155,13 @@ const Header = ({ openModal }) => {
                                 <span>Позвонить</span>
                             </Button>
 
-                            <Button
-                                variant="primary"
-                                size="small"
-                                onClick={() => openModal('callback')}
-                            >
-                                Заказать вызов
-                            </Button>
+                            {/*<Button*/}
+                            {/*    variant="primary"*/}
+                            {/*    size="small"*/}
+                            {/*    onClick={() => openModal('callback')}*/}
+                            {/*>*/}
+                            {/*    Заказать вызов*/}
+                            {/*</Button>*/}
                         </div>
 
                         {/* Кнопка меню для мобильных */}

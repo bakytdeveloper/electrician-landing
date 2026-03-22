@@ -2,7 +2,7 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     FaPhone,
     FaEnvelope,
-    FaMapMarkerAlt,
+    // FaMapMarkerAlt,
     FaClock,
     FaPaperPlane,
     FaCheckCircle,
@@ -12,7 +12,10 @@ import {
     FaVk,
     FaInstagram
 } from 'react-icons/fa';
-import { MdOutlineSupportAgent, MdEmail } from 'react-icons/md';
+import {
+    MdOutlineSupportAgent,
+    // MdEmail
+} from 'react-icons/md';
 import './Contact.css';
 import Button from '../common/Button/Button';
 
@@ -591,37 +594,6 @@ const Contact = () => {
                     </div>
                 </div>
 
-                {/*<div className="contact-quick-contact">*/}
-                {/*    <div className="contact-quick-contact-content">*/}
-                {/*        <h3>Нужна срочная консультация?</h3>*/}
-                {/*        <p>Позвоните или напишите нам прямо сейчас</p>*/}
-                {/*    </div>*/}
-                {/*    <div className="contact-quick-contact-actions">*/}
-                {/*        <a href="tel:+79991234567" className="contact-quick-contact-btn contact-primary">*/}
-                {/*            <FaPhone />*/}
-                {/*            Позвонить*/}
-                {/*        </a>*/}
-                {/*        <button*/}
-                {/*            className="contact-quick-contact-btn contact-secondary"*/}
-                {/*            onClick={(e) => {*/}
-                {/*                e.stopPropagation();*/}
-                {/*                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });*/}
-                {/*            }}*/}
-                {/*        >*/}
-                {/*            <MdEmail />*/}
-                {/*            Написать*/}
-                {/*        </button>*/}
-                {/*        <a*/}
-                {/*            href="https://wa.me/79991234567"*/}
-                {/*            className="contact-quick-contact-btn contact-whatsapp"*/}
-                {/*            target="_blank"*/}
-                {/*            rel="noopener noreferrer"*/}
-                {/*        >*/}
-                {/*            <FaWhatsapp />*/}
-                {/*            WhatsApp*/}
-                {/*        </a>*/}
-                {/*    </div>*/}
-                {/*</div>*/}
             </div>
         </section>
     );

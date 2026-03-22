@@ -50,7 +50,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Медная проводка', 'Электрощит Legrand', '35 розеток'],
                         date: '15.12.2023',
-                        area: '85 м²',
+                        area: '85',
                         duration: '3 дня',
                         order: 1
                     },
@@ -65,7 +65,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Наружное освещение', 'Автоматические ворота', 'Стабилизатор напряжения', 'Резервный генератор'],
                         date: '05.11.2023',
-                        area: '150 м²',
+                        area: '150',
                         duration: '7 дней',
                         order: 2
                     },
@@ -80,7 +80,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Щиток ABB', 'УЗИП', 'Групповые автоматы', 'Мониторинг энергопотребления'],
                         date: '22.10.2023',
-                        area: '120 м²',
+                        area: '120',
                         duration: '2 дня',
                         order: 3
                     },
@@ -94,7 +94,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Силовые кабели', 'Промышленные розетки', 'LED освещение', 'Защита от пыли и влаги'],
                         date: '10.09.2023',
-                        area: '500 м²',
+                        area: '500',
                         duration: '14 дней',
                         order: 4
                     },
@@ -109,7 +109,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Аварийный выезд', 'Замена автоматов', 'Диагностика сети', 'Профилактические работы'],
                         date: '03.06.2023',
-                        area: '90 м²',
+                        area: '90',
                         duration: '5 часов',
                         order: 5
                     },
@@ -124,7 +124,7 @@ const getPortfolioContent = async (req, res) => {
                         ],
                         features: ['Декоративное освещение', 'Диммирование', 'Зонирование света', 'Энергоэффективность'],
                         date: '20.05.2023',
-                        area: '200 м²',
+                        area: '200',
                         duration: '8 дней',
                         order: 6
                     }
