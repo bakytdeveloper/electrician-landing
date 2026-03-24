@@ -123,7 +123,7 @@
     50% { opacity: 0.5; transform: scale(0.8); }
 }
 
-/* Часы работы */
+/* Часы работы - двухколоночное отображение на больших экранах */
 .contact-hours-section h3 {
     color: var(--secondary-color);
     font-size: 1.4rem;
@@ -131,12 +131,14 @@
     text-align: center;
 }
 
+/* Контейнер для таблицы с двухколоночным расположением */
 .contact-hours-table {
-    display: flex;
-    flex-direction: column;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
     gap: 12px;
 }
 
+/* Строка графика работы */
 .contact-hours-row {
     display: flex;
     align-items: center;
@@ -145,6 +147,12 @@
     border-radius: 12px;
     background: var(--light-color);
     transition: all 0.3s ease;
+}
+
+/* Специальные стили для воскресенья - занимает всю ширину */
+.contact-hours-row:last-child {
+    grid-column: span 2;
+    justify-content: space-between;
 }
 
 .contact-hours-row.contact-today {
@@ -179,6 +187,50 @@
 .contact-day-status.status-closed {
     background: rgba(231, 76, 60, 0.15);
     color: var(--accent-color);
+}
+
+/* Адаптивность для планшетов и мобильных устройств */
+@media (max-width: 992px) {
+    .contact-hours-table {
+        grid-template-columns: 1fr;
+        gap: 12px;
+    }
+
+    .contact-hours-row:last-child {
+        grid-column: span 1;
+    }
+}
+
+@media (max-width: 768px) {
+    .contact-hours-table {
+        grid-template-columns: 1fr;
+        gap: 10px;
+    }
+
+    .contact-hours-row:last-child {
+        grid-column: span 1;
+    }
+
+    .contact-hours-row {
+        flex-wrap: wrap;
+        gap: 8px;
+    }
+
+    .contact-day-status {
+        margin-left: auto;
+    }
+}
+
+@media (max-width: 480px) {
+    .contact-hours-row {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 5px;
+    }
+
+    .contact-day-status {
+        margin-left: 0;
+    }
 }
 
 /* Карта */
@@ -490,13 +542,26 @@
     box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
 }
 
+.contact-form-note {
+    color: var(--gray-color);
+    font-size: 0.85rem;
+    text-align: center;
+    margin-top: 10px;
+}
+
 @keyframes spin {
     to {
         transform: rotate(360deg);
     }
 }
 
-/* Адаптивность */
+/* Адаптивность для планшетов */
+@media (max-width: 992px) {
+    .contact-section {
+        padding: 50px 20px;
+    }
+}
+
 @media (max-width: 768px) {
     .contact-section {
         padding: 40px 16px;
@@ -511,19 +576,8 @@
         padding: 24px;
     }
 
-    .contact-hours-row {
-        flex-wrap: wrap;
-        gap: 8px;
-    }
-
-    .contact-day-status {
-        margin-left: auto;
-    }
-
     .contact-quick-buttons {
         gap: 8px;
-        padding-left: 0;
-        padding-right: 0;
     }
 
     .contact-quick-btn {
@@ -534,20 +588,8 @@
 }
 
 @media (max-width: 480px) {
-    .contact-hours-row {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 5px;
-    }
-
-    .contact-day-status {
-        margin-left: 0;
-    }
-
     .contact-quick-buttons {
         gap: 6px;
-        padding-left: 0;
-        padding-right: 0;
     }
 
     .contact-quick-btn {
