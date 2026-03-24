@@ -311,51 +311,53 @@ const Services = () => {
                             <p className="services-section-subtitle">Мы гарантируем качество и надежность всех выполненных работ</p>
                         </div>
 
-                        {/* CTA блок */}
-                        <div className="services-services-cta">
-                            <div className="services-cta-content">
-                                <h3>{content.cta?.title}</h3>
-                                <p>{content.cta?.description}</p>
-                            </div>
-                            <div className="services-cta-actions">
-                                <Button
-                                    variant="primary"
-                                    size="large"
-                                    onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
-                                >
-                                    {content.cta?.buttonText}
-                                </Button>
-                                <button
-                                    className="services-cta-phone"
-                                    onClick={() => setIsPriceModalOpen(true)}
-                                >
-                                    <FaFileInvoice style={{ marginRight: '8px' }} />
-                                    Посмотреть прайс-лист
-                                </button>
-                            </div>
+
+                        <div className="services-benefits-grid">
+                            {activeBenefits.map((benefit, index) => {
+                                const IconComponent = iconMap[benefit.icon] || FaCheckCircle;
+
+                                return (
+                                    <div key={index} className="services-benefit-card">
+                                        <div className="services-benefit-icon-wrapper">
+                                            <IconComponent />
+                                        </div>
+                                        <div className="benefit-content">
+                                            <h4>{benefit.title}</h4>
+                                            <p>{benefit.description}</p>
+                                        </div>
+                                    </div>
+                                );
+                            })}
                         </div>
 
 
                     </div>
                 )}
 
-                <div className="services-benefits-grid">
-                    {activeBenefits.map((benefit, index) => {
-                        const IconComponent = iconMap[benefit.icon] || FaCheckCircle;
-
-                        return (
-                            <div key={index} className="services-benefit-card">
-                                <div className="services-benefit-icon-wrapper">
-                                    <IconComponent />
-                                </div>
-                                <div className="benefit-content">
-                                    <h4>{benefit.title}</h4>
-                                    <p>{benefit.description}</p>
-                                </div>
-                            </div>
-                        );
-                    })}
+                {/* CTA блок */}
+                <div className="services-services-cta">
+                    <div className="services-cta-content">
+                        <h3>{content.cta?.title}</h3>
+                        <p>{content.cta?.description}</p>
+                    </div>
+                    <div className="services-cta-actions">
+                        <Button
+                            variant="primary"
+                            size="large"
+                            onClick={() => document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' })}
+                        >
+                            {content.cta?.buttonText}
+                        </Button>
+                        <button
+                            className="services-cta-phone"
+                            onClick={() => setIsPriceModalOpen(true)}
+                        >
+                            <FaFileInvoice style={{ marginRight: '8px' }} />
+                            Посмотреть прайс-лист
+                        </button>
+                    </div>
                 </div>
+
 
             </div>
 
