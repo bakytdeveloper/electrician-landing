@@ -236,13 +236,13 @@ const Contact = () => {
                                 <div className="contact-status-wrapper">
                                     <div className={`contact-availability-badge ${isWorkingNow() ? 'contact-online' : 'contact-offline'}`}>
                                         <span className="contact-status-dot"></span>
-                                        <span>{isWorkingNow() ? 'Сейчас работаем' : 'Сейчас не работаем'}</span>
+                                        <span>{isWorkingNow() ? 'График работы' : 'График работы'}</span>
                                     </div>
                                 </div>
                             </div>
 
                             <div className="contact-hours-section">
-                                <h3>График работы</h3>
+                                {/*<h3>График работы</h3>*/}
                                 <div className="contact-hours-table">
                                     {todayHours.map((day, index) => (
                                         <div
