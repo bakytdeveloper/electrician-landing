@@ -216,9 +216,9 @@ const Services = () => {
                                             <span className="services-service-duration">{service.duration}</span>
                                         </div>
                                     </div>
-                                    <div className="services-service-arrow">
-                                        <FaArrowRight />
-                                    </div>
+                                    {/*<div className="services-service-arrow">*/}
+                                    {/*    <FaArrowRight />*/}
+                                    {/*</div>*/}
                                 </div>
 
                                 <div className="services-service-card-preview">
