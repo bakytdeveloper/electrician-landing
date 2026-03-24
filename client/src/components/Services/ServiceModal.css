@@ -1,0 +1,301 @@
+.service-modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 10001;
+    backdrop-filter: blur(5px);
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+.service-modal-content {
+    background: white;
+    border-radius: 20px;
+    width: 90%;
+    max-width: 800px;
+    max-height: 90vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+    animation: modalSlideUp 0.3s ease-out;
+}
+
+@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes modalSlideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Заголовок модального окна */
+.service-modal-header {
+    padding: 25px 30px;
+    background: linear-gradient(135deg, var(--secondary-color), var(--secondary-light));
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    position: relative;
+}
+
+.service-modal-header-icon {
+    width: 60px;
+    height: 60px;
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 15px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.8rem;
+    flex-shrink: 0;
+}
+
+.service-modal-header-info {
+    flex: 1;
+}
+
+.service-modal-header-info h2 {
+    margin: 0 0 10px 0;
+    font-size: 1.6rem;
+    font-weight: 600;
+    color: white;
+}
+
+.service-modal-meta {
+    display: flex;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.service-modal-price {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 15px;
+    border-radius: 25px;
+    font-weight: 700;
+    font-size: 0.95rem;
+}
+
+.service-modal-duration {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 5px 15px;
+    border-radius: 25px;
+    font-weight: 600;
+    font-size: 0.9rem;
+}
+
+.service-modal-close {
+    background: rgba(255, 255, 255, 0.2);
+    border: none;
+    color: white;
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 1.2rem;
+    flex-shrink: 0;
+}
+
+.service-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
+    transform: rotate(90deg);
+}
+
+/* Тело модального окна */
+.service-modal-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 30px;
+    background: #f8f9fa;
+}
+
+.service-modal-description {
+    margin-bottom: 30px;
+}
+
+.service-modal-description h3 {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.service-description-text {
+    color: var(--gray-color);
+    line-height: 1.6;
+    font-size: 1rem;
+    text-align: left;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+
+.service-modal-features h3 {
+    color: var(--secondary-color);
+    font-size: 1.3rem;
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.service-features-list {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 15px;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+@media (max-width: 576px) {
+    .service-features-list {
+        grid-template-columns: 1fr;
+    }
+}
+
+.service-feature-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 12px;
+    background: white;
+    border-radius: 10px;
+    transition: all 0.3s;
+    border: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+.service-feature-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+    border-color: var(--primary-color);
+}
+
+.service-feature-check {
+    color: var(--primary-color);
+    font-size: 1rem;
+    flex-shrink: 0;
+}
+
+.service-feature-item span {
+    color: var(--secondary-color);
+    font-size: 0.95rem;
+    line-height: 1.4;
+    text-align: left;
+}
+
+/* Футер модального окна */
+.service-modal-footer {
+    padding: 20px 30px;
+    background: white;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.service-modal-order-btn {
+    flex: 1;
+}
+
+.service-modal-call-link {
+    text-align: center;
+    color: var(--secondary-color);
+    text-decoration: none;
+    font-size: 1rem;
+    font-weight: 500;
+    transition: all 0.3s;
+    padding: 12px 24px;
+    border-radius: 12px;
+    border: 2px solid var(--light-gray);
+    background: white;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    white-space: nowrap;
+}
+
+.service-modal-call-link:hover {
+    color: var(--primary-color);
+    border-color: var(--primary-color);
+    background: rgba(248, 183, 57, 0.05);
+    transform: translateY(-2px);
+}
+
+/* Адаптивность */
+@media (max-width: 768px) {
+    .service-modal-header {
+        padding: 20px;
+    }
+
+    .service-modal-header-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .service-modal-header-info h2 {
+        font-size: 1.3rem;
+    }
+
+    .service-modal-body {
+        padding: 20px;
+    }
+
+    .service-modal-footer {
+        padding: 20px;
+        flex-direction: column;
+    }
+
+    .service-modal-call-link {
+        width: 100%;
+        white-space: normal;
+    }
+}
+
+@media (max-width: 480px) {
+    .service-modal-header {
+        flex-wrap: wrap;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .service-modal-header-icon {
+        width: 50px;
+        height: 50px;
+        font-size: 1.5rem;
+    }
+
+    .service-modal-header-info {
+        text-align: center;
+    }
+
+    .service-modal-meta {
+        justify-content: center;
+    }
+
+    .service-modal-close {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+    }
+}

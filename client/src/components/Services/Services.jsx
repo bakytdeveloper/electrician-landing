@@ -18,7 +18,8 @@ import {
     FaHome,
     FaBuilding,
     FaIndustry,
-    FaFileInvoice
+    FaFileInvoice,
+    FaTimes
 } from 'react-icons/fa';
 import {
     MdOutlineElectricalServices,
@@ -46,6 +47,7 @@ import {
 import './Services.css';
 import Button from '../common/Button/Button';
 import PriceModal from '../PriceModal/PriceModal';
+import ServiceModal from './ServiceModal';
 
 // Расширенный маппинг иконок для клиентской части
 const iconMap = {
@@ -92,7 +94,8 @@ const Services = () => {
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
     const [activeCategory, setActiveCategory] = useState('all');
-    const [expandedServices, setExpandedServices] = useState({});
+    const [selectedService, setSelectedService] = useState(null);
+    const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
     const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
 
     useEffect(() => {
@@ -111,11 +114,14 @@ const Services = () => {
         }
     };
 
-    const handleServiceClick = (serviceId) => {
-        setExpandedServices(prev => ({
-            ...prev,
-            [serviceId]: !prev[serviceId]
-        }));
+    const handleServiceClick = (service) => {
+        setSelectedService(service);
+        setIsServiceModalOpen(true);
+    };
+
+    const closeServiceModal = () => {
+        setIsServiceModalOpen(false);
+        setSelectedService(null);
     };
 
     // Получить уникальные категории из услуг (сохраняя оригинальные названия)
@@ -129,62 +135,18 @@ const Services = () => {
         return categories.sort((a, b) => a.localeCompare(b, 'ru'));
     };
 
-    // Функция для форматирования текста с разделением на абзацы и выделением первого предложения в каждом абзаце
+   // Упрощенная функция для форматирования текста - сохраняет все пробелы, отступы и переносы
     const formatDescription = (description) => {
         if (!description) return null;
 
-        // Разделяем текст на абзацы по пустым строкам (два переноса строки подряд)
-        const paragraphs = description.split(/\n\s*\n/);
-
-        // Регулярное выражение для поиска конца первого предложения
-        const sentenceEndRegex = /^([^.!?:;]+[.!?:;]?\s*)/;
-
-        return paragraphs.map((paragraph, paraIndex) => {
-            // Проверяем, не является ли абзац пустым
-            if (!paragraph.trim()) return null;
-
-            // Разделяем абзац на строки, чтобы сохранить форматирование
-            const lines = paragraph.split('\n');
-
-            // Обрабатываем каждую строку в абзаце
-            const processedLines = lines.map((line, lineIndex) => {
-                if (!line.trim()) {
-                    return <br key={`br-${paraIndex}-${lineIndex}`} />;
-                }
-
-                // Ищем первое предложение в строке
-                const match = line.match(sentenceEndRegex);
-
-                if (match) {
-                    const firstSentence = match[0];
-                    const restOfLine = line.substring(firstSentence.length);
-
-                    return (
-                        <span key={`line-${paraIndex}-${lineIndex}`}>
-                            <strong style={{ opacity: 1, color: "black" }}>{firstSentence}</strong>
-                            {restOfLine}
-                            {lineIndex < lines.length - 1 && <br />}
-                        </span>
-                    );
-                }
-
-                // Если не нашли разделитель, выделяем всю строку жирным
-                return (
-                    <span key={`line-${paraIndex}-${lineIndex}`}>
-                        <strong style={{ opacity: 1, color: "black" }}>{line}</strong>
-                        {lineIndex < lines.length - 1 && <br />}
-                    </span>
-                );
-            });
-
-            return (
-                <React.Fragment key={`para-${paraIndex}`}>
-                    {processedLines}
-                    {paraIndex < paragraphs.length - 1 && <br />}
-                </React.Fragment>
-            );
-        });
+        // Просто возвращаем текст с сохранением всех пробелов и переносов
+        return (
+            <div style={{ whiteSpace: 'pre-wrap', textAlign: 'left' }}>
+                {description}
+            </div>
+        );
     };
+
 
     if (loading) {
         return <div className="services-loading">Загрузка...</div>;
@@ -236,13 +198,12 @@ const Services = () => {
                 <div className="services-grid">
                     {filteredServices.map(service => {
                         const IconComponent = iconMap[service.icon] || FaBolt;
-                        const isExpanded = expandedServices[service.id];
 
                         return (
                             <div
                                 key={service.id}
-                                className={`services-service-card ${isExpanded ? 'expanded' : ''}`}
-                                onClick={() => handleServiceClick(service.id)}
+                                className="services-service-card"
+                                onClick={() => handleServiceClick(service)}
                             >
                                 <div className="services-service-card-header">
                                     <div className="services-service-icon">
@@ -260,43 +221,10 @@ const Services = () => {
                                     </div>
                                 </div>
 
-                                <div className="services-service-card-content">
-                                    <p className="services-service-description" style={{ whiteSpace: 'pre-line' }}>
-                                        {formatDescription(service.description)}
+                                <div className="services-service-card-preview">
+                                    <p className="services-service-preview-text">
+                                        {service.previewDescription || service.description?.substring(0, 30) + '...'}
                                     </p>
-
-                                    <div className="services-service-features">
-                                        <h4>Что входит:</h4>
-                                        <ul className="services-features-list">
-                                            {service.features.map((feature, index) => (
-                                                <li key={index} className="services-feature-item">
-                                                    <FaCheckCircle className="services-feature-check" />
-                                                    <span>{feature}</span>
-                                                </li>
-                                            ))}
-                                        </ul>
-                                    </div>
-
-                                    <div className="services-service-actions">
-                                        <Button
-                                            variant="primary"
-                                            size="small"
-                                            onClick={(e) => {
-                                                e.stopPropagation();
-                                                document.querySelector('#contact')?.scrollIntoView({ behavior: 'smooth' });
-                                            }}
-                                            className="services-service-order-btn"
-                                        >
-                                            Заказать услугу
-                                        </Button>
-                                        <a
-                                            href={`tel:${content.cta?.phoneNumber || '+79991234567'}`}
-                                            className="services-service-call-link"
-                                            onClick={(e) => e.stopPropagation()}
-                                        >
-                                            Позвонить для уточнения
-                                        </a>
-                                    </div>
                                 </div>
                             </div>
                         );
@@ -310,7 +238,6 @@ const Services = () => {
                             <h3 className="services-section-title">Почему выбирают нас</h3>
                             <p className="services-section-subtitle">Мы гарантируем качество и надежность всех выполненных работ</p>
                         </div>
-
 
                         <div className="services-benefits-grid">
                             {activeBenefits.map((benefit, index) => {
@@ -329,8 +256,6 @@ const Services = () => {
                                 );
                             })}
                         </div>
-
-
                     </div>
                 )}
 
@@ -357,9 +282,16 @@ const Services = () => {
                         </button>
                     </div>
                 </div>
-
-
             </div>
+
+            {/* Модальное окно с деталями услуги */}
+            <ServiceModal
+                isOpen={isServiceModalOpen}
+                onClose={closeServiceModal}
+                service={selectedService}
+                formatDescription={formatDescription}
+                iconMap={iconMap}
+            />
 
             {/* Модальное окно с прайс-листом */}
             <PriceModal
