@@ -521,7 +521,9 @@
     }
 
     .contact-quick-buttons {
-        gap: 10px;
+        gap: 8px;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .contact-quick-btn {
@@ -543,7 +545,9 @@
     }
 
     .contact-quick-buttons {
-        gap: 8px;
+        gap: 6px;
+        padding-left: 0;
+        padding-right: 0;
     }
 
     .contact-quick-btn {
