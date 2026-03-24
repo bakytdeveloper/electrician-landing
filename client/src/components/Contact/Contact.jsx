@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     FaPhone,
     FaEnvelope,
-    // FaMapMarkerAlt,
     FaClock,
     FaPaperPlane,
     FaCheckCircle,
@@ -14,7 +13,6 @@ import {
 } from 'react-icons/fa';
 import {
     MdOutlineSupportAgent,
-    // MdEmail
 } from 'react-icons/md';
 import './Contact.css';
 import Button from '../common/Button/Button';
@@ -31,8 +29,6 @@ const Contact = () => {
     const [formErrors, setFormErrors] = useState({});
     const [formStatus, setFormStatus] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    // eslint-disable-next-line
-    const [activeHour, setActiveHour] = useState(null);
     const [isMapLoaded, setIsMapLoaded] = useState(false);
     const mapContainerRef = useRef(null);
     const mapIframeRef = useRef(null);
@@ -51,49 +47,25 @@ const Contact = () => {
     ], []);
 
     const workingHours = useMemo(() => [
-        { day: 'Понедельник', hours: '8:00 - 20:00', isToday: false },
-        { day: 'Вторник', hours: '8:00 - 20:00', isToday: false },
-        { day: 'Среда', hours: '8:00 - 20:00', isToday: false },
-        { day: 'Четверг', hours: '8:00 - 20:00', isToday: false },
-        { day: 'Пятница', hours: '8:00 - 20:00', isToday: false },
-        { day: 'Суббота', hours: '9:00 - 18:00', isToday: false },
-        { day: 'Воскресенье', hours: '9:00 - 18:00', isToday: false }
+        { day: 'Понедельник', hours: '8:00 - 20:00' },
+        { day: 'Вторник', hours: '8:00 - 20:00' },
+        { day: 'Среда', hours: '8:00 - 20:00' },
+        { day: 'Четверг', hours: '8:00 - 20:00' },
+        { day: 'Пятница', hours: '8:00 - 20:00' },
+        { day: 'Суббота', hours: '9:00 - 18:00' },
+        { day: 'Воскресенье', hours: '9:00 - 18:00' }
     ], []);
 
-    const socialLinks = useMemo(() => [
+    const contactButtons = useMemo(() => [
+        { icon: <FaPhone />, label: 'Позвонить', href: 'tel:+79991234567', color: '#27ae60' },
         { icon: <FaWhatsapp />, label: 'WhatsApp', href: 'https://wa.me/79991234567', color: '#25D366' },
         { icon: <FaTelegram />, label: 'Telegram', href: 'https://t.me/electromaster', color: '#0088cc' },
+        { icon: <FaEnvelope />, label: 'Email', href: 'mailto:info@electromaster.ru', color: '#EA4335' },
         { icon: <FaVk />, label: 'VK', href: 'https://vk.com/electromaster', color: '#4C75A3' },
         { icon: <FaInstagram />, label: 'Instagram', href: 'https://instagram.com/electromaster', color: '#E4405F' }
     ], []);
 
-    const contactInfo = useMemo(() => [
-        {
-            icon: <FaPhone />,
-            title: 'Телефон',
-            details: ['+7 (999) 123-45-67'],
-            link: 'tel:+79991234567',
-            description: 'Звоните в любое время'
-        },
-        {
-            icon: <FaEnvelope />,
-            title: 'Email',
-            details: ['info@electromaster.ru'],
-            link: 'mailto:info@electromaster.ru',
-            description: 'Ответим в течение 2 часов'
-        },
-        {
-            icon: <FaClock />,
-            title: 'Время работы',
-            details: ['Пн-Пт: 8:00 - 20:00', 'Сб-Вс: 9:00 - 18:00'],
-            // description: 'Аварийные вызовы - 24/7'
-        }
-    ], []);
-
     useEffect(() => {
-        const now = new Date();
-        setActiveHour(now.getHours());
-
         const loadMap = () => {
             if (mapContainerRef.current) {
                 setIsMapLoaded(true);
@@ -217,9 +189,7 @@ const Contact = () => {
         const day = now.getDay();
         const hour = now.getHours();
 
-        if (day === 0) {
-            return hour >= 9 && hour < 18;
-        } else if (day === 6) {
+        if (day === 0 || day === 6) {
             return hour >= 9 && hour < 18;
         } else {
             return hour >= 8 && hour < 20;
@@ -230,7 +200,6 @@ const Contact = () => {
         setIsMapLoaded(false);
         setTimeout(() => {
             if (mapIframeRef.current) {
-                // Исправляем: добавляем случайный параметр для перезагрузки
                 const currentSrc = mapIframeRef.current.src;
                 const separator = currentSrc.includes('?') ? '&' : '?';
                 mapIframeRef.current.src = currentSrc + separator + 'reload=' + Date.now();
@@ -259,341 +228,260 @@ const Contact = () => {
                     </p>
                 </div>
 
-                <div className="contact-content-wrapper">
-                    <div className="contact-info-section">
-                        <div className="contact-info-header">
-                            <h3>Свяжитесь с нами</h3>
-                            <div className={`contact-availability-badge ${isWorkingNow() ? 'contact-online' : 'contact-offline'}`}>
-                                <span className="contact-status-dot"></span>
-                                <span>{isWorkingNow() ? 'Сейчас работаем' : 'Сейчас не работаем'}</span>
-                            </div>
-                        </div>
-
-                        <div className="contact-info-grid">
-                            {contactInfo.map((info, index) => (
-                                <div key={index} className="contact-info-card">
-                                    <div className="contact-info-icon">
-                                        {info.icon}
+                <div className="contact-main-wrapper">
+                    {/* Левая колонка - информация и карта */}
+                    <div className="contact-left-column">
+                        <div className="contact-info-card">
+                            <div className="contact-info-header">
+                                <div className="contact-status-wrapper">
+                                    <div className={`contact-availability-badge ${isWorkingNow() ? 'contact-online' : 'contact-offline'}`}>
+                                        <span className="contact-status-dot"></span>
+                                        <span>{isWorkingNow() ? 'Сейчас работаем' : 'Сейчас не работаем'}</span>
                                     </div>
-                                    <div className="contact-info-content">
-                                        <h4>{info.title}</h4>
-                                        <div className="contact-info-details">
-                                            {info.details.map((detail, idx) => (
-                                                <p key={idx}>{detail}</p>
-                                            ))}
+                                </div>
+                            </div>
+
+                            <div className="contact-hours-section">
+                                <h3>График работы</h3>
+                                <div className="contact-hours-table">
+                                    {todayHours.map((day, index) => (
+                                        <div
+                                            key={index}
+                                            className={`contact-hours-row ${day.isToday ? 'contact-today' : ''}`}
+                                        >
+                                            <span className="contact-day-name">{day.day}</span>
+                                            <span className="contact-day-hours">{day.hours}</span>
+                                            {day.isToday && (
+                                                <span className={`contact-day-status ${isWorkingNow() ? 'status-open' : 'status-closed'}`}>
+                                                    {isWorkingNow() ? 'Открыто' : 'Закрыто'}
+                                                </span>
+                                            )}
                                         </div>
-                                        <p className="contact-info-description">{info.description}</p>
-                                        {info.link && (
-                                            <a
-                                                href={info.link}
-                                                className="contact-info-link"
-                                                target={info.link.startsWith('http') ? '_blank' : '_self'}
-                                                rel="noopener noreferrer"
-                                            >
-                                                Перейти →
-                                            </a>
-                                        )}
-                                    </div>
+                                    ))}
                                 </div>
-                            ))}
+                            </div>
                         </div>
 
-                        <div className="contact-social-section">
-                            <h4>Мы в социальных сетях</h4>
-                            <p>Следите за нашими работами и акциями</p>
-                            <div className="contact-social-links">
-                                {socialLinks.map((social, index) => (
-                                    <a
-                                        key={index}
-                                        href={social.href}
-                                        className="contact-social-link"
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        style={{ '--contact-social-color': social.color }}
-                                        aria-label={social.label}
+                        <div className="contact-map-card">
+                            <div className="contact-map-header">
+                                <div className="contact-map-header-top">
+                                    <h3>Мы на карте</h3>
+                                    <button
+                                        className="contact-map-reload-btn"
+                                        onClick={reloadMap}
+                                        title="Обновить карту"
                                     >
-                                        {social.icon}
-                                        <span className="contact-social-label">{social.label}</span>
-                                    </a>
-                                ))}
-                            </div>
-                        </div>
-
-                        {/*<div className="contact-emergency-call">*/}
-                        {/*    <div className="contact-emergency-icon">*/}
-                        {/*        <MdOutlineSupportAgent />*/}
-                        {/*    </div>*/}
-                        {/*    <div className="contact-emergency-content">*/}
-                        {/*        <h4>Экстренный вызов электрика</h4>*/}
-                        {/*        <p>Приеду в течение часа для устранения аварийной ситуации</p>*/}
-                        {/*        <a href="tel:+79991234567" className="contact-emergency-phone">*/}
-                        {/*            +7 (999) 123-45-67*/}
-                        {/*        </a>*/}
-                        {/*        <p className="contact-emergency-note">Работаю 24/7 без выходных</p>*/}
-                        {/*    </div>*/}
-                        {/*</div>*/}
-                    </div>
-
-                    <div className="contact-form-section">
-                        <div className="contact-form-header">
-                                <div className="contact-emergency-icon">
-                                    <MdOutlineSupportAgent />
+                                        ⟳
+                                    </button>
                                 </div>
-                            <h3>Оставьте заявку</h3>
-                            <p>Заполните форму и получите бесплатную консультацию</p>
-                        </div>
-
-                        <form onSubmit={handleSubmit} className="contact-form" noValidate>
-                            <div className="contact-form-grid">
-                                <div className="contact-form-group">
-                                    <label htmlFor="name">
-                                        Ваше имя *
-                                        {formErrors.name && (
-                                            <span className="contact-error-message">
-                                                <FaExclamationCircle /> {formErrors.name}
-                                            </span>
-                                        )}
-                                    </label>
-                                    <input
-                                        type="text"
-                                        id="name"
-                                        name="name"
-                                        value={formData.name}
-                                        onChange={handleChange}
-                                        placeholder="Иван Иванов"
-                                        className={formErrors.name ? 'contact-error' : ''}
-                                        required
+                                <p>Приезжайте к нам в офис для консультации</p>
+                            </div>
+                            <div className="contact-map-container" ref={mapContainerRef}>
+                                {isMapLoaded ? (
+                                    <iframe
+                                        ref={mapIframeRef}
+                                        src={MAP_URL}
+                                        width="100%"
+                                        height="100%"
+                                        style={{ border: 0 }}
+                                        allowFullScreen
+                                        loading="lazy"
+                                        referrerPolicy="no-referrer-when-downgrade"
+                                        title="Google Maps - Ak zhol border control point"
+                                        className="contact-map-iframe"
                                     />
-                                </div>
-
-                                <div className="contact-form-group">
-                                    <label htmlFor="phone">
-                                        Номер телефона *
-                                        {formErrors.phone && (
-                                            <span className="contact-error-message">
-                                                <FaExclamationCircle /> {formErrors.phone}
-                                            </span>
-                                        )}
-                                    </label>
-                                    <input
-                                        type="tel"
-                                        id="phone"
-                                        name="phone"
-                                        value={formData.phone}
-                                        onChange={handleChange}
-                                        placeholder="+7 (999) 123-45-67"
-                                        className={formErrors.phone ? 'contact-error' : ''}
-                                        required
-                                    />
-                                </div>
-
-                                <div className="contact-form-group">
-                                    <label htmlFor="email">
-                                        Email
-                                        {formErrors.email && (
-                                            <span className="contact-error-message">
-                                                <FaExclamationCircle /> {formErrors.email}
-                                            </span>
-                                        )}
-                                    </label>
-                                    <input
-                                        type="email"
-                                        id="email"
-                                        name="email"
-                                        value={formData.email}
-                                        onChange={handleChange}
-                                        placeholder="example@mail.ru"
-                                        className={formErrors.email ? 'contact-error' : ''}
-                                    />
-                                </div>
-
-                                <div className="contact-form-group">
-                                    <label htmlFor="service">
-                                        Тип услуги *
-                                        {formErrors.service && (
-                                            <span className="contact-error-message">
-                                                <FaExclamationCircle /> {formErrors.service}
-                                            </span>
-                                        )}
-                                    </label>
-                                    <select
-                                        id="service"
-                                        name="service"
-                                        value={formData.service}
-                                        onChange={handleChange}
-                                        className={formErrors.service ? 'contact-error' : ''}
-                                        required
-                                    >
-                                        {serviceOptions.map((option, index) => (
-                                            <option key={index} value={option.value}>
-                                                {option.label}
-                                            </option>
-                                        ))}
-                                    </select>
-                                </div>
-                            </div>
-
-                            <div className="contact-form-group">
-                                <label htmlFor="message">Сообщение</label>
-                                <textarea
-                                    id="message"
-                                    name="message"
-                                    value={formData.message}
-                                    onChange={handleChange}
-                                    placeholder="Опишите вашу проблему или задайте вопрос..."
-                                    rows="4"
-                                />
-                            </div>
-
-                            <div className="contact-form-consent">
-                                <input type="checkbox" id="consent" required defaultChecked />
-                                <label htmlFor="consent">
-                                    Я согласен на обработку персональных данных и принимаю условия политики конфиденциальности
-                                </label>
-                            </div>
-
-                            {formStatus && (
-                                <div className={`contact-form-status contact-${formStatus.type}`}>
-                                    {formStatus.type === 'success' ? (
-                                        <FaCheckCircle />
-                                    ) : (
-                                        <FaExclamationCircle />
-                                    )}
-                                    <span>{formStatus.message}</span>
-                                </div>
-                            )}
-
-                            <Button
-                                type="submit"
-                                variant="primary"
-                                size="large"
-                                fullWidth
-                                disabled={isSubmitting}
-                                className="contact-submit-button"
-                            >
-                                {isSubmitting ? (
-                                    'Отправка...'
                                 ) : (
-                                    <>
-                                        <FaPaperPlane />
-                                        Отправить заявку
-                                    </>
+                                    <div className="contact-map-loading">
+                                        <div className="contact-map-loading-spinner"></div>
+                                        <p>Загрузка карты...</p>
+                                    </div>
                                 )}
-                            </Button>
-
-                            <p className="contact-form-note">
-                                Нажимая кнопку, вы подтверждаете свое согласие на обработку персональных данных.
-                                Мы свяжемся с вами в течение 15 минут.
-                            </p>
-                        </form>
-                    </div>
-                </div>
-
-                <div className="contact-bottom-section">
-                    <div className="contact-map-section">
-                        <div className="contact-map-header">
-                            <div className="contact-map-header-top">
-                                <h3>Мы на карте</h3>
-                                <button
-                                    className="contact-map-reload-btn"
-                                    onClick={reloadMap}
-                                    title="Обновить карту"
+                            </div>
+                            <div className="contact-map-actions">
+                                <a
+                                    href="https://www.google.com/maps?q=Ak+zhol+border+control+point"
+                                    className="contact-map-action-btn"
+                                    target="_blank"
+                                    rel="noopener noreferrer"
                                 >
-                                    ⟳
+                                    Открыть в Google Картах
+                                </a>
+                                <button
+                                    className="contact-map-action-btn contact-secondary"
+                                    onClick={handleCopyMapLink}
+                                >
+                                    Скопировать ссылку
                                 </button>
                             </div>
-                            <p>Приезжайте к нам в офис для консультации</p>
-                        </div>
-                        <div
-                            className="contact-map-container"
-                            ref={mapContainerRef}
-                        >
-                            {isMapLoaded ? (
-                                <iframe
-                                    ref={mapIframeRef}
-                                    src={MAP_URL}
-                                    width="100%"
-                                    height="100%"
-                                    style={{ border: 0 }}
-                                    allowFullScreen
-                                    loading="lazy"
-                                    referrerPolicy="no-referrer-when-downgrade"
-                                    title="Google Maps - Ak zhol border control point"
-                                    className="contact-map-iframe"
-                                />
-                            ) : (
-                                <div className="contact-map-loading">
-                                    <div className="contact-map-loading-spinner"></div>
-                                    <p>Загрузка карты...</p>
-                                </div>
-                            )}
-                        </div>
-                        <div className="contact-map-actions">
-                            <a
-                                href="https://www.google.com/maps?q=Ak+zhol+border+control+point"
-                                className="contact-map-action-btn"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                            >
-                                Открыть в Google Картах
-                            </a>
-                            <button
-                                className="contact-map-action-btn contact-secondary"
-                                onClick={handleCopyMapLink}
-                            >
-                                Скопировать ссылку
-                            </button>
                         </div>
                     </div>
 
-                    <div className="contact-schedule-section">
-                        <div className="contact-schedule-header">
-                            <h3>График работы</h3>
-                            <div className="contact-current-time">
-                                <FaClock />
-                                <span>Текущее время: {new Date().toLocaleTimeString('ru-RU', {
-                                    hour: '2-digit',
-                                    minute: '2-digit'
-                                })}</span>
+                    {/* Правая колонка - форма */}
+                    <div className="contact-right-column">
+                        <div className="contact-form-card">
+                            <div className="contact-form-header">
+                                <div className="contact-form-icon">
+                                    <MdOutlineSupportAgent />
+                                </div>
+                                <h3>Оставьте заявку</h3>
+                                <p>Заполните форму и получите бесплатную консультацию</p>
                             </div>
-                        </div>
 
-                        <div className="contact-schedule-table">
-                            {todayHours.map((day, index) => (
-                                <div
-                                    key={index}
-                                    className={`contact-schedule-row ${day.isToday ? 'contact-today' : ''}`}
-                                >
-                                    <div className="contact-day">{day.day}</div>
-                                    <div className="contact-hours">{day.hours}</div>
-                                    <div className="contact-status">
-                                        {day.isToday ? (
-                                            isWorkingNow() ? (
-                                                <span className="contact-status-online">Сейчас открыто</span>
-                                            ) : (
-                                                <span className="contact-status-closed">Сейчас закрыто</span>
-                                            )
-                                        ) : null}
+                            <form onSubmit={handleSubmit} className="contact-form" noValidate>
+                                <div className="contact-form-grid">
+                                    <div className="contact-form-group">
+                                        <label htmlFor="name">
+                                            Ваше имя *
+                                            {formErrors.name && (
+                                                <span className="contact-error-message">
+                                                    <FaExclamationCircle /> {formErrors.name}
+                                                </span>
+                                            )}
+                                        </label>
+                                        <input
+                                            type="text"
+                                            id="name"
+                                            name="name"
+                                            value={formData.name}
+                                            onChange={handleChange}
+                                            placeholder="Иван Иванов"
+                                            className={formErrors.name ? 'contact-error' : ''}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="contact-form-group">
+                                        <label htmlFor="phone">
+                                            Номер телефона *
+                                            {formErrors.phone && (
+                                                <span className="contact-error-message">
+                                                    <FaExclamationCircle /> {formErrors.phone}
+                                                </span>
+                                            )}
+                                        </label>
+                                        <input
+                                            type="tel"
+                                            id="phone"
+                                            name="phone"
+                                            value={formData.phone}
+                                            onChange={handleChange}
+                                            placeholder="+7 (999) 123-45-67"
+                                            className={formErrors.phone ? 'contact-error' : ''}
+                                            required
+                                        />
+                                    </div>
+
+                                    <div className="contact-form-group">
+                                        <label htmlFor="email">
+                                            Email
+                                            {formErrors.email && (
+                                                <span className="contact-error-message">
+                                                    <FaExclamationCircle /> {formErrors.email}
+                                                </span>
+                                            )}
+                                        </label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={formData.email}
+                                            onChange={handleChange}
+                                            placeholder="example@mail.ru"
+                                            className={formErrors.email ? 'contact-error' : ''}
+                                        />
+                                    </div>
+
+                                    <div className="contact-form-group">
+                                        <label htmlFor="service">
+                                            Тип услуги *
+                                            {formErrors.service && (
+                                                <span className="contact-error-message">
+                                                    <FaExclamationCircle /> {formErrors.service}
+                                                </span>
+                                            )}
+                                        </label>
+                                        <select
+                                            id="service"
+                                            name="service"
+                                            value={formData.service}
+                                            onChange={handleChange}
+                                            className={formErrors.service ? 'contact-error' : ''}
+                                            required
+                                        >
+                                            {serviceOptions.map((option, index) => (
+                                                <option key={index} value={option.value}>
+                                                    {option.label}
+                                                </option>
+                                            ))}
+                                        </select>
                                     </div>
                                 </div>
-                            ))}
-                        </div>
 
-                        {/*<div className="contact-emergency-info">*/}
-                        {/*    <div className="contact-emergency-icon-small">*/}
-                        {/*        <MdOutlineSupportAgent />*/}
-                        {/*    </div>*/}
-                        {/*    <div className="contact-emergency-text">*/}
-                        {/*        <h4>Аварийная служба</h4>*/}
-                        {/*        <p>Работает круглосуточно 24/7 без выходных</p>*/}
-                        {/*    </div>*/}
-                        {/*    <a href="tel:+79991234567" className="contact-emergency-btn">*/}
-                        {/*        Вызвать аварийную*/}
-                        {/*    </a>*/}
-                        {/*</div>*/}
+                                <div className="contact-form-group">
+                                    <label htmlFor="message">Сообщение</label>
+                                    <textarea
+                                        id="message"
+                                        name="message"
+                                        value={formData.message}
+                                        onChange={handleChange}
+                                        placeholder="Опишите вашу проблему или задайте вопрос..."
+                                        rows="4"
+                                    />
+                                </div>
+
+                                {formStatus && (
+                                    <div className={`contact-form-status contact-${formStatus.type}`}>
+                                        {formStatus.type === 'success' ? (
+                                            <FaCheckCircle />
+                                        ) : (
+                                            <FaExclamationCircle />
+                                        )}
+                                        <span>{formStatus.message}</span>
+                                    </div>
+                                )}
+
+                                <Button
+                                    type="submit"
+                                    variant="primary"
+                                    size="large"
+                                    fullWidth
+                                    disabled={isSubmitting}
+                                    className="contact-submit-button"
+                                >
+                                    {isSubmitting ? (
+                                        'Отправка...'
+                                    ) : (
+                                        <>
+                                            <FaPaperPlane />
+                                            Отправить заявку
+                                        </>
+                                    )}
+                                </Button>
+
+                                <p className="contact-form-note">
+                                    Мы свяжемся с вами в течение 30 минут.
+                                </p>
+
+                                {/* Кнопки быстрой связи */}
+                                <div className="contact-quick-buttons">
+                                    {contactButtons.map((btn, index) => (
+                                        <a
+                                            key={index}
+                                            href={btn.href}
+                                            className="contact-quick-btn"
+                                            target={btn.href.startsWith('http') ? '_blank' : '_self'}
+                                            rel="noopener noreferrer"
+                                            style={{ backgroundColor: btn.color }}
+                                            title={btn.label}
+                                        >
+                                            {btn.icon}
+                                        </a>
+                                    ))}
+                                </div>
+                            </form>
+                        </div>
                     </div>
                 </div>
-
             </div>
         </section>
     );
