@@ -29,14 +29,14 @@ const ServiceModal = ({ isOpen, onClose, service, formatDescription, iconMap }) 
 
                 <div className="service-modal-body">
                     <div className="service-modal-description">
-                        <h3>Услуга</h3>
+                        {/*<h3>Услуга</h3>*/}
                         <div className="service-description-text">
                             {formatDescription(service.description)}
                         </div>
                     </div>
 
                     <div className="service-modal-features">
-                        <h3>Что входит в услугу</h3>
+                        <h3>Что входит</h3>
                         <ul className="service-features-list">
                             {service.features.map((feature, index) => (
                                 <li key={index} className="service-feature-item">
