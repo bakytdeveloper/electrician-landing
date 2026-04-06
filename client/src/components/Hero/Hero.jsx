@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { FaTools, FaShieldAlt, FaClock, FaCheckCircle, FaArrowRight } from 'react-icons/fa';
-import { MdOutlineElectricBolt, MdSafetyDivider } from 'react-icons/md';
+import { MdOutlineElectricBolt } from 'react-icons/md';
 import './Hero.css';
 import Button from '../common/Button/Button';
 
