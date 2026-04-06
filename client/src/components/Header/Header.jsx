@@ -57,7 +57,7 @@ const Header = ({ openModal }) => {
     };
 
     const handleCallClick = () => {
-        window.location.href = 'tel:+79991234567';
+        window.location.href = 'tel:+77024986018';
     };
 
     const navItems = [
@@ -68,7 +68,7 @@ const Header = ({ openModal }) => {
     ];
 
     const socialLinks = [
-        { icon: <FaWhatsapp />, href: 'https://wa.me/79991234567', label: 'WhatsApp' },
+        { icon: <FaWhatsapp />, href: 'https://wa.me/77024986018', label: 'WhatsApp' },
         { icon: <FaTelegram />, href: 'https://t.me/username', label: 'Telegram' },
     ];
 
