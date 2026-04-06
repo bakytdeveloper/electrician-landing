@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef, useMemo } from 'react';
 import {
     FaPhone,
     FaEnvelope,
-    FaClock,
     FaPaperPlane,
     FaCheckCircle,
     FaExclamationCircle,

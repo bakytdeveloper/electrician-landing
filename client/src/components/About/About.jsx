@@ -13,8 +13,7 @@ import {
     FaQuoteLeft,
     FaQuoteRight,
     FaChevronLeft,
-    FaChevronRight,
-    FaPhone
+    FaChevronRight
 } from 'react-icons/fa';
 import { MdElectricalServices, MdEngineering, MdSupportAgent } from 'react-icons/md';
 import './About.css';
