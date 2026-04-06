@@ -154,14 +154,6 @@ const Header = ({ openModal }) => {
                                 <FaPhone />
                                 <span>Позвонить</span>
                             </Button>
-
-                            {/*<Button*/}
-                            {/*    variant="primary"*/}
-                            {/*    size="small"*/}
-                            {/*    onClick={() => openModal('callback')}*/}
-                            {/*>*/}
-                            {/*    Заказать вызов*/}
-                            {/*</Button>*/}
                         </div>
 
                         {/* Кнопка меню для мобильных */}
