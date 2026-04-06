@@ -148,11 +148,6 @@ const Footer = () => {
                                     </div>
                                 </div>
 
-                                {/*<p className="footer-company-description">*/}
-                                {/*    Профессиональные электромонтажные работы любой сложности.*/}
-                                {/*    Более 12 лет опыта, гарантия качества, современное оборудование.*/}
-                                {/*</p>*/}
-
                                 <div className="footer-contact-list">
                                     {contactInfo.map((contact, index) => (
                                         <a
