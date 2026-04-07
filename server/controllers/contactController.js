@@ -11,6 +11,8 @@ const SERVICE_TYPE_MAPPING = {
     'equipment': '💡 Установка оборудования',
     'maintenance': '🛠️ Обслуживание',
     'consultation': '📞 Консультация',
+    'measurement': '📏 Замеры и проектирование',
+    'emergency': '🚨 Аварийный вызов',
     'other': '🤔 Другое'
 };
 
@@ -65,7 +67,7 @@ const saveToDatabase = async (data) => {
     }
 };
 
-// Базовые стили для всех писем
+// Базовые стили для всех писем (ОБНОВЛЕНЫ: синяя цветовая схема)
 const baseStyles = `
     <style>
         body {
@@ -78,7 +80,7 @@ const baseStyles = `
         .email-wrapper {
             max-width: 600px;
             margin: 0 auto;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            background: linear-gradient(135deg, #3B82F6 0%, #1E3A5F 100%);
             padding: 3px;
             border-radius: 16px;
         }
@@ -90,15 +92,16 @@ const baseStyles = `
         .header {
             text-align: center;
             margin-bottom: 30px;
-            border-bottom: 2px solid #f0f0f0;
+            border-bottom: 2px solid #e0e7ff;
             padding-bottom: 20px;
         }
         .logo {
             font-size: 32px;
             font-weight: bold;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
+            background: linear-gradient(135deg, #3B82F6 0%, #1E3A5F 100%);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            color: #d6fc03;
             margin-bottom: 10px;
         }
         .badge {
@@ -110,67 +113,71 @@ const baseStyles = `
             margin: 10px 0;
         }
         .badge-danger {
-            background: #FF6B6B;
+            background: #3B82F6;
             color: white;
         }
         .badge-warning {
-            background: #FFE66D;
+            background: #FBBF24;
             color: #333;
         }
         .badge-info {
-            background: #4ECDC4;
+            background: #06B6D4;
+            color: white;
+        }
+        .badge-success {
+            background: #10B981;
             color: white;
         }
         .info-card {
-            background: #f8f9fa;
+            background: #f0f9ff;
             border-radius: 12px;
             padding: 20px;
             margin: 20px 0;
-            border-left: 4px solid #FF6B6B;
+            border-left: 4px solid #3B82F6;
         }
         .info-row {
             display: flex;
             margin-bottom: 15px;
-            border-bottom: 1px dashed #e0e0e0;
+            border-bottom: 1px dashed #d1d5db;
             padding-bottom: 10px;
         }
         .info-label {
             font-weight: 600;
             min-width: 140px;
-            color: #555;
+            color: #4B5563;
         }
         .info-value {
-            color: #333;
+            color: #1F2937;
             flex: 1;
         }
         .message-box {
-            background: #FFF3CD;
-            border: 1px solid #FFE69C;
+            background: #EFF6FF;
+            border: 1px solid #BFDBFE;
             border-radius: 8px;
             padding: 20px;
             margin: 20px 0;
-            color: #856404;
+            color: #1E3A8A;
         }
         .footer {
             margin-top: 30px;
             padding-top: 20px;
-            border-top: 2px solid #f0f0f0;
+            border-top: 2px solid #e0e7ff;
             text-align: center;
-            color: #666;
+            color: #6B7280;
             font-size: 12px;
         }
         .button {
             display: inline-block;
             padding: 12px 30px;
-            background: linear-gradient(135deg, #FF6B6B 0%, #4ECDC4 100%);
-            color: white;
+            background: linear-gradient(135deg, #3B82F6 0%, #1E3A5F 100%);
+            color: white!important;
             text-decoration: none;
             border-radius: 25px;
             font-weight: bold;
             margin: 20px 0;
         }
         .contact-info {
-            background: #f8f9fa;
+            background: #f0f9ff;
             border-radius: 8px;
             padding: 15px;
             margin-top: 20px;
@@ -183,17 +190,29 @@ const baseStyles = `
             margin-right: 5px;
         }
         .urgent {
-            background: #FF6B6B;
+            background: #3B82F6;
             color: white;
             padding: 3px 10px;
             border-radius: 15px;
             font-size: 12px;
             margin-left: 10px;
         }
+        .highlight {
+            color: #3B82F6;
+            font-weight: bold;
+        }
+        .action-box {
+            background: #EFF6FF;
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            color: #1E40AF;
+            border-left: 4px solid #3B82F6;
+        }
     </style>
 `;
 
-// Красиво отформатированное HTML письмо для клиента
+// Красиво отформатированное HTML письмо для клиента (ОБНОВЛЕНО)
 const createClientEmailTemplate = (data) => {
     const serviceType = SERVICE_TYPE_MAPPING[data.serviceType] || data.serviceType || 'Не указано';
 
@@ -209,16 +228,16 @@ const createClientEmailTemplate = (data) => {
     <div class="email-wrapper">
         <div class="email-content">
             <div class="header">
-                <div class="logo">⚡ ${process.env.APP_NAME}</div>
-                <div class="badge badge-info">✅ Заявка получена</div>
+                <div class="logo">⚡ ${process.env.APP_NAME || 'ЭлектроМастер Алматы'}</div>
+                <div class="badge badge-success">✅ Заявка получена</div>
             </div>
             
             <p>Здравствуйте, <strong>${data.name}</strong>!</p>
             
-            <p>Спасибо за обращение в нашу компанию! Мы получили вашу заявку и готовы помочь с электромонтажными работами.</p>
+            <p>Спасибо за обращение в нашу компанию! Мы получили вашу заявку и готовы помочь с электромонтажными работами в Алматы.</p>
             
             <div class="info-card">
-                <h3 style="margin-top: 0; color: #FF6B6B;">📋 Детали заявки</h3>
+                <h3 style="margin-top: 0; color: #3B82F6;">📋 Детали заявки</h3>
                 
                 <div class="info-row">
                     <span class="info-label"><span class="emoji">👤</span> Имя:</span>
@@ -250,17 +269,18 @@ const createClientEmailTemplate = (data) => {
                 ` : ''}
             </div>
             
-            <p>Наш мастер свяжется с вами в ближайшее время для уточнения деталей. Обычно это занимает не более 15 минут.</p>
+            <p>Наш мастер свяжется с вами в ближайшее время для уточнения деталей. Обычно это занимает не более <span class="highlight">15 минут</span>.</p>
             
             <div class="contact-info">
-                <div class="contact-item"><span class="emoji">📞</span> <strong>+7 (800) 123-45-67</strong> - круглосуточно</div>
-                <div class="contact-item"><span class="emoji">⏰</span> Работаем ежедневно с 8:00 до 22:00</div>
+                <div class="contact-item"><span class="emoji">📞</span> <strong>+7 (727) 123-45-67</strong> - ежедневно</div>
+                <div class="contact-item"><span class="emoji">⏰</span> Работаем: Пн-Пт 08:00-20:00 / Сб-Вс 09:00-18:00</div>
+                <div class="contact-item"><span class="emoji">📍</span> г. Алматы, БЦ Нурлы Тау</div>
             </div>
             
             <div class="footer">
-                <p>С уважением, команда ${process.env.APP_NAME}</p>
+                <p>С уважением, команда ${process.env.APP_NAME || 'ЭлектроМастер Алматы'}</p>
                 <p>© ${new Date().getFullYear()} Все права защищены</p>
-                <p style="font-size: 11px; color: #999;">Это письмо отправлено автоматически, пожалуйста, не отвечайте на него.</p>
+                <p style="font-size: 11px; color: #9CA3AF;">Это письмо отправлено автоматически, пожалуйста, не отвечайте на него.</p>
             </div>
         </div>
     </div>
@@ -269,7 +289,7 @@ const createClientEmailTemplate = (data) => {
     `;
 };
 
-// Красиво отформатированное HTML письмо для администратора
+// Красиво отформатированное HTML письмо для администратора (ОБНОВЛЕНО)
 const createAdminEmailTemplate = (data) => {
     const serviceType = SERVICE_TYPE_MAPPING[data.serviceType] || data.serviceType || 'Не указано';
     const now = new Date();
@@ -295,11 +315,11 @@ const createAdminEmailTemplate = (data) => {
             <p>Поступила новая заявка от клиента. Требуется ваше внимание в ближайшее время!</p>
             
             <div style="text-align: center; margin: 10px 0;">
-                <span class="badge badge-warning">🚀 Срочность: Высокая</span>
+                <span class="badge badge-warning">🚀 Свяжитесь с клиентом</span>
             </div>
             
             <div class="info-card">
-                <h3 style="margin-top: 0; color: #FF6B6B;">👤 Данные клиента</h3>
+                <h3 style="margin-top: 0; color: #3B82F6;">👤 Данные клиента</h3>
                 
                 <div class="info-row">
                     <span class="info-label"><span class="emoji">👤</span> Имя:</span>
@@ -309,7 +329,7 @@ const createAdminEmailTemplate = (data) => {
                 <div class="info-row">
                     <span class="info-label"><span class="emoji">📱</span> Телефон:</span>
                     <span class="info-value">
-                        <strong><a href="tel:${data.phone}" style="color: #FF6B6B; text-decoration: none;">${data.phone}</a></strong>
+                        <strong><a href="tel:${data.phone}" style="color: #3B82F6; text-decoration: none;">${data.phone}</a></strong>
                         <span class="urgent">Позвонить сейчас</span>
                     </span>
                 </div>
@@ -317,11 +337,11 @@ const createAdminEmailTemplate = (data) => {
                 ${data.email ? `
                 <div class="info-row">
                     <span class="info-label"><span class="emoji">✉️</span> Email:</span>
-                    <span class="info-value"><a href="mailto:${data.email}" style="color: #FF6B6B; text-decoration: none;">${data.email}</a></span>
+                    <span class="info-value"><a href="mailto:${data.email}" style="color: #3B82F6; text-decoration: none;">${data.email}</a></span>
                 </div>
                 ` : ''}
                 
-                <h3 style="margin-top: 20px; color: #FF6B6B;">📋 Детали заявки</h3>
+                <h3 style="margin-top: 20px; color: #3B82F6;">📋 Детали заявки</h3>
                 
                 <div class="info-row">
                     <span class="info-label"><span class="emoji">🔧</span> Услуга:</span>
@@ -330,7 +350,7 @@ const createAdminEmailTemplate = (data) => {
                 
                 ${data.message ? `
                 <div class="message-box">
-                    <strong style="display: block; margin-bottom: 10px;">💬 Сообщение клиента:</strong>
+                    <strong style="display: block; margin-bottom: 10px; color: #1E40AF;">💬 Сообщение клиента:</strong>
                     <p style="margin: 0; white-space: pre-line;">${data.message}</p>
                 </div>
                 ` : ''}
@@ -346,12 +366,12 @@ const createAdminEmailTemplate = (data) => {
                 </div>
             </div>
             
-            <div style="background: #e8f4fd; padding: 15px; border-radius: 8px; margin: 20px 0; color: #0c5460;">
+            <div class="action-box">
                 <p style="margin: 0;"><strong>🔔 Необходимые действия:</strong></p>
                 <p style="margin: 10px 0 0 0;">
-                    1. Свяжитесь с клиентом в течение 15 минут<br>
-                    2. Уточните детали работ<br>
-                    3. Согласуйте время выезда мастера
+                    1️⃣ Свяжитесь с клиентом в течение 15 минут<br>
+                    2️⃣ Уточните детали работ<br>
+                    3️⃣ Согласуйте время выезда мастера
                 </p>
             </div>
             
@@ -360,7 +380,8 @@ const createAdminEmailTemplate = (data) => {
             </div>
             
             <div class="footer">
-                <p>Административная панель ${process.env.APP_NAME}</p>
+                <p>Административная панель ${process.env.APP_NAME || 'ЭлектроМастер Алматы'}</p>
+                <p style="font-size: 11px; color: #9CA3AF;">📍 г. Алматы, Казахстан</p>
             </div>
         </div>
     </div>
@@ -404,7 +425,7 @@ const submitContactForm = asyncHandler(async (req, res) => {
         try {
             await sendEmail({
                 to: email,
-                subject: `✅ Спасибо за обращение в ${process.env.APP_NAME}!`,
+                subject: `✅ Спасибо за обращение в ${process.env.APP_NAME || 'ЭлектроМастер Алматы'}!`,
                 html: createClientEmailTemplate({
                     name,
                     phone,
