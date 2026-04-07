@@ -403,7 +403,7 @@ const Portfolio = () => {
                         <button
                             className="slider-nav-button prev"
                             onClick={() => scroll('left')}
-                            aria-label="Предыдущие работы"
+                            aria-label="Прокрутить портфолио влево"
                         >
                             <FaArrowLeft />
                         </button>
@@ -413,7 +413,7 @@ const Portfolio = () => {
                         <button
                             className="slider-nav-button next"
                             onClick={() => scroll('right')}
-                            aria-label="Следующие работы"
+                            aria-label="Прокрутить портфолио вправо"
                         >
                             <FaArrowRight />
                         </button>
@@ -440,6 +440,7 @@ const Portfolio = () => {
                                                 alt={getAltText(item, 0)}
                                                 className="portfolio-image"
                                                 onError={() => handleImageError(item.id, 0)}
+                                                loading="lazy"
                                             />
                                         </div>
                                     ) : (
@@ -517,12 +518,14 @@ const Portfolio = () => {
                                             className="nav-button prev-button"
                                             onClick={prevImage}
                                             disabled={currentIndex === 0}
+                                            aria-label="Прокрутить портфолио влево"
                                         >
                                             <FaArrowLeft />
                                         </button>
                                         <button
                                             className="nav-button next-button"
                                             onClick={nextImage}
+                                            aria-label="Прокрутить портфолио вправо"
                                             disabled={!selectedImage.images || currentIndex === selectedImage.images.length - 1}
                                         >
                                             <FaArrowRight />

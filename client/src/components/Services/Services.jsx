@@ -179,6 +179,7 @@ const Services = () => {
                             key="all"
                             className={`services-category-filter ${activeCategory === 'all' ? 'active' : ''}`}
                             onClick={() => setActiveCategory('all')}
+                            aria-label="Показать все услуги"
                         >
                             Все услуги
                         </button>
@@ -187,6 +188,7 @@ const Services = () => {
                                 key={category}
                                 className={`services-category-filter ${activeCategory === category ? 'active' : ''}`}
                                 onClick={() => setActiveCategory(category)}
+                                aria-label={`Показать услуги категории ${category}`}
                             >
                                 {category}
                             </button>
@@ -204,6 +206,10 @@ const Services = () => {
                                 key={service.id}
                                 className="services-service-card"
                                 onClick={() => handleServiceClick(service)}
+                                role="button"
+                                tabIndex={0}
+                                onKeyPress={(e) => e.key === 'Enter' && handleServiceClick(service)}
+                                aria-label={`Подробнее об услуге: ${service.title}`}
                             >
                                 <div className="services-service-card-header">
                                     <div className="services-service-icon">

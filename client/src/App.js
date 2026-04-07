@@ -10,6 +10,7 @@ import Contact from './components/Contact/Contact';
 import Footer from './components/Footer/Footer';
 import Modal from './components/common/Modal/Modal';
 import WhatsAppButton from "./components/WhatsAppButton/WhatsAppButton";
+import SEO from "./components/SEO/SEO";
 
 function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -61,6 +62,7 @@ function App() {
 
     return (
         <div className="App">
+            <SEO />
             <Header openModal={openModal} />
             <Hero openModal={openModal} />
             <Services />

@@ -14,6 +14,13 @@ const Hero = ({ openModal }) => {
         fetchContent();
     }, []);
 
+    // Добавить в начало компонента Hero, перед return
+// Fallback для SEO, пока грузится API
+    const seoFallback = {
+        title: "Профессиональный электрик | Монтаж и ремонт электропроводки",
+        subtitle: "Быстрый выезд, гарантия качества, доступные цены"
+    };
+
     const fetchContent = async () => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`);
@@ -112,11 +119,11 @@ const Hero = ({ openModal }) => {
                     {/* Основной контент */}
                     <div className="hero-main">
                         <h1 className="hero-title">
-                            {content.title}
+                            {content?.title || seoFallback.title}
                         </h1>
 
                         <p className="hero-subtitle">
-                            {content.subtitle}
+                            {content?.subtitle || seoFallback.subtitle}
                         </p>
 
                         <div className="hero-features-list">
@@ -134,6 +141,7 @@ const Hero = ({ openModal }) => {
                                 size="large"
                                 onClick={() => openModal('service')}
                                 className="hero-btn"
+                                aria-label="Заказать услугу электрика"
                             >
                                 Заказать услугу
                                 <FaArrowRight />
@@ -144,6 +152,7 @@ const Hero = ({ openModal }) => {
                                 size="large"
                                 onClick={() => openModal('callback')}
                                 className="hero-btn"
+                                aria-label="Бесплатная консультация электрика"
                             >
                                 Бесплатная консультация
                             </Button>
