@@ -1,5 +1,4 @@
 // client/src/utils/seoHelpers.js
-
 // Утилиты для SEO-оптимизации
 export const generateBreadcrumbs = (items) => {
     return items.map(item => ({
