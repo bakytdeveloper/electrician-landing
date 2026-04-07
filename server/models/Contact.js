@@ -1,3 +1,4 @@
+// models/Contact.js
 const mongoose = require('mongoose');
 
 const contactSchema = new mongoose.Schema({
@@ -36,6 +37,11 @@ const contactSchema = new mongoose.Schema({
         type: String,
         enum: ['new', 'contacted', 'completed', 'cancelled'],
         default: 'new',
+    },
+    notes: {
+        type: String,
+        trim: true,
+        default: '',
     },
     createdAt: {
         type: Date,

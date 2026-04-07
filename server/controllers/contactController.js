@@ -1,11 +1,25 @@
+// controllers/contactController.js - исправленная версия
+
 const asyncHandler = require('express-async-handler');
 const mongoose = require('mongoose');
 const Contact = require('../models/Contact');
 const sendEmail = require('../config/emailConfig');
 require('dotenv').config();
 
-// Маппинг значений из формы в понятные названия на русском
+// Маппинг значений из формы в понятные названия на русском (БЕЗ ЭМОДЗИ для БД)
 const SERVICE_TYPE_MAPPING = {
+    'installation': 'Монтаж электропроводки',
+    'repair': 'Ремонт проводки',
+    'equipment': 'Установка оборудования',
+    'maintenance': 'Обслуживание',
+    'consultation': 'Консультация',
+    'measurement': 'Замеры и проектирование',
+    'emergency': 'Аварийный вызов',
+    'other': 'Другое'
+};
+
+// Для отображения в письмах (С ЭМОДЗИ)
+const SERVICE_TYPE_MAPPING_WITH_EMOJI = {
     'installation': '⚡ Монтаж электропроводки',
     'repair': '🔧 Ремонт проводки',
     'equipment': '💡 Установка оборудования',
@@ -38,7 +52,7 @@ const isDatabaseConnected = () => {
     }
 };
 
-// Функция для безопасного сохранения в БД
+// Функция для безопасного сохранения в БД (ИСПРАВЛЕНА)
 const saveToDatabase = async (data) => {
     if (!isDatabaseConnected()) {
         console.log('⚠️ База данных не подключена, пропускаем сохранение');
@@ -51,23 +65,51 @@ const saveToDatabase = async (data) => {
             return null;
         }
 
+        // Проверяем, что serviceType соответствует enum
+        const validServiceTypes = [
+            'Монтаж электропроводки',
+            'Обслуживание',
+            'Ремонт проводки',
+            'Установка оборудования',
+            'Консультация',
+            'Другое'
+        ];
+
+        let serviceTypeForDB = data.serviceTypeRussian;
+
+        // Если значение не входит в enum, ищем соответствие
+        if (!validServiceTypes.includes(serviceTypeForDB)) {
+            // Убираем эмодзи и пробелы в начале
+            const cleaned = serviceTypeForDB.replace(/^[🔧⚡💡🛠️📞📏🚨🤔]\s*/, '');
+            if (validServiceTypes.includes(cleaned)) {
+                serviceTypeForDB = cleaned;
+            } else {
+                serviceTypeForDB = 'Другое';
+            }
+        }
+
+        console.log(`💾 Сохраняем в БД: serviceType = "${serviceTypeForDB}"`);
+
         const contact = await Contact.create({
             name: data.name,
             phone: data.phone,
             email: data.email || undefined,
             message: data.message || undefined,
-            serviceType: data.serviceTypeRussian,
+            serviceType: serviceTypeForDB,
+            status: 'new',
+            notes: ''
         });
 
         console.log('✅ Заявка сохранена в базе данных:', contact._id);
         return contact;
     } catch (dbError) {
         console.error('❌ Ошибка при сохранении в базу данных:', dbError.message);
+        console.error('Детали ошибки:', dbError);
         return null;
     }
 };
 
-// Базовые стили для всех писем (ОБНОВЛЕНЫ: синяя цветовая схема)
+// Базовые стили для всех писем
 const baseStyles = `
     <style>
         body {
@@ -212,9 +254,9 @@ const baseStyles = `
     </style>
 `;
 
-// Красиво отформатированное HTML письмо для клиента (ОБНОВЛЕНО)
+// Письмо для клиента (ИСПРАВЛЕНО - используем MAPPING с эмодзи)
 const createClientEmailTemplate = (data) => {
-    const serviceType = SERVICE_TYPE_MAPPING[data.serviceType] || data.serviceType || 'Не указано';
+    const serviceType = SERVICE_TYPE_MAPPING_WITH_EMOJI[data.serviceType] || data.serviceType || 'Не указано';
 
     return `
 <!DOCTYPE html>
@@ -289,9 +331,9 @@ const createClientEmailTemplate = (data) => {
     `;
 };
 
-// Красиво отформатированное HTML письмо для администратора (ОБНОВЛЕНО)
+// Письмо для администратора (ИСПРАВЛЕНО)
 const createAdminEmailTemplate = (data) => {
-    const serviceType = SERVICE_TYPE_MAPPING[data.serviceType] || data.serviceType || 'Не указано';
+    const serviceType = SERVICE_TYPE_MAPPING_WITH_EMOJI[data.serviceType] || data.serviceType || 'Не указано';
     const now = new Date();
 
     return `
@@ -402,22 +444,30 @@ const submitContactForm = asyncHandler(async (req, res) => {
         throw new Error('Имя и телефон обязательны для заполнения');
     }
 
-    // Преобразуем service из формы в русское значение
-    const serviceTypeRussian = SERVICE_TYPE_MAPPING[service] || service || 'Другое';
+    // Получаем русское название для БД (без эмодзи)
+    const serviceTypeForDB = SERVICE_TYPE_MAPPING[service] || 'Другое';
+
+    console.log(`📝 Обработка заявки: ${name}, услуга: ${service} -> ${serviceTypeForDB}`);
 
     let savedContact = null;
 
-    // Пробуем сохранить в БД, но не падаем при ошибке
+    // Пробуем сохранить в БД
     try {
         savedContact = await saveToDatabase({
             name,
             phone,
             email,
             message,
-            serviceTypeRussian
+            serviceTypeRussian: serviceTypeForDB
         });
+
+        if (savedContact) {
+            console.log(`✅ Заявка сохранена в БД с ID: ${savedContact._id}`);
+        } else {
+            console.log('⚠️ Заявка не сохранена в БД');
+        }
     } catch (error) {
-        console.error('❌ Ошибка при обработке базы данных:', error.message);
+        console.error('❌ Ошибка при сохранении в БД:', error.message);
     }
 
     // Отправляем подтверждение клиенту (если указан email)
@@ -446,7 +496,7 @@ const submitContactForm = asyncHandler(async (req, res) => {
     try {
         await sendEmail({
             to: adminEmail,
-            subject: `⚡ Новая заявка от ${name} - ${serviceTypeRussian}`,
+            subject: `⚡ Новая заявка от ${name} - ${SERVICE_TYPE_MAPPING_WITH_EMOJI[service] || serviceTypeForDB}`,
             html: createAdminEmailTemplate({
                 name,
                 phone,
@@ -458,8 +508,6 @@ const submitContactForm = asyncHandler(async (req, res) => {
         console.log(`✅ Уведомление отправлено админу на ${adminEmail}`);
     } catch (emailError) {
         console.error('❌ Ошибка отправки email админу:', emailError);
-        res.status(500);
-        throw new Error('Ошибка при отправке заявки. Пожалуйста, позвоните нам напрямую.');
     }
 
     // Возвращаем успешный ответ
@@ -492,6 +540,8 @@ const getContacts = asyncHandler(async (req, res) => {
         }
 
         const contacts = await Contact.find().sort('-createdAt');
+        console.log(`📊 Получено ${contacts.length} контактов из БД`);
+
         res.status(200).json({
             success: true,
             count: contacts.length,
