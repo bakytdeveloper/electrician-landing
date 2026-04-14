@@ -6,7 +6,7 @@ import {
     FaCheckCircle,
     FaClock,
     FaTruck,
-    FaArrowRight,
+    // FaArrowRight,
     FaPlug,
     FaLightbulb,
     FaSolarPanel,
@@ -19,7 +19,7 @@ import {
     FaBuilding,
     FaIndustry,
     FaFileInvoice,
-    FaTimes
+    // FaTimes
 } from 'react-icons/fa';
 import {
     MdOutlineElectricalServices,

@@ -11,6 +11,7 @@ import Footer from './components/Footer/Footer';
 import Modal from './components/common/Modal/Modal';
 import WhatsAppButton from "./components/WhatsAppButton/WhatsAppButton";
 import SEO from "./components/SEO/SEO";
+import SchemaMarkup from "./components/SEO/SchemaMarkup";
 
 function App() {
     const [isModalOpen, setIsModalOpen] = useState(false);
@@ -63,6 +64,7 @@ function App() {
     return (
         <div className="App">
             <SEO />
+            <SchemaMarkup />
             <Header openModal={openModal} />
             <Hero openModal={openModal} />
             <Services />

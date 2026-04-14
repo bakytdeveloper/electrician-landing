@@ -57,6 +57,7 @@ const OrdersTable = () => {
 
     useEffect(() => {
         fetchOrders();
+        // eslint-disable-next-line
     }, [pagination.page, filters]);
 
     const handleStatusChange = async (orderId, newStatus) => {

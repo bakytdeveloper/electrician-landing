@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './HeroEditor.css';
-import { FaPlus, FaTrash, FaImage, FaLink, FaPalette } from 'react-icons/fa';
+import { FaTrash, FaImage, FaLink, FaPalette } from 'react-icons/fa';
 
 const HeroEditor = () => {
     const [content, setContent] = useState(null);
@@ -21,6 +21,7 @@ const HeroEditor = () => {
                 cleanupPendingUploads();
             }
         };
+        // eslint-disable-next-line
     }, []);
 
     const fetchContent = async () => {

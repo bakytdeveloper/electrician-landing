@@ -2,13 +2,13 @@ import React, { useState, useEffect } from 'react';
 import './AboutEditor.css';
 import {
     FaPlus, FaTrash,
-    FaUser, FaAward, FaCertificate, FaTools, FaShieldAlt,
-    FaClock, FaCheckCircle, FaGraduationCap, FaBriefcase,
-    FaStar, FaQuoteLeft
+    // FaUser, FaAward, FaCertificate, FaTools, FaShieldAlt,
+    // FaClock, FaCheckCircle, FaGraduationCap, FaBriefcase,
+    // FaStar, FaQuoteLeft
 } from 'react-icons/fa';
-import {
-    MdElectricalServices, MdEngineering, MdSupportAgent
-} from 'react-icons/md';
+// import {
+//     MdElectricalServices, MdEngineering, MdSupportAgent
+// } from 'react-icons/md';
 
 const AboutEditor = () => {
     const [content, setContent] = useState(null);

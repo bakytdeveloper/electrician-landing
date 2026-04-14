@@ -10,14 +10,22 @@ const Hero = ({ openModal }) => {
     const [loading, setLoading] = useState(true);
     const [imageErrors, setImageErrors] = useState({});
 
+    // Получение переменных из .env
+    const getEnv = (key, fallback = '') => process.env[key] || fallback;
+
+    const phoneRaw = getEnv('REACT_APP_PHONE_RAW', '+77271234567');
+    const phoneDisplay = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
+    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00-20:00');
+    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00-18:00');
+    const city = getEnv('REACT_APP_ADDRESS_CITY', 'Алматы');
+
     useEffect(() => {
         fetchContent();
     }, []);
 
-    // Добавить в начало компонента Hero, перед return
-// Fallback для SEO, пока грузится API
+    // Fallback для SEO, пока грузится API
     const seoFallback = {
-        title: "Профессиональный электрик | Монтаж и ремонт электропроводки",
+        title: `Профессиональный электрик | Монтаж и ремонт электропроводки в ${city}`,
         subtitle: "Быстрый выезд, гарантия качества, доступные цены"
     };
 
@@ -66,6 +74,11 @@ const Hero = ({ openModal }) => {
 
     const activeSlides = content.slides.filter(slide => slide.active !== false);
     const activeFeatures = content.features.filter(f => f.active);
+
+    // Используем данные из API если есть, иначе .env
+    const workHoursDaily = content?.workHours?.daily || `Пн-Пт: ${weekdayHours} / Сб-Вс: ${weekendHours}`;
+    const workHoursEmergency = content?.workHours?.emergency || "Аварийный выезд - круглосуточно";
+    const emergencyPhone = content?.emergencyPhone || phoneDisplay;
 
     return (
         <section className="hero" id="home">
@@ -173,8 +186,8 @@ const Hero = ({ openModal }) => {
                                 </div>
                                 <div className="contact-info-content">
                                     <h4>Рабочие часы</h4>
-                                    <p>{content.workHours?.daily}</p>
-                                    <p className="emergency">{content.workHours?.emergency}</p>
+                                    <p>{workHoursDaily}</p>
+                                    <p className="emergency">{workHoursEmergency}</p>
                                 </div>
                             </div>
 
@@ -184,8 +197,8 @@ const Hero = ({ openModal }) => {
                                 </div>
                                 <div className="contact-info-content">
                                     <h4>Срочный вызов</h4>
-                                    <a href={`tel:${content.emergencyPhone?.replace(/\D/g, '')}`} className="emergency-phone">
-                                        {content.emergencyPhone}
+                                    <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="emergency-phone">
+                                        {emergencyPhone}
                                     </a>
                                     <p>Круглосуточно</p>
                                 </div>

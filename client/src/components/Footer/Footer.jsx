@@ -17,19 +17,24 @@ import './Footer.css';
 import AdminLogin from '../Admin/AdminLogin/AdminLogin';
 import AdminPanel from '../Admin/AdminPanel/AdminPanel';
 
+const getEnv = (key, fallback = '') => process.env[key] || fallback;
+
 const Footer = () => {
     const [showAdminLogin, setShowAdminLogin] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const currentYear = new Date().getFullYear();
 
-    // КОНТАКТНЫЕ ДАННЫЕ ДЛЯ АЛМАТЫ (синхронизированы)
-    const phoneNumber = '+7 (727) 123-45-67';
-    const emailAddress = 'info@electromaster.kz';
-    const whatsappNumber = '77071234567';
-    const telegramUsername = 'electromaster_almaty';
-    const instagramUsername = 'electromaster_almaty';
-    const officeAddress = 'г. Алматы, БЦ Нурлы Тау, офис 123';
-    const mapLink = 'https://goo.gl/maps/NurlyTauAlmaty';
+    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
+    const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
+    const emailAddress = getEnv('REACT_APP_EMAIL', 'info@electromaster.kz');
+    const whatsappNumber = getEnv('REACT_APP_PHONE_FOR_WHATSAPP', '77071234567');
+    const telegramUsername = getEnv('REACT_APP_TELEGRAM_USERNAME', 'electromaster_almaty');
+    const instagramUsername = getEnv('REACT_APP_INSTAGRAM_USERNAME', 'electromaster_almaty');
+    const officeAddress = getEnv('REACT_APP_OFFICE_DESCRIPTION', 'г. Алматы, БЦ Нурлы Тау, офис 123');
+    const mapLink = getEnv('REACT_APP_MAP_DIRECT_URL', 'https://goo.gl/maps/NurlyTauAlmaty');
+    const companyName = getEnv('REACT_APP_COMPANY_NAME', 'ЭлектроМастер Алматы');
+    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00-20:00');
+    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00-18:00');
 
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
@@ -77,7 +82,7 @@ const Footer = () => {
         { label: 'Установка систем защиты', href: '#services' }
     ];
 
-    // ИСПРАВЛЕНО: контактные данные под Алматы
+    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
     const contactInfo = [
         { icon: <FaPhone />, text: phoneNumber, link: `tel:${phoneNumber.replace(/\D/g, '')}` },
         { icon: <FaWhatsapp />, text: 'WhatsApp', link: `https://wa.me/${whatsappNumber}` },
@@ -85,7 +90,7 @@ const Footer = () => {
         { icon: <FaInstagram />, text: 'Instagram', link: `https://instagram.com/${instagramUsername}` },
         { icon: <FaEnvelope />, text: emailAddress, link: `mailto:${emailAddress}` },
         { icon: <FaMapMarkerAlt />, text: officeAddress, link: mapLink },
-        { icon: <FaClock />, text: 'Пн-Пт: 08:00-20:00, Сб-Вс: 09:00-18:00', link: '#contact' },
+        { icon: <FaClock />, text: `Пн-Пт: ${weekdayHours}, Сб-Вс: ${weekendHours}`, link: '#contact' },
         { icon: <FaLock />, text: 'Админ-панель', link: 'admin' }
     ];
 
@@ -153,7 +158,7 @@ const Footer = () => {
                                 <div className="footer-logo">
                                     <MdElectricalServices className="footer-logo-icon" aria-hidden="true" />
                                     <div className="footer-logo-text">
-                                        <div className="footer-logo-title">ЭлектроМастер Алматы</div>
+                                        <div className="footer-logo-title">{companyName}</div>
                                         <p className="footer-logo-subtitle">Профессиональные услуги электрика</p>
                                     </div>
                                 </div>
@@ -223,7 +228,7 @@ const Footer = () => {
                         <div className="footer-bottom-content">
                             <div className="footer-copyright">
                                 <FaRegCopyright className="footer-copyright-icon" aria-hidden="true" />
-                                <span>{currentYear} ЭлектроМастер Алматы. Все права защищены.</span>
+                                <span>{currentYear} {companyName}. Все права защищены.</span>
                             </div>
 
                             <div className="footer-developer-info">

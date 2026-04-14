@@ -344,6 +344,7 @@ const Portfolio = () => {
         return () => {
             document.removeEventListener('keydown', handleKeyDown);
         };
+        // eslint-disable-next-line
     }, [isModalOpen, currentIndex, isZoomed, selectedImage]);
 
     if (loading) {

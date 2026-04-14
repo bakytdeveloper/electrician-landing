@@ -5,17 +5,29 @@ import { MdElectricBolt } from 'react-icons/md';
 import './Header.css';
 import Button from '../common/Button/Button';
 
+// Функция для получения переменных окружения с fallback
+const getEnv = (key, fallback = '') => process.env[key] || fallback;
+
 const Header = ({ openModal }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
     // eslint-disable-next-line
     const [isMobile, setIsMobile] = useState(false);
 
-    // КОНТАКТНЫЕ ДАННЫЕ ДЛЯ АЛМАТЫ (синхронизированы с Contact.jsx)
-    const phoneNumber = '+7 (727) 123-45-67';
-    const emailAddress = 'info@electromaster.kz';
-    const whatsappNumber = '77071234567';
-    const telegramUsername = 'electromaster_almaty';
+    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
+    const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
+    const phoneRaw = getEnv('REACT_APP_PHONE_RAW', '+77271234567');
+    const emailAddress = getEnv('REACT_APP_EMAIL', 'info@electromaster.kz');
+    const whatsappNumber = getEnv('REACT_APP_PHONE_FOR_WHATSAPP', '77071234567');
+    const telegramUsername = getEnv('REACT_APP_TELEGRAM_USERNAME', 'electromaster_almaty');
+    const companyName = getEnv('REACT_APP_COMPANY_NAME', 'ЭлектроМастер Алматы');
+    const city = getEnv('REACT_APP_ADDRESS_CITY', 'Алматы');
+    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00-20:00');
+    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00-18:00');
+
+    // Форматируем часы для отображения
+    const weekdayDisplay = weekdayHours.replace('-', ' - ');
+    const weekendDisplay = weekendHours.replace('-', ' - ');
 
     useEffect(() => {
         const handleScroll = () => {
@@ -61,7 +73,7 @@ const Header = ({ openModal }) => {
     };
 
     const handleCallClick = () => {
-        window.location.href = `tel:${phoneNumber.replace(/\D/g, '')}`;
+        window.location.href = `tel:${phoneRaw.replace(/\D/g, '')}`;
     };
 
     const navItems = [
@@ -83,7 +95,7 @@ const Header = ({ openModal }) => {
                 <div className="container">
                     <div className="contact-bar-content">
                         <div className="contact-info">
-                            <a href={`tel:${phoneNumber.replace(/\D/g, '')}`} className="contact-item" aria-label="Позвонить">
+                            <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="contact-item" aria-label="Позвонить">
                                 <FaPhone className="contact-icon" aria-hidden="true" />
                                 <span>{phoneNumber}</span>
                             </a>
@@ -92,9 +104,9 @@ const Header = ({ openModal }) => {
                                 <span>{emailAddress}</span>
                             </a>
                             <div className="work-hours">
-                                <span>Пн-Пт: 08:00-20:00</span>
+                                <span>Пн-Пт: {weekdayDisplay}</span>
                                 <span className="work-hours-span-slash">/</span>
-                                <span>Сб-Вс: 09:00-18:00</span>
+                                <span>Сб-Вс: {weekendDisplay}</span>
                             </div>
                         </div>
 
@@ -120,21 +132,21 @@ const Header = ({ openModal }) => {
             <header className={`header ${isScrolled ? 'header-scrolled' : ''}`}>
                 <div className="container">
                     <div className="header-content">
-                        {/* Логотип - ИСПРАВЛЕНО: убран h1, заменен на div */}
+                        {/* Логотип */}
                         <div
                             className="logo"
                             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                             role="button"
                             tabIndex={0}
-                            onKeyPress={(e) => e.key === 'Enter' && window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            onKeyDown={(e) => (e.key === 'Enter' || e.key === ' ') && window.scrollTo({ top: 0, behavior: 'smooth' })}
                             aria-label="На главную"
                         >
                             <div className="logo-icon-box-md-electric-bolt">
                                 <MdElectricBolt className="logo-icon" aria-hidden="true" />
                             </div>
                             <div className="logo-text">
-                                <div className="logo-title">ЭлектроМастер</div>
-                                <p className="logo-subtitle">Профессиональные услуги электрика</p>
+                                <div className="logo-title">{companyName}</div>
+                                <p className="logo-subtitle">Профессиональные услуги электрика в {city}</p>
                             </div>
                         </div>
 
@@ -187,7 +199,7 @@ const Header = ({ openModal }) => {
                         <div className="mobile-menu-header">
                             <div className="mobile-logo">
                                 <MdElectricBolt aria-hidden="true" />
-                                <span>ЭлектроМастер Алматы</span>
+                                <span>{companyName}</span>
                             </div>
                             <button
                                 className="mobile-menu-close"
@@ -214,7 +226,7 @@ const Header = ({ openModal }) => {
                         </nav>
 
                         <div className="mobile-contact-info">
-                            <a href={`tel:${phoneNumber.replace(/\D/g, '')}`} className="mobile-contact-item">
+                            <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="mobile-contact-item">
                                 <FaPhone aria-hidden="true" />
                                 <span>{phoneNumber}</span>
                             </a>

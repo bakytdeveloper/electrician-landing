@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './PriceEditor.css';
 import {
-    FaPlus, FaTrash, FaEdit, FaTimes, FaSave,
+    FaPlus, FaTrash, FaEdit, FaTimes,
     FaArrowUp, FaArrowDown, FaChevronDown, FaChevronUp
 } from 'react-icons/fa';
 

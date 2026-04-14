@@ -8,19 +8,22 @@ import {
     FaExclamationCircle,
     FaWhatsapp,
     FaTelegram,
-    FaVk,
+    // FaVk,
     FaInstagram,
     FaMapMarkerAlt,
-    FaClock,
+    // FaClock,
     FaRegClock
 } from 'react-icons/fa';
 import {
     MdOutlineSupportAgent,
     MdLocationOn,
-    MdPhoneInTalk
+    // MdPhoneInTalk
 } from 'react-icons/md';
 import './Contact.css';
 import Button from '../common/Button/Button';
+
+// Функция для получения переменных окружения с fallback
+const getEnv = (key, fallback = '') => process.env[key] || fallback;
 
 const Contact = () => {
     const [formData, setFormData] = useState({
@@ -39,14 +42,28 @@ const Contact = () => {
     const mapIframeRef = useRef(null);
     const [todayHours, setTodayHours] = useState([]);
 
-    // ОБНОВЛЕНО: Карта Алматы (БЦ Нурлы Тау или другое место)
-    const MAP_URL = "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2907.894563386551!2d76.85626547663344!3d43.22121997112498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836f2a0b6e6d3d%3A0x8e0e4f8e9b9c9f3e!2sNurly%20Tau%20Business%20Center!5e0!3m2!1sen!2skg!4v1710000000000!5m2!1sen!2skg";
+    // === ДАННЫЕ ИЗ .env ===
+    const MAP_URL = getEnv('REACT_APP_MAP_EMBED_URL', "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2907.894563386551!2d76.85626547663344!3d43.22121997112498!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x38836f2a0b6e6d3d%3A0x8e0e4f8e9b9c9f3e!2sNurly%20Tau%20Business%20Center!5e0!3m2!1sen!2skg!4v1710000000000!5m2!1sen!2skg");
+    const MAP_DIRECT_URL = getEnv('REACT_APP_MAP_DIRECT_URL', 'https://maps.google.com/?q=Nurly+Tau+Business+Center+Almaty');
+    const MAP_2GIS_URL = getEnv('REACT_APP_2GIS_URL', 'https://2gis.kz/almaty/search/Нурлы%20Тау');
 
-    // Адрес в Алматы
-    const officeAddress = "г. Алматы, БЦ Нурлы Тау, офис 123";
-    const phoneNumber = "+7 (727) 123-45-67";
-    const whatsappNumber = "77071234567";
-    const emailAddress = "info@electromaster.kz";
+    const officeAddress = getEnv('REACT_APP_OFFICE_DESCRIPTION', 'г. Алматы, БЦ Нурлы Тау, офис 123');
+    const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
+    const phoneRaw = getEnv('REACT_APP_PHONE_RAW', '+77271234567');
+    const whatsappNumber = getEnv('REACT_APP_PHONE_FOR_WHATSAPP', '77071234567');
+    const emailAddress = getEnv('REACT_APP_EMAIL', 'info@electromaster.kz');
+    const telegramUsername = getEnv('REACT_APP_TELEGRAM_USERNAME', 'electromaster_almaty');
+    const instagramUsername = getEnv('REACT_APP_INSTAGRAM_USERNAME', 'electromaster_almaty');
+    const companyName = getEnv('REACT_APP_COMPANY_NAME', 'ЭлектроМастер Алматы');
+    const city = getEnv('REACT_APP_ADDRESS_CITY', 'Алматы');
+    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00 - 20:00');
+    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00 - 18:00');
+
+    // Парсим часы для isWorkingNow
+    const weekdayStart = parseInt(weekdayHours.split('-')[0].trim().split(':')[0]);
+    const weekdayEnd = parseInt(weekdayHours.split('-')[1].trim().split(':')[0]);
+    const weekendStart = parseInt(weekendHours.split('-')[0].trim().split(':')[0]);
+    const weekendEnd = parseInt(weekendHours.split('-')[1].trim().split(':')[0]);
 
     const serviceOptions = useMemo(() => [
         { value: '', label: 'Выберите услугу' },
@@ -61,22 +78,22 @@ const Contact = () => {
     ], []);
 
     const workingHours = useMemo(() => [
-        { day: 'Понедельник', hours: '08:00 - 20:00' },
-        { day: 'Вторник', hours: '08:00 - 20:00' },
-        { day: 'Среда', hours: '08:00 - 20:00' },
-        { day: 'Четверг', hours: '08:00 - 20:00' },
-        { day: 'Пятница', hours: '08:00 - 20:00' },
-        { day: 'Суббота', hours: '09:00 - 18:00' },
-        { day: 'Воскресенье', hours: '09:00 - 18:00' }
-    ], []);
+        { day: 'Понедельник', hours: weekdayHours },
+        { day: 'Вторник', hours: weekdayHours },
+        { day: 'Среда', hours: weekdayHours },
+        { day: 'Четверг', hours: weekdayHours },
+        { day: 'Пятница', hours: weekdayHours },
+        { day: 'Суббота', hours: weekendHours },
+        { day: 'Воскресенье', hours: weekendHours }
+    ], [weekdayHours, weekendHours]);
 
     const contactButtons = useMemo(() => [
-        { icon: <FaPhone />, label: 'Позвонить', href: `tel:${phoneNumber.replace(/\s/g, '')}`, color: '#27ae60' },
+        { icon: <FaPhone />, label: 'Позвонить', href: `tel:${phoneRaw.replace(/\D/g, '')}`, color: '#27ae60' },
         { icon: <FaWhatsapp />, label: 'WhatsApp', href: `https://wa.me/${whatsappNumber}`, color: '#25D366' },
-        { icon: <FaTelegram />, label: 'Telegram', href: 'https://t.me/electromaster_almaty', color: '#0088cc' },
+        { icon: <FaTelegram />, label: 'Telegram', href: `https://t.me/${telegramUsername}`, color: '#0088cc' },
         { icon: <FaEnvelope />, label: 'Email', href: `mailto:${emailAddress}`, color: '#EA4335' },
-        { icon: <FaInstagram />, label: 'Instagram', href: 'https://instagram.com/electromaster_almaty', color: '#E4405F' }
-    ], []);
+        { icon: <FaInstagram />, label: 'Instagram', href: `https://instagram.com/${instagramUsername}`, color: '#E4405F' }
+    ], [phoneRaw, whatsappNumber, telegramUsername, emailAddress, instagramUsername]);
 
     useEffect(() => {
         const loadMap = () => {
@@ -211,11 +228,15 @@ const Contact = () => {
         const now = new Date();
         const day = now.getDay();
         const hour = now.getHours();
+        const minute = now.getMinutes();
+        const currentTime = hour + minute / 60;
 
         if (day === 0 || day === 6) {
-            return hour >= 9 && hour < 18;
+            // Выходные
+            return currentTime >= weekendStart && currentTime < weekendEnd;
         } else {
-            return hour >= 8 && hour < 20;
+            // Будни
+            return currentTime >= weekdayStart && currentTime < weekdayEnd;
         }
     };
 
@@ -232,11 +253,11 @@ const Contact = () => {
     };
 
     const handleCopyMapLink = () => {
-        navigator.clipboard.writeText('https://maps.google.com/?q=Nurly+Tau+Business+Center+Almaty')
+        navigator.clipboard.writeText(MAP_DIRECT_URL)
             .then(() => {
                 const notification = document.createElement('div');
                 notification.textContent = '📍 Ссылка на карту скопирована';
-                notification.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:white;padding:10px20px;border-radius:8px;z-index:9999;';
+                notification.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:white;padding:10px 20px;border-radius:8px;z-index:9999;font-family:sans-serif;';
                 document.body.appendChild(notification);
                 setTimeout(() => notification.remove(), 2000);
             })
@@ -249,9 +270,9 @@ const Contact = () => {
         <section id="contact" className="contact-section" aria-label="Контактная информация">
             <div className="contact-container">
                 <div className="contact-section-header">
-                    <h2 className="contact-section-title">Контакты в Алматы</h2>
+                    <h2 className="contact-section-title">Контакты в {city}</h2>
                     <p className="contact-section-subtitle">
-                        Свяжитесь с нами любым удобным способом. Мы всегда готовы помочь с вашими электромонтажными работами в Алматы и области.
+                        Свяжитесь с нами любым удобным способом. Мы всегда готовы помочь с вашими электромонтажными работами в {city} и области.
                     </p>
                 </div>
 
@@ -272,18 +293,20 @@ const Contact = () => {
                             {/* Адрес */}
                             <div className="contact-address-section">
                                 <div className="contact-address-item">
-                                    <MdLocationOn className="contact-address-icon" />
+
                                     <div className="contact-address-text">
-                                        <h4>Наш адрес</h4>
-                                        <p>{officeAddress}</p>
+                                        <h4>
+                                            <MdLocationOn className="contact-address-icon" />
+                                            Наш адрес</h4>
+                                        {/*<p>{officeAddress}</p>*/}
                                         <a
-                                            href="https://2gis.kz/almaty/search/Нурлы%20Тау"
+                                            href={MAP_2GIS_URL}
                                             target="_blank"
                                             rel="noopener noreferrer"
                                             className="contact-address-link"
                                             aria-label="Открыть адрес на 2GIS"
                                         >
-                                            Построить маршрут на 2GIS
+                                            {officeAddress}
                                         </a>
                                     </div>
                                 </div>
@@ -325,7 +348,7 @@ const Contact = () => {
                                 <div className="contact-map-header-top">
                                     <h3>
                                         <FaMapMarkerAlt className="section-icon" />
-                                        Мы на карте Алматы
+                                        Мы на карте {city}
                                     </h3>
                                     <button
                                         className="contact-map-reload-btn"
@@ -336,7 +359,7 @@ const Contact = () => {
                                         ⟳
                                     </button>
                                 </div>
-                                <p>БЦ Нурлы Тау, Алматы</p>
+                                <p>{officeAddress}</p>
                             </div>
                             <div className="contact-map-container" ref={mapContainerRef}>
                                 {isMapLoaded ? (
@@ -349,7 +372,7 @@ const Contact = () => {
                                         allowFullScreen
                                         loading="lazy"
                                         referrerPolicy="no-referrer-when-downgrade"
-                                        title="Карта проезда к офису электрика в Алматы"
+                                        title={`Карта проезда к офису ${companyName} в ${city}`}
                                         className="contact-map-iframe"
                                     />
                                 ) : (
@@ -361,7 +384,7 @@ const Contact = () => {
                             </div>
                             <div className="contact-map-actions">
                                 <a
-                                    href="https://www.google.com/maps?q=Nurly+Tau+Business+Center+Almaty"
+                                    href={MAP_DIRECT_URL}
                                     className="contact-map-action-btn"
                                     target="_blank"
                                     rel="noopener noreferrer"
@@ -432,7 +455,7 @@ const Contact = () => {
                                             name="phone"
                                             value={formData.phone}
                                             onChange={handleChange}
-                                            placeholder="+7 (727) 123-45-67"
+                                            placeholder={phoneNumber}
                                             className={formErrors.phone ? 'contact-error' : ''}
                                             aria-label="Номер телефона"
                                             aria-invalid={!!formErrors.phone}

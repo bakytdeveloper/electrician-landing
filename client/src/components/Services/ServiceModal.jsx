@@ -2,9 +2,11 @@ import React from 'react';
 import { FaTimes, FaCheckCircle, FaArrowRight } from 'react-icons/fa';
 import Button from '../common/Button/Button';
 import './ServiceModal.css';
+const getEnv = (key, fallback = '') => process.env[key] || fallback;
 
 const ServiceModal = ({ isOpen, onClose, service, formatDescription, iconMap }) => {
     if (!isOpen || !service) return null;
+    const phoneRaw = getEnv('REACT_APP_PHONE_RAW', '+77271234567');
 
     const IconComponent = iconMap[service.icon] || FaArrowRight;
 
@@ -61,7 +63,7 @@ const ServiceModal = ({ isOpen, onClose, service, formatDescription, iconMap }) 
                         Заказать услугу
                     </Button>
                     <a
-                        href="tel:+79991234567"
+                        href={`tel:${phoneRaw}`}
                         className="service-modal-call-link"
                         onClick={(e) => e.stopPropagation()}
                     >
