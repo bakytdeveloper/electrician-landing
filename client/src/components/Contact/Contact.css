@@ -215,6 +215,13 @@
 }
 
 @media (max-width: 768px) {
+    .contact-availability-badge {
+        padding: 5px 24px;
+        border-radius: 40px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
     .contact-hours-table {
         grid-template-columns: 1fr;
         gap: 10px;
@@ -236,8 +243,8 @@
 
 @media (max-width: 480px) {
     .contact-hours-row {
-        flex-direction: column;
-        align-items: flex-start;
+        /*flex-direction: column;*/
+        /*align-items: flex-start;*/
         gap: 5px;
     }
 
