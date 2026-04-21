@@ -407,6 +407,12 @@
         /*gap: 20px;*/
     }
 
+
+    /* Заголовок секции */
+    .services-section-header {
+        margin: 0 auto 30px;
+    }
+
     .services-section-subtitle {
         font-size: 1rem;
         padding: 0 15px;
