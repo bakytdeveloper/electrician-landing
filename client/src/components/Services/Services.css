@@ -251,7 +251,7 @@
     border-radius: 15px;
     transition: var(--transition);
     background: rgba(248, 183, 57, 0.05);
-    border: 1px solid rgba(248, 183, 57, 0.1);
+    border: 1px solid rgba(248, 183, 57, 0.8);
 }
 
 .services-benefit-card:hover {
@@ -480,6 +480,18 @@
         height: 40px;
         font-size: 1.5rem;
     }
+
+    .services-benefit-card {
+        padding: 15px 10px;
+    }
+
+    .services-benefit-icon-wrapper {
+        width: 30px;
+        height: 30px;
+        margin: 0 auto 10px;
+        font-size: 1.5rem;
+    }
+
 }
 
 @media (max-width: 576px) {
@@ -519,10 +531,6 @@
 
     .services-benefits-section {
         padding: 25px 15px;
-    }
-
-    .services-benefit-card {
-        padding: 20px 15px;
     }
 
     .services-section-title {
