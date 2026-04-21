@@ -13,7 +13,9 @@ import {
     FaQuoteLeft,
     FaQuoteRight,
     FaChevronLeft,
-    FaChevronRight
+    FaChevronRight,
+    FaChevronDown,
+    FaChevronUp
 } from 'react-icons/fa';
 import { MdElectricalServices, MdEngineering, MdSupportAgent } from 'react-icons/md';
 import './About.css';
@@ -43,6 +45,7 @@ const About = () => {
     const [stats, setStats] = useState({});
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
+    const [expandedTestimonials, setExpandedTestimonials] = useState({});
     const testimonialsRef = useRef(null);
 
     useEffect(() => {
@@ -140,6 +143,21 @@ const About = () => {
 
         setTouchStart(null);
         setTouchEnd(null);
+    };
+
+    // Функция для переключения состояния отзыва
+    const toggleTestimonial = (index) => {
+        setExpandedTestimonials(prev => ({
+            ...prev,
+            [index]: !prev[index]
+        }));
+    };
+
+    // Функция для обрезки текста
+    const truncateText = (text, maxLength = 100) => {
+        if (!text) return '';
+        if (text.length <= maxLength) return text;
+        return text.substring(0, maxLength) + '...';
     };
 
     if (loading) {
@@ -259,7 +277,7 @@ const About = () => {
                         </div>
                     </div>
 
-                    {/* Отзывы - горизонтальный скролл */}
+                    {/* Отзывы - горизонтальный скролл с функцией "Читать далее" */}
                     {activeTestimonials.length > 0 && (
                         <div className="about-testimonials-section">
                             <h3 className="about-testimonials-title">Отзывы клиентов</h3>
@@ -273,40 +291,67 @@ const About = () => {
                                     onTouchEnd={handleTouchEnd}
                                 >
                                     <div className="about-testimonials-track">
-                                        {activeTestimonials.map((testimonial, index) => (
-                                            <div key={index} className="about-testimonial-card">
-                                                <div className="about-testimonial-header">
-                                                    <div className="about-client-info">
-                                                        <div className="about-client-avatar">
-                                                            {testimonial.name.charAt(0)}
+                                        {activeTestimonials.map((testimonial, index) => {
+                                            const isExpanded = expandedTestimonials[index];
+                                            const displayText = isExpanded
+                                                ? testimonial.text
+                                                : truncateText(testimonial.text, 50);
+                                            const needsTruncation = testimonial.text && testimonial.text.length > 50;
+
+                                            return (
+                                                <div key={index} className="about-testimonial-card">
+                                                    <div className="about-testimonial-header">
+                                                        <div className="about-client-info">
+                                                            <div className="about-client-avatar">
+                                                                {testimonial.name.charAt(0)}
+                                                            </div>
+                                                            <div className="about-client-details">
+                                                                <h4>{testimonial.name}</h4>
+                                                                <p className="about-client-role">{testimonial.role}</p>
+                                                                <p className="about-client-project">{testimonial.project}</p>
+                                                            </div>
                                                         </div>
-                                                        <div className="about-client-details">
-                                                            <h4>{testimonial.name}</h4>
-                                                            <p className="about-client-role">{testimonial.role}</p>
-                                                            <p className="about-client-project">{testimonial.project}</p>
+                                                        <div className="about-testimonial-rating">
+                                                            {[...Array(5)].map((_, i) => (
+                                                                <FaStar
+                                                                    key={i}
+                                                                    className={`about-star ${i < testimonial.rating ? 'about-filled' : ''}`}
+                                                                />
+                                                            ))}
                                                         </div>
                                                     </div>
-                                                    <div className="about-testimonial-rating">
-                                                        {[...Array(5)].map((_, i) => (
-                                                            <FaStar
-                                                                key={i}
-                                                                className={`about-star ${i < testimonial.rating ? 'about-filled' : ''}`}
-                                                            />
-                                                        ))}
+
+                                                    <div className="about-testimonial-body">
+                                                        <FaQuoteLeft className="about-quote-left" />
+                                                        <p className="about-testimonial-text">{displayText}</p>
+                                                        <FaQuoteRight className="about-quote-right" />
+                                                    </div>
+
+                                                    <div className="about-testimonial-footer">
+                                                        {needsTruncation && (
+                                                            <button
+                                                                className="about-read-more-btn"
+                                                                onClick={() => toggleTestimonial(index)}
+                                                                aria-label={isExpanded ? "Свернуть отзыв" : "Развернуть отзыв"}
+                                                            >
+                                                                {isExpanded ? (
+                                                                    <>
+                                                                        <FaChevronUp />
+                                                                        <span>Свернуть</span>
+                                                                    </>
+                                                                ) : (
+                                                                    <>
+                                                                        <FaChevronDown />
+                                                                        <span>Читать далее</span>
+                                                                    </>
+                                                                )}
+                                                            </button>
+                                                        )}
+                                                        <span className="about-testimonial-date">{testimonial.date}</span>
                                                     </div>
                                                 </div>
-
-                                                <div className="about-testimonial-body">
-                                                    <FaQuoteLeft className="about-quote-left" />
-                                                    <p className="about-testimonial-text">{testimonial.text}</p>
-                                                    <FaQuoteRight className="about-quote-right" />
-                                                </div>
-
-                                                <div className="about-testimonial-footer">
-                                                    <span className="about-testimonial-date">{testimonial.date}</span>
-                                                </div>
-                                            </div>
-                                        ))}
+                                            );
+                                        })}
                                     </div>
                                 </div>
                             </div>

@@ -724,7 +724,7 @@
 
 .about-testimonial-body {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex: 1;
 }
 
@@ -733,7 +733,7 @@
     position: absolute;
     color: var(--primary-color);
     opacity: 0.3;
-    font-size: 1.8rem;
+    font-size: 1.5rem;
 }
 
 .about-quote-left {
@@ -1326,7 +1326,7 @@
 
 .about-testimonial-body {
     position: relative;
-    margin-bottom: 20px;
+    margin-bottom: 15px;
     flex: 1;
 }
 
@@ -1335,7 +1335,7 @@
     position: absolute;
     color: var(--primary-color);
     opacity: 0.3;
-    font-size: 1.8rem;
+    font-size: 1.3rem;
 }
 
 .about-quote-left {
@@ -1446,6 +1446,91 @@
 
     .about-client-details h4 {
         font-size: 1.1rem;
+    }
+
+    .about-testimonial-text {
+        font-size: 0.95rem;
+    }
+}
+
+/* Стили для кнопки "Читать далее" в отзывах */
+.about-testimonial-footer {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: auto;
+}
+
+.about-read-more-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: none;
+    border: none;
+    color: var(--primary-color);
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 8px 12px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
+    width: fit-content;
+    background: rgba(248, 183, 57, 0.1);
+}
+
+.about-read-more-btn:hover {
+    background: rgba(248, 183, 57, 0.2);
+    transform: translateX(3px);
+}
+
+.about-read-more-btn svg {
+    font-size: 0.8rem;
+    transition: transform 0.3s ease;
+}
+
+.about-read-more-btn:hover svg {
+    transform: translateY(2px);
+}
+
+.about-testimonial-text {
+    color: var(--gray-color);
+    line-height: 1.6;
+    font-size: 1rem;
+    font-style: italic;
+    margin: 0;
+    transition: all 0.3s ease;
+}
+
+/* Анимация для плавного появления текста */
+.about-testimonial-body {
+    position: relative;
+    margin-bottom: 15px;
+    flex: 1;
+    transition: all 0.3s ease;
+}
+
+/* Адаптивность для кнопки читать далее */
+@media (max-width: 768px) {
+    .about-read-more-btn {
+        padding: 6px 10px;
+        font-size: 0.8rem;
+    }
+
+    .about-read-more-btn svg {
+        font-size: 0.75rem;
+    }
+
+
+    .about-testimonial-body {
+        margin-bottom: 5px;
+    }
+}
+
+@media (max-width: 576px) {
+    .about-read-more-btn {
+        padding: 5px 8px;
+        font-size: 0.75rem;
     }
 
     .about-testimonial-text {
