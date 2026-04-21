@@ -37,7 +37,6 @@
   }
 }
 
-
 .App {
   position: relative;
   overflow-x: hidden;
@@ -109,3 +108,10 @@
 .p-3 { padding: 1.5rem; }
 .p-4 { padding: 2rem; }
 .p-5 { padding: 3rem; }
+
+/* Предотвращение скролла при открытом модальном окне */
+body.modal-open {
+  overflow: hidden;
+  position: fixed;
+  width: 100%;
+}

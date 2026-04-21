@@ -51,7 +51,6 @@
 
 .work-hours {
     display: flex;
-    /*flex-direction: column;*/
     font-size: 0.85rem;
     color: var(--light-gray);
 }
@@ -137,8 +136,6 @@
 .logo:hover .logo-icon {
     transform: scale(1.1);
 }
-
-/*border:"none", padding:"5px 5px 2px", textAlign: "center", borderRadius:"50%", backgroundColor:"blue"*/
 
 .logo-icon-box-md-electric-bolt {
     border: none;
@@ -249,61 +246,133 @@
     color: var(--primary-color);
 }
 
-/* Мобильное меню */
-.mobile-menu {
+/* ============================================ */
+/* Мобильное меню - ИЗОЛИРОВАННЫЕ СТИЛИ с префиксом header-modal */
+/* ============================================ */
+
+/* Основной контейнер модального окна */
+.header-modal-wrapper {
     position: fixed;
     top: 0;
-    right: -100%;
+    left: 0;
     width: 100%;
     height: 100vh;
-    z-index: 1001;
-    transition: right 0.4s ease;
+    z-index: 10000;
+    visibility: hidden;
+    transition: visibility 0.3s ease;
 }
 
-.mobile-menu.active {
-    right: 0;
+.header-modal-wrapper.active {
+    visibility: visible;
 }
 
-.mobile-menu-content {
-    position: absolute;
-    top: 0;
-    right: 0;
-    width: 320px;
-    height: 100%;
-    background-color: var(--white);
-    z-index: 1002;
-    overflow-y: auto;
-    padding: 30px;
-    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.1);
-    display: flex;
-    flex-direction: column;
-}
-
-.mobile-menu-overlay {
+/* Оверлей (затемнение) */
+.header-modal-overlay {
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background-color: rgba(0, 0, 0, 0.5);
-    backdrop-filter: blur(3px);
+    background-color: rgba(0, 0, 0, 0.6);
+    backdrop-filter: blur(4px);
+    opacity: 0;
+    transition: opacity 0.3s ease;
 }
 
-.mobile-menu-header {
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--light-gray);
+.header-modal-wrapper.active .header-modal-overlay {
+    opacity: 1;
+}
+
+/* Контейнер для содержимого */
+.header-modal-container {
+    position: absolute;
+    top: 0;
+    right: -100%;
+    width: 100%;
+    height: 100%;
+    max-width: 450px;
+    transition: right 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     display: flex;
-    justify-content: space-between;
-    align-items: center;
+    justify-content: flex-end;
+}
+
+.header-modal-wrapper.active .header-modal-container {
+    right: 0;
+}
+
+.header-modal-wrapper.closing .header-modal-container {
+    right: -100%;
+}
+
+/* Основное содержимое */
+.header-modal-content {
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+    overflow-y: auto;
+    overflow-x: hidden;
+    display: flex;
+    flex-direction: column;
+    box-shadow: -5px 0 30px rgba(0, 0, 0, 0.3);
     position: relative;
 }
 
-.mobile-menu-close {
-    background: none;
+/* Стилизация скроллбара */
+.header-modal-content::-webkit-scrollbar {
+    width: 5px;
+}
+
+.header-modal-content::-webkit-scrollbar-track {
+    background: var(--light-gray);
+}
+
+.header-modal-content::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 5px;
+}
+
+/* Хедер модального окна */
+.header-modal-header {
+    padding: 25px 20px;
+    background: linear-gradient(135deg, var(--secondary-color) 0%, var(--secondary-light) 100%);
+    color: var(--white);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    position: sticky;
+    top: 0;
+    z-index: 10;
+}
+
+.header-modal-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 1.2rem;
+    font-weight: 600;
+}
+
+.header-modal-logo svg {
+    font-size: 2rem;
+    color: var(--primary-color);
+    animation: headerModalPulse 2s infinite;
+}
+
+@keyframes headerModalPulse {
+    0%, 100% {
+        transform: scale(1);
+    }
+    50% {
+        transform: scale(1.05);
+    }
+}
+
+/* Кнопка закрытия */
+.header-modal-close {
+    background: rgba(255, 255, 255, 0.2);
     border: none;
-    color: var(--secondary-color);
-    font-size: 1.5rem;
+    color: var(--white);
+    font-size: 1.3rem;
     cursor: pointer;
     width: 40px;
     height: 40px;
@@ -311,126 +380,199 @@
     align-items: center;
     justify-content: center;
     border-radius: 50%;
-    transition: var(--transition);
-    margin-left: auto;
-    margin-right: -10px; /* Компенсируем отступы */
+    transition: all 0.3s ease;
 }
 
-.mobile-menu-close:hover {
-    background-color: var(--light-color);
-    color: var(--accent-color);
+.header-modal-close:hover {
+    background: rgba(255, 255, 255, 0.3);
     transform: rotate(90deg);
 }
 
-.mobile-logo {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1.2rem;
-    font-weight: 600;
-    color: var(--secondary-color);
+/* Навигация */
+.header-modal-nav {
+    padding: 20px 0 0;
 }
 
-.mobile-logo svg {
-    font-size: 1.8rem;
-    color: var(--primary-color);
-}
-
-.mobile-nav-list {
+.header-modal-nav-list {
     display: flex;
     flex-direction: column;
     gap: 5px;
-    margin-bottom: 30px;
+    list-style: none;
+    margin: 0;
+    padding: 0;
 }
 
-.mobile-nav-item {
-    border-bottom: 1px solid var(--light-gray);
+.header-modal-nav-item {
+    /*border-bottom: 1px solid var(--light-gray);*/
+    opacity: 0;
+    transform: translateX(20px);
+    animation: headerModalSlideInNav 0.3s ease forwards;
 }
 
-.mobile-nav-link {
+.header-modal-nav-item:nth-child(1) { animation-delay: 0.05s; }
+.header-modal-nav-item:nth-child(2) { animation-delay: 0.1s; }
+.header-modal-nav-item:nth-child(3) { animation-delay: 0.15s; }
+.header-modal-nav-item:nth-child(4) { animation-delay: 0.2s; }
+
+@keyframes headerModalSlideInNav {
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+.header-modal-nav-link {
     background: none;
     border: none;
     color: var(--secondary-color);
-    font-size: 1.1rem;
+    font-size: 1rem;
     font-weight: 500;
     cursor: pointer;
-    padding: 15px 0;
+    padding: 10px 20px;
     width: 100%;
     text-align: left;
-    transition: var(--transition);
+    transition: all 0.3s ease;
     display: flex;
     align-items: center;
+    gap: 12px;
 }
 
-.mobile-nav-link:hover {
+.header-modal-nav-link:hover {
     color: var(--primary-color);
-    padding-left: 10px;
+    background-color: rgba(248, 183, 57, 0.1);
+    padding-left: 25px;
 }
 
-.mobile-contact-info {
+.header-modal-nav-icon {
+    font-size: 1.2rem;
+}
+
+.header-modal-nav-arrow {
+    margin-left: auto;
+    font-size: 0.8rem;
+    opacity: 0;
+    transition: all 0.3s ease;
+}
+
+.header-modal-nav-link:hover .header-modal-nav-arrow {
+    opacity: 1;
+    transform: translateX(5px);
+}
+
+/* Секция контактов */
+.header-modal-contact-section,
+.header-modal-social-section {
+    padding: 20px;
+    border-top: 1px solid var(--light-gray);
+}
+
+.header-modal-section-title {
+    font-size: 0.85rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--gray-color);
+    margin-bottom: 15px;
+    font-weight: 600;
+}
+
+.header-modal-contact-info {
     display: flex;
     flex-direction: column;
-    gap: 15px;
-    margin-bottom: 30px;
-    padding-top: 20px;
-    /*border-top: 1px solid var(--light-gray);*/
+    gap: 12px;
 }
 
-.mobile-contact-item {
+.header-modal-contact-item {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 12px;
     color: var(--secondary-color);
     text-decoration: none;
     font-size: 0.95rem;
+    padding: 10px;
+    border-radius: 8px;
+    transition: all 0.3s ease;
 }
 
-.mobile-contact-item:hover {
+.header-modal-contact-item:hover {
+    color: var(--primary-color);
+    background-color: rgba(248, 183, 57, 0.1);
+    transform: translateX(5px);
+}
+
+.header-modal-contact-item svg {
+    font-size: 1.1rem;
     color: var(--primary-color);
 }
 
-.mobile-social-links {
+/* Социальные ссылки */
+.header-modal-social-links {
     display: flex;
-    gap: 15px;
-    margin-bottom: 30px;
-    justify-content: center;
+    /*flex-direction: column;*/
+    justify-content: space-around;
+    gap: 5px;
 }
 
-.mobile-social-link {
-    color: var(--secondary-color);
-    font-size: 1.3rem;
-    transition: var(--transition);
-    width: 45px;
-    height: 45px;
+.header-modal-social-link {
     display: flex;
     align-items: center;
-    justify-content: center;
-    border-radius: 50%;
+    gap: 12px;
+    padding: 12px;
+    border-radius: 8px;
+    text-decoration: none;
+    color: var(--secondary-color);
+    transition: all 0.3s ease;
     background-color: var(--light-color);
 }
 
-.mobile-social-link:hover {
+.header-modal-social-link:hover {
+    background-color: var(--social-color);
     color: var(--white);
-    background-color: var(--primary-color);
-    transform: translateY(-3px);
+    transform: translateX(5px);
 }
 
-.mobile-actions {
+.header-modal-social-link svg {
+    font-size: 1.3rem;
+}
+
+.header-modal-social-label {
+    font-size: 0.9rem;
+    font-weight: 500;
+}
+
+/* Кнопки действий */
+.header-modal-actions {
     display: flex;
     flex-direction: column;
-    gap: 15px;
+    gap: 12px;
+    padding: 20px;
     margin-top: auto;
+    background: linear-gradient(to top, rgba(248, 183, 57, 0.05), transparent);
 }
 
-.mobile-call-button {
+.header-modal-call-button {
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
 }
 
-/* Анимация появления меню */
-@keyframes slideIn {
+.header-modal-actions button {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.header-modal-actions button:active {
+    transform: scale(0.98);
+}
+
+/* Активный пункт меню */
+.header-modal-nav-item.active .header-modal-nav-link {
+    color: var(--primary-color);
+    background-color: rgba(248, 183, 57, 0.1);
+    border-left: 3px solid var(--primary-color);
+}
+
+/* Анимация появления */
+@keyframes headerModalSlideIn {
     from {
         opacity: 0;
         transform: translateX(100%);
@@ -441,11 +583,30 @@
     }
 }
 
-.mobile-menu.active .mobile-menu-content {
-    animation: slideIn 0.3s ease forwards;
+.header-modal-wrapper.active .header-modal-content {
+    animation: headerModalSlideIn 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
 }
 
+/* Анимация закрытия */
+@keyframes headerModalSlideOut {
+    from {
+        opacity: 1;
+        transform: translateX(0);
+    }
+    to {
+        opacity: 0;
+        transform: translateX(100%);
+    }
+}
+
+.header-modal-wrapper.closing .header-modal-content {
+    animation: headerModalSlideOut 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* ============================================ */
 /* Адаптивность */
+/* ============================================ */
+
 @media (max-width: 1100px) {
     .nav-list {
         gap: 20px;
@@ -508,9 +669,8 @@
 }
 
 @media (max-width: 480px) {
-    .mobile-menu-content {
-        width: 100%;
-        max-width: 280px;
+    .header-modal-container {
+        max-width: 100%;
     }
 
     .logo {
@@ -524,21 +684,4 @@
     .logo-subtitle {
         display: none;
     }
-}
-
-/* Добавьте эти анимации в Header.css */
-
-@keyframes slideOut {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(100%);
-    }
-}
-
-.mobile-menu.closing .mobile-menu-content {
-    animation: slideOut 0.3s ease forwards;
 }

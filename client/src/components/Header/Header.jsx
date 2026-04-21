@@ -1,6 +1,6 @@
 // client/src/components/Header/Header.jsx
 import React, { useState, useEffect } from 'react';
-import { FaPhone, FaEnvelope, FaBars, FaTimes, FaWhatsapp, FaTelegram } from 'react-icons/fa';
+import { FaPhone, FaEnvelope, FaBars, FaTimes, FaWhatsapp, FaTelegram, FaChevronRight } from 'react-icons/fa';
 import { MdElectricBolt } from 'react-icons/md';
 import './Header.css';
 import Button from '../common/Button/Button';
@@ -11,8 +11,8 @@ const getEnv = (key, fallback = '') => process.env[key] || fallback;
 const Header = ({ openModal }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
-    // eslint-disable-next-line
     const [isMobile, setIsMobile] = useState(false);
+    const [isClosing, setIsClosing] = useState(false);
 
     // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
     const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
@@ -48,28 +48,67 @@ const Header = ({ openModal }) => {
         };
     }, []);
 
-    const toggleMenu = () => {
-        setIsMenuOpen(!isMenuOpen);
-        if (!isMenuOpen) {
+    // Блокировка скролла при открытом меню
+    useEffect(() => {
+        if (isMenuOpen) {
             document.body.style.overflow = 'hidden';
+            document.body.style.position = 'fixed';
+            document.body.style.width = '100%';
+            document.body.style.top = `-${window.scrollY}px`;
         } else {
-            document.body.style.overflow = 'auto';
+            const scrollY = document.body.style.top;
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+            if (scrollY) {
+                window.scrollTo(0, parseInt(scrollY || '0') * -1);
+            }
+        }
+
+        return () => {
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.width = '';
+            document.body.style.top = '';
+        };
+    }, [isMenuOpen]);
+
+    const toggleMenu = () => {
+        if (isMenuOpen) {
+            setIsClosing(true);
+            setTimeout(() => {
+                setIsMenuOpen(false);
+                setIsClosing(false);
+            }, 300);
+        } else {
+            setIsMenuOpen(true);
+            setIsClosing(false);
         }
     };
 
-    const handleNavClick = (sectionId) => {
-        setIsMenuOpen(false);
-        document.body.style.overflow = 'auto';
+    const closeMenu = () => {
+        setIsClosing(true);
+        setTimeout(() => {
+            setIsMenuOpen(false);
+            setIsClosing(false);
+        }, 300);
+    };
 
-        const element = document.getElementById(sectionId);
-        if (element) {
-            const offset = 80;
-            const elementPosition = element.offsetTop - offset;
-            window.scrollTo({
-                top: elementPosition,
-                behavior: 'smooth'
-            });
-        }
+    const handleNavClick = (sectionId) => {
+        closeMenu();
+
+        setTimeout(() => {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const offset = 80;
+                const elementPosition = element.offsetTop - offset;
+                window.scrollTo({
+                    top: elementPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }, 350);
     };
 
     const handleCallClick = () => {
@@ -77,15 +116,15 @@ const Header = ({ openModal }) => {
     };
 
     const navItems = [
-        { id: 'services', label: 'Услуги' },
-        { id: 'portfolio', label: 'Наши работы' },
-        { id: 'about', label: 'О нас' },
-        { id: 'contact', label: 'Контакты' },
+        { id: 'services', label: 'Услуги', icon: '🔧' },
+        { id: 'portfolio', label: 'Наши работы', icon: '📁' },
+        { id: 'about', label: 'О нас', icon: 'ℹ️' },
+        { id: 'contact', label: 'Контакты', icon: '📞' },
     ];
 
     const socialLinks = [
-        { icon: <FaWhatsapp />, href: `https://wa.me/${whatsappNumber}`, label: 'WhatsApp' },
-        { icon: <FaTelegram />, href: `https://t.me/${telegramUsername}`, label: 'Telegram' },
+        { icon: <FaWhatsapp />, href: `https://wa.me/${whatsappNumber}`, label: 'WhatsApp', color: '#25D366' },
+        { icon: <FaTelegram />, href: `https://t.me/${telegramUsername}`, label: 'Telegram', color: '#26A5E4' },
     ];
 
     return (
@@ -193,96 +232,105 @@ const Header = ({ openModal }) => {
                     </div>
                 </div>
 
-                {/* Мобильное меню */}
-                <div className={`mobile-menu ${isMenuOpen ? 'active' : ''}`} aria-hidden={!isMenuOpen}>
-                    <div className="mobile-menu-content">
-                        <div className="mobile-menu-header">
-                            <div className="mobile-logo">
-                                <MdElectricBolt aria-hidden="true" />
-                                <span>{companyName}</span>
-                            </div>
-                            <button
-                                className="mobile-menu-close"
-                                onClick={toggleMenu}
-                                aria-label="Закрыть меню"
-                            >
-                                <FaTimes aria-hidden="true" />
-                            </button>
-                        </div>
-
-                        <nav className="mobile-nav" aria-label="Мобильное меню">
-                            <ul className="mobile-nav-list">
-                                {navItems.map((item) => (
-                                    <li key={item.id} className="mobile-nav-item">
-                                        <button
-                                            className="mobile-nav-link"
-                                            onClick={() => handleNavClick(item.id)}
-                                        >
-                                            {item.label}
-                                        </button>
-                                    </li>
-                                ))}
-                            </ul>
-                        </nav>
-
-                        <div className="mobile-contact-info">
-                            <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="mobile-contact-item">
-                                <FaPhone aria-hidden="true" />
-                                <span>{phoneNumber}</span>
-                            </a>
-                            <a href={`mailto:${emailAddress}`} className="mobile-contact-item">
-                                <FaEnvelope aria-hidden="true" />
-                                <span>{emailAddress}</span>
-                            </a>
-                        </div>
-
-                        <div className="mobile-social-links">
-                            {socialLinks.map((link, index) => (
-                                <a
-                                    key={index}
-                                    href={link.href}
-                                    className="mobile-social-link"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={link.label}
+                {/* Мобильное меню с изолированными классами */}
+                <div className={`header-modal-wrapper ${isMenuOpen ? 'active' : ''} ${isClosing ? 'closing' : ''}`}>
+                    <div className="header-modal-overlay" onClick={closeMenu} />
+                    <div className="header-modal-container">
+                        <div className="header-modal-content">
+                            <div className="header-modal-header">
+                                <div className="header-modal-logo">
+                                    <MdElectricBolt />
+                                    <span>{companyName}</span>
+                                </div>
+                                <button
+                                    className="header-modal-close"
+                                    onClick={closeMenu}
+                                    aria-label="Закрыть меню"
                                 >
-                                    {link.icon}
-                                </a>
-                            ))}
-                        </div>
+                                    <FaTimes />
+                                </button>
+                            </div>
 
-                        <div className="mobile-actions">
-                            <Button
-                                variant="primary"
-                                fullWidth
-                                onClick={() => {
-                                    openModal('callback');
-                                    setIsMenuOpen(false);
-                                    document.body.style.overflow = 'auto';
-                                }}
-                                aria-label="Заказать вызов"
-                            >
-                                Заказать вызов
-                            </Button>
+                            <nav className="header-modal-nav">
+                                <ul className="header-modal-nav-list">
+                                    {navItems.map((item) => (
+                                        <li key={item.id} className="header-modal-nav-item">
+                                            <button
+                                                className="header-modal-nav-link"
+                                                onClick={() => handleNavClick(item.id)}
+                                            >
+                                                <span className="header-modal-nav-icon">{item.icon}</span>
+                                                <span>{item.label}</span>
+                                                <FaChevronRight className="header-modal-nav-arrow" />
+                                            </button>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </nav>
 
-                            <Button
-                                variant="outline"
-                                fullWidth
-                                onClick={() => {
-                                    handleCallClick();
-                                    setIsMenuOpen(false);
-                                    document.body.style.overflow = 'auto';
-                                }}
-                                className="mobile-call-button"
-                                aria-label="Позвонить"
-                            >
-                                <FaPhone aria-hidden="true" />
-                                Позвонить
-                            </Button>
+                            <div className="header-modal-contact-section">
+                                <h4 className="header-modal-section-title">Контакты</h4>
+                                <div className="header-modal-contact-info">
+                                    <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="header-modal-contact-item">
+                                        <FaPhone />
+                                        <span>{phoneNumber}</span>
+                                    </a>
+                                    <a href={`mailto:${emailAddress}`} className="header-modal-contact-item">
+                                        <FaEnvelope />
+                                        <span>{emailAddress}</span>
+                                    </a>
+                                </div>
+                            </div>
+
+                            <div className="header-modal-social-section">
+                                <h4 className="header-modal-section-title">Мы в соцсетях</h4>
+                                <div className="header-modal-social-links">
+                                    {socialLinks.map((link, index) => (
+                                        <a
+                                            key={index}
+                                            href={link.href}
+                                            className="header-modal-social-link"
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            aria-label={link.label}
+                                            style={{ '--social-color': link.color }}
+                                        >
+                                            {link.icon}
+                                            <span className="header-modal-social-label">{link.label}</span>
+                                        </a>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="header-modal-actions">
+                                <Button
+                                    variant="primary"
+                                    fullWidth
+                                    onClick={() => {
+                                        closeMenu();
+                                        setTimeout(() => openModal('callback'), 350);
+                                    }}
+                                    aria-label="Заказать вызов"
+                                >
+                                    Заказать вызов
+                                </Button>
+
+                                <Button
+                                    variant="outline"
+                                    fullWidth
+                                    onClick={() => {
+                                        handleCallClick();
+                                        closeMenu();
+                                    }}
+                                    className="header-modal-call-button"
+                                    aria-label="Позвонить"
+                                >
+                                    <FaPhone />
+                                    Позвонить
+                                </Button>
+                            </div>
                         </div>
                     </div>
-
-                    <div className="mobile-menu-overlay" onClick={toggleMenu} aria-hidden="true" />
                 </div>
             </header>
         </>

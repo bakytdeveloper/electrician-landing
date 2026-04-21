@@ -331,7 +331,7 @@ const createClientEmailTemplate = (data) => {
     `;
 };
 
-// Письмо для администратора (ИСПРАВЛЕНО)
+// Письмо для администратора
 const createAdminEmailTemplate = (data) => {
     const serviceType = SERVICE_TYPE_MAPPING_WITH_EMOJI[data.serviceType] || data.serviceType || 'Не указано';
     const now = new Date();
