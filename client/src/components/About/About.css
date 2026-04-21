@@ -1075,6 +1075,13 @@
         width: 100%;
         max-width: 300px;
     }
+
+
+    .about-greeting-body p {
+        line-height: 1.5;
+        margin-bottom: 20px;
+        font-size: 0.8rem;
+    }
 }
 
 @media (max-width: 576px) {
