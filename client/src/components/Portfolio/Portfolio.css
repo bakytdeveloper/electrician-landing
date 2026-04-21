@@ -40,19 +40,75 @@
     margin-top: 30px;
 }
 
-/* Фильтры */
-.portfolio-filters {
+/* Обертка для фильтров с кнопками навигации */
+.portfolio-filters-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
     margin-bottom: 30px;
     padding: 0 20px;
 }
 
+/* Контейнер с горизонтальным скроллом для фильтров */
+.portfolio-filters {
+    flex: 1;
+    overflow-x: auto;
+    overflow-y: hidden;
+    scroll-behavior: smooth;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: thin;
+    scrollbar-color: var(--primary-color) var(--light-gray);
+}
+
+.portfolio-filters::-webkit-scrollbar {
+    height: 4px;
+}
+
+.portfolio-filters::-webkit-scrollbar-track {
+    background: var(--light-gray);
+    border-radius: 10px;
+}
+
+.portfolio-filters::-webkit-scrollbar-thumb {
+    background: var(--primary-color);
+    border-radius: 10px;
+}
+
+/* Кнопки навигации для фильтров */
+.filters-nav-button {
+    flex-shrink: 0;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--white);
+    border: 2px solid var(--primary-color);
+    color: var(--primary-color);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    z-index: 5;
+}
+
+.filters-nav-button:hover {
+    background: var(--primary-color);
+    color: var(--white);
+    transform: scale(1.05);
+}
+
+.filters-nav-button:active {
+    transform: scale(0.95);
+}
+
+/* Кнопки фильтров - теперь внутри скролл-контейнера */
 .filter-buttons {
     display: flex;
-    flex-wrap: wrap;
-    justify-content: center;
     gap: 12px;
-    max-width: 1000px;
-    margin: 0 auto;
+    padding: 5px 0;
+    min-width: min-content;
 }
 
 .filter-button {
@@ -227,7 +283,6 @@
     cursor: pointer;
     border: 1px solid rgba(0, 0, 0, 0.05);
     position: relative;
-
     display: flex;
     flex-direction: column;
     height: 100%;
@@ -359,7 +414,6 @@
 
 .portfolio-content {
     padding: 20px;
-
     display: flex;
     flex-direction: column;
     flex: 1;
@@ -423,8 +477,7 @@
     flex-direction: column;
     align-items: center;
     text-align: center;
-    margin-top: auto; /* Это прижимает мета-информацию к низу */
-
+    margin-top: auto;
 }
 
 .meta-label {
@@ -633,8 +686,6 @@
     align-items: center;
     justify-content: center;
     padding: 0;
-    /*background: #1a1a1a;*/
-    /*min-height: 400px;*/
     height: 100%;
     width: 100%;
 }
@@ -682,12 +733,9 @@
     flex: 1;
     height: auto;
     width: 100%;
-    /*margin: 0 60px;*/
-    /*border-radius: 12px;*/
     overflow: hidden;
     position: relative;
     cursor: zoom-in;
-    /*background: none!important;*/
     transition: all 0.3s ease;
     display: flex;
     align-items: center;
@@ -1044,7 +1092,103 @@
     }
 }
 
-/* Адаптивность */
+/* ============================================ */
+/* Адаптивность для фильтров с горизонтальным скроллом */
+/* ============================================ */
+
+@media (max-width: 992px) {
+    .portfolio-filters-wrapper {
+        padding: 0 15px;
+        gap: 8px;
+    }
+
+    .filters-nav-button {
+        width: 34px;
+        height: 34px;
+    }
+
+    .filter-buttons {
+        gap: 10px;
+    }
+
+    .filter-button {
+        padding: 9px 18px;
+        font-size: 0.9rem;
+    }
+}
+
+@media (max-width: 768px) {
+    .portfolio-filters-wrapper {
+        margin-bottom: 25px;
+        padding: 0 10px;
+        gap: 6px;
+    }
+
+    .filters-nav-button {
+        width: 32px;
+        height: 32px;
+    }
+
+    .filters-nav-button svg {
+        font-size: 12px;
+    }
+
+    .filter-buttons {
+        gap: 8px;
+    }
+
+    .filter-button {
+        padding: 8px 16px;
+        font-size: 0.85rem;
+        gap: 6px;
+    }
+
+    .portfolio-slider-container {
+        padding: 0 35px;
+        margin: 20px 0 15px;
+    }
+}
+
+@media (max-width: 576px) {
+    .portfolio-filters-wrapper {
+        gap: 5px;
+        margin-bottom: 20px;
+        padding: 0 8px;
+    }
+
+    .filters-nav-button {
+        width: 28px;
+        height: 28px;
+    }
+
+    .filter-buttons {
+        gap: 6px;
+    }
+
+    .filter-button {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+        gap: 4px;
+        border-width: 1.5px;
+    }
+}
+
+/* На очень маленьких экранах скрываем кнопки навигации, оставляем только скролл */
+@media (max-width: 480px) {
+    .filters-nav-button {
+        display: none;
+    }
+
+    .portfolio-filters {
+        scrollbar-width: auto;
+    }
+
+    .portfolio-filters-wrapper {
+        padding: 0;
+    }
+}
+
+/* Остальная адаптивность (сохранена из вашего файла) */
 @media (max-width: 1400px) {
     .portfolio-slider .portfolio-item {
         flex: 0 0 330px;
@@ -1090,15 +1234,6 @@
     .slider-nav-button {
         width: 42px;
         height: 42px;
-    }
-
-    .filter-buttons {
-        gap: 10px;
-    }
-
-    .filter-button {
-        padding: 9px 18px;
-        font-size: 0.9rem;
     }
 
     .portfolio-stats {
@@ -1157,34 +1292,6 @@
         font-size: 0.95rem;
         margin-top: 20px;
         padding: 0 10px;
-    }
-
-    .portfolio-filters {
-        margin-bottom: 25px;
-        padding: 0 15px;
-    }
-
-    .filter-buttons {
-        gap: 8px;
-    }
-
-    .filter-button {
-        padding: 8px 16px;
-        font-size: 0.85rem;
-        gap: 6px;
-    }
-
-    .filter-icon {
-        font-size: 0.9rem;
-    }
-
-    .filter-label {
-        font-size: 0.85rem;
-    }
-
-    .filter-count {
-        padding: 2px 6px;
-        font-size: 0.7rem;
     }
 
     .portfolio-slider-container {
@@ -1376,35 +1483,6 @@
         font-size: 0.9rem;
         margin-top: 18px;
         line-height: 1.5;
-    }
-
-    .portfolio-filters {
-        margin-bottom: 20px;
-        padding: 0 10px;
-    }
-
-    .filter-buttons {
-        gap: 6px;
-    }
-
-    .filter-button {
-        padding: 6px 12px;
-        font-size: 0.75rem;
-        gap: 4px;
-        border-width: 1.5px;
-    }
-
-    .filter-icon {
-        font-size: 0.8rem;
-    }
-
-    .filter-label {
-        font-size: 0.75rem;
-    }
-
-    .filter-count {
-        padding: 2px 5px;
-        font-size: 0.65rem;
     }
 
     .portfolio-slider-container {
@@ -1624,19 +1702,6 @@
 }
 
 @media (max-width: 400px) {
-    .filter-button {
-        padding: 5px 10px;
-    }
-
-    .filter-label {
-        font-size: 0.7rem;
-    }
-
-    .filter-count {
-        padding: 1px 4px;
-        font-size: 0.6rem;
-    }
-
     .portfolio-slider-container {
         padding: 0 20px;
     }
@@ -1757,7 +1822,7 @@
     width: auto;
     height: auto;
     object-fit: contain;
-    transition: none; /* Убираем transition для плавного перетаскивания */
+    transition: none;
     transform-origin: center center;
 }
 

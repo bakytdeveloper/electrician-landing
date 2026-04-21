@@ -45,6 +45,7 @@ const Portfolio = () => {
     const dragImageRef = useRef(null);
     const containerRef = useRef(null);
     const wheelHandlerRef = useRef(null);
+    const filtersRef = useRef(null);
 
     useEffect(() => {
         fetchContent();
@@ -87,25 +88,33 @@ const Portfolio = () => {
         return content.items.filter(item => item.category === category && item.active !== false).length;
     };
 
-    // Проверка возможности прокрутки
-    const checkScroll = () => {
-        if (sliderRef.current) {
-            const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+    // Проверка возможности прокрутки фильтров
+    const checkFilterScroll = () => {
+        if (filtersRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = filtersRef.current;
             setCanScrollLeft(scrollLeft > 0);
             setCanScrollRight(scrollLeft < scrollWidth - clientWidth - 10);
         }
     };
 
+    // Проверка возможности прокрутки слайдера
+    const checkSliderScroll = () => {
+        if (sliderRef.current) {
+            const { scrollLeft, scrollWidth, clientWidth } = sliderRef.current;
+            // Для слайдера используем отдельные состояния или не используем кнопки
+        }
+    };
+
     useEffect(() => {
-        const slider = sliderRef.current;
-        if (slider) {
-            checkScroll();
-            slider.addEventListener('scroll', checkScroll);
-            window.addEventListener('resize', checkScroll);
+        const filters = filtersRef.current;
+        if (filters) {
+            checkFilterScroll();
+            filters.addEventListener('scroll', checkFilterScroll);
+            window.addEventListener('resize', checkFilterScroll);
 
             return () => {
-                slider.removeEventListener('scroll', checkScroll);
-                window.removeEventListener('resize', checkScroll);
+                filters.removeEventListener('scroll', checkFilterScroll);
+                window.removeEventListener('resize', checkFilterScroll);
             };
         }
     }, [content]);
@@ -183,7 +192,18 @@ const Portfolio = () => {
         }
     };
 
-    const scroll = (direction) => {
+    const scrollFilters = (direction) => {
+        if (filtersRef.current) {
+            const scrollAmount = 200;
+            const newScrollLeft = filtersRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
+            filtersRef.current.scrollTo({
+                left: newScrollLeft,
+                behavior: 'smooth'
+            });
+        }
+    };
+
+    const scrollSlider = (direction) => {
         if (sliderRef.current) {
             const scrollAmount = 400;
             const newScrollLeft = sliderRef.current.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
@@ -209,9 +229,9 @@ const Portfolio = () => {
         const swipeDistance = touchEndX.current - touchStartX.current;
         if (Math.abs(swipeDistance) > 50) {
             if (swipeDistance > 0) {
-                scroll('left');
+                scrollSlider('left');
             } else {
-                scroll('right');
+                scrollSlider('right');
             }
         }
     };
@@ -367,59 +387,61 @@ const Portfolio = () => {
                     <p className="profile-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
-                {/* Фильтры - используем категории из элементов */}
+                {/* Фильтры с горизонтальным скроллом */}
                 {categories.length > 0 && (
-                    <div className="portfolio-filters">
-                        <div className="filter-buttons">
+                    <div className="portfolio-filters-wrapper">
+                        {canScrollLeft && (
                             <button
-                                key="all"
-                                className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
-                                onClick={() => setActiveFilter('all')}
+                                className="filters-nav-button prev"
+                                onClick={() => scrollFilters('left')}
+                                aria-label="Прокрутить фильтры влево"
                             >
-                                <span className="filter-icon"><FaSearch /></span>
-                                <span className="filter-label">Все работы</span>
-                                <span className="filter-count">{getCategoryCount('all')}</span>
+                                <FaArrowLeft />
                             </button>
-                            {categories.map(category => {
-                                const IconComponent = iconMap[category] || FaSearch;
-                                return (
-                                    <button
-                                        key={category}
-                                        className={`filter-button ${activeFilter === category ? 'active' : ''}`}
-                                        onClick={() => setActiveFilter(category)}
-                                    >
-                                        <span className="filter-icon"><IconComponent /></span>
-                                        <span className="filter-label">{category}</span>
-                                        <span className="filter-count">{getCategoryCount(category)}</span>
-                                    </button>
-                                );
-                            })}
+                        )}
+
+                        <div className="portfolio-filters" ref={filtersRef}>
+                            <div className="filter-buttons">
+                                <button
+                                    key="all"
+                                    className={`filter-button ${activeFilter === 'all' ? 'active' : ''}`}
+                                    onClick={() => setActiveFilter('all')}
+                                >
+                                    <span className="filter-icon"><FaSearch /></span>
+                                    <span className="filter-label">Все работы</span>
+                                    <span className="filter-count">{getCategoryCount('all')}</span>
+                                </button>
+                                {categories.map(category => {
+                                    const IconComponent = iconMap[category] || FaSearch;
+                                    return (
+                                        <button
+                                            key={category}
+                                            className={`filter-button ${activeFilter === category ? 'active' : ''}`}
+                                            onClick={() => setActiveFilter(category)}
+                                        >
+                                            <span className="filter-icon"><IconComponent /></span>
+                                            <span className="filter-label">{category}</span>
+                                            <span className="filter-count">{getCategoryCount(category)}</span>
+                                        </button>
+                                    );
+                                })}
+                            </div>
                         </div>
+
+                        {canScrollRight && (
+                            <button
+                                className="filters-nav-button next"
+                                onClick={() => scrollFilters('right')}
+                                aria-label="Прокрутить фильтры вправо"
+                            >
+                                <FaArrowRight />
+                            </button>
+                        )}
                     </div>
                 )}
 
                 {/* Слайдер */}
                 <div className="portfolio-slider-container">
-                    {canScrollLeft && (
-                        <button
-                            className="slider-nav-button prev"
-                            onClick={() => scroll('left')}
-                            aria-label="Прокрутить портфолио влево"
-                        >
-                            <FaArrowLeft />
-                        </button>
-                    )}
-
-                    {canScrollRight && (
-                        <button
-                            className="slider-nav-button next"
-                            onClick={() => scroll('right')}
-                            aria-label="Прокрутить портфолио вправо"
-                        >
-                            <FaArrowRight />
-                        </button>
-                    )}
-
                     <div
                         className="portfolio-slider"
                         ref={sliderRef}
@@ -519,14 +541,14 @@ const Portfolio = () => {
                                             className="nav-button prev-button"
                                             onClick={prevImage}
                                             disabled={currentIndex === 0}
-                                            aria-label="Прокрутить портфолио влево"
+                                            aria-label="Предыдущее фото"
                                         >
                                             <FaArrowLeft />
                                         </button>
                                         <button
                                             className="nav-button next-button"
                                             onClick={nextImage}
-                                            aria-label="Прокрутить портфолио вправо"
+                                            aria-label="Следующее фото"
                                             disabled={!selectedImage.images || currentIndex === selectedImage.images.length - 1}
                                         >
                                             <FaArrowRight />
@@ -578,7 +600,7 @@ const Portfolio = () => {
 
                                     {!isZoomed && (
                                         <button className="zoom-button" onClick={(e) => {
-                                            e.stopPropagation(); // Предотвращаем всплытие события
+                                            e.stopPropagation();
                                             toggleZoom();
                                         }}>
                                             <MdZoomIn />
@@ -587,7 +609,7 @@ const Portfolio = () => {
 
                                     {isZoomed && (
                                         <button className="zoom-button" onClick={(e) => {
-                                            e.stopPropagation(); // Предотвращаем всплытие события
+                                            e.stopPropagation();
                                             toggleZoom();
                                         }}>
                                             <MdZoomOut />
