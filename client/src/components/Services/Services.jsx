@@ -6,7 +6,6 @@ import {
     FaCheckCircle,
     FaClock,
     FaTruck,
-    // FaArrowRight,
     FaPlug,
     FaLightbulb,
     FaSolarPanel,
@@ -19,7 +18,6 @@ import {
     FaBuilding,
     FaIndustry,
     FaFileInvoice,
-    // FaTimes
 } from 'react-icons/fa';
 import {
     MdOutlineElectricalServices,
@@ -97,6 +95,7 @@ const Services = () => {
     const [selectedService, setSelectedService] = useState(null);
     const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
     const [isPriceModalOpen, setIsPriceModalOpen] = useState(false);
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
         fetchContent();
@@ -135,7 +134,7 @@ const Services = () => {
         return categories.sort((a, b) => a.localeCompare(b, 'ru'));
     };
 
-   // Упрощенная функция для форматирования текста - сохраняет все пробелы, отступы и переносы
+    // Упрощенная функция для форматирования текста - сохраняет все пробелы, отступы и переносы
     const formatDescription = (description) => {
         if (!description) return null;
 
@@ -147,6 +146,10 @@ const Services = () => {
         );
     };
 
+    // Обработка скролла для кнопок фильтров
+    const handleFilterScroll = (e) => {
+        setScrollPosition(e.target.scrollLeft);
+    };
 
     if (loading) {
         return <div className="services-loading">Загрузка...</div>;
@@ -172,27 +175,32 @@ const Services = () => {
                     <p className="services-section-subtitle">{content.sectionSubtitle}</p>
                 </div>
 
-                {/* Фильтры категорий - используем оригинальные названия */}
+                {/* Фильтры категорий - с горизонтальным скроллом */}
                 {categories.length > 0 && (
-                    <div className="services-category-filters">
-                        <button
-                            key="all"
-                            className={`services-category-filter ${activeCategory === 'all' ? 'active' : ''}`}
-                            onClick={() => setActiveCategory('all')}
-                            aria-label="Показать все услуги"
+                    <div className="services-category-filters-wrapper">
+                        <div
+                            className="services-category-filters"
+                            onScroll={handleFilterScroll}
                         >
-                            Все услуги
-                        </button>
-                        {categories.map(category => (
                             <button
-                                key={category}
-                                className={`services-category-filter ${activeCategory === category ? 'active' : ''}`}
-                                onClick={() => setActiveCategory(category)}
-                                aria-label={`Показать услуги категории ${category}`}
+                                key="all"
+                                className={`services-category-filter ${activeCategory === 'all' ? 'active' : ''}`}
+                                onClick={() => setActiveCategory('all')}
+                                aria-label="Показать все услуги"
                             >
-                                {category}
+                                Все услуги
                             </button>
-                        ))}
+                            {categories.map(category => (
+                                <button
+                                    key={category}
+                                    className={`services-category-filter ${activeCategory === category ? 'active' : ''}`}
+                                    onClick={() => setActiveCategory(category)}
+                                    aria-label={`Показать услуги категории ${category}`}
+                                >
+                                    {category}
+                                </button>
+                            ))}
+                        </div>
                     </div>
                 )}
 
@@ -222,9 +230,6 @@ const Services = () => {
                                             <span className="services-service-duration">{service.duration}</span>
                                         </div>
                                     </div>
-                                    {/*<div className="services-service-arrow">*/}
-                                    {/*    <FaArrowRight />*/}
-                                    {/*</div>*/}
                                 </div>
 
                                 <div className="services-service-card-preview">
