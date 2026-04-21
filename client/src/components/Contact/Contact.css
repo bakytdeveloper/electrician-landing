@@ -239,6 +239,11 @@
     .contact-day-status {
         margin-left: auto;
     }
+
+    .contact-hours-note {
+        font-size: 0.8rem;
+        margin-top: 10px;
+    }
 }
 
 @media (max-width: 480px) {
