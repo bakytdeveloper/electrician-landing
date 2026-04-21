@@ -1755,10 +1755,11 @@ const Contact = () => {
                                             <span className="contact-day-name">
                                                 {day.isToday && '🟢 '}{day.day}
                                             </span>
-                                            <span className="contact-day-hours">{day.hours}</span>
+                                            {/*<span className="contact-day-hours">{day.hours}</span>*/}
                                             {day.isToday && (
                                                 <span className={`contact-day-status ${isWorkingNow() ? 'status-open' : 'status-closed'}`}>
-                                                    {isWorkingNow() ? 'Открыто' : 'Закрыто'}
+                                                    {/*{isWorkingNow() ? 'Открыто' : 'Закрыто'}*/}
+                                                    <span className="contact-day-hours">{day.hours}</span>
                                                 </span>
                                             )}
                                         </div>
