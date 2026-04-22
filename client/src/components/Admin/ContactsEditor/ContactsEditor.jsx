@@ -295,7 +295,7 @@ const ContactsEditor = () => {
                             />
                         </div>
 
-                        <h3 style={{ marginTop: '30px' }}>Яндекс Карта</h3>
+                        <h3 style={{ marginTop: '30px' }}>🗺️ Яндекс Карта</h3>
 
                         <div className="form-group">
                             <label>URL Яндекс Карты (полная версия)</label>
@@ -316,8 +316,34 @@ const ContactsEditor = () => {
                                 rows="3"
                                 placeholder="https://yandex.kz/map-widget/v1/..."
                             />
-                            <small className="form-hint">Ссылка для iframe</small>
+                            <small className="form-hint">Ссылка для iframe - ОСНОВНАЯ карта на сайте</small>
                         </div>
+
+                        <h3 style={{ marginTop: '30px' }}>🌍 Google Карта (международная)</h3>
+
+                        <div className="form-group">
+                            <label>URL Google Карты (полная версия)</label>
+                            <textarea
+                                value={config.googleMapUrl}
+                                onChange={(e) => setConfig({ ...config, googleMapUrl: e.target.value })}
+                                rows="3"
+                                placeholder="https://www.google.com/maps/search/..."
+                            />
+                            <small className="form-hint">Ссылка на карту для перехода</small>
+                        </div>
+
+                        <div className="form-group">
+                            <label>URL для встраивания (Embed)</label>
+                            <textarea
+                                value={config.googleMapEmbedUrl}
+                                onChange={(e) => setConfig({ ...config, googleMapEmbedUrl: e.target.value })}
+                                rows="3"
+                                placeholder="https://www.google.com/maps/embed?pb=..."
+                            />
+                            <small className="form-hint">Ссылка для iframe (опционально)</small>
+                        </div>
+
+                        <h3 style={{ marginTop: '30px' }}>📍 2GIS</h3>
 
                         <div className="form-group">
                             <label>Ссылка на 2GIS</label>
@@ -329,13 +355,29 @@ const ContactsEditor = () => {
                             />
                         </div>
 
-                        {/* Предпросмотр карты */}
+                        {/* Предпросмотр Яндекс карты */}
                         {config.yandexMapEmbedUrl && (
                             <div className="map-preview">
-                                <h4>Предпросмотр карты:</h4>
+                                <h4>Предпросмотр Яндекс карты:</h4>
                                 <iframe
                                     title="Яндекс Карта"
                                     src={config.yandexMapEmbedUrl}
+                                    width="100%"
+                                    height="300"
+                                    style={{ border: 0, borderRadius: '8px' }}
+                                    allowFullScreen
+                                    loading="lazy"
+                                />
+                            </div>
+                        )}
+
+                        {/* Предпросмотр Google карты */}
+                        {config.googleMapEmbedUrl && (
+                            <div className="map-preview">
+                                <h4>Предпросмотр Google карты:</h4>
+                                <iframe
+                                    title="Google Карта"
+                                    src={config.googleMapEmbedUrl}
                                     width="100%"
                                     height="300"
                                     style={{ border: 0, borderRadius: '8px' }}
@@ -352,25 +394,83 @@ const ContactsEditor = () => {
                     <div className="editor-section">
                         <h3><FaClock /> График работы</h3>
 
-                        <div className="form-group">
-                            <label>Часы работы в будни</label>
-                            <input
-                                type="text"
-                                value={config.weekdayHours}
-                                onChange={(e) => setConfig({ ...config, weekdayHours: e.target.value })}
-                                placeholder="08:00 - 20:00"
-                            />
-                            <small className="form-hint">Формат: 08:00 - 20:00</small>
-                        </div>
+                        <div className="hours-grid">
+                            <div className="form-group">
+                                <label>Понедельник</label>
+                                <input
+                                    type="text"
+                                    value={config.mondayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, mondayHours: e.target.value })}
+                                    placeholder="08:00 - 20:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
 
-                        <div className="form-group">
-                            <label>Часы работы в выходные</label>
-                            <input
-                                type="text"
-                                value={config.weekendHours}
-                                onChange={(e) => setConfig({ ...config, weekendHours: e.target.value })}
-                                placeholder="09:00 - 18:00"
-                            />
+                            <div className="form-group">
+                                <label>Вторник</label>
+                                <input
+                                    type="text"
+                                    value={config.tuesdayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, tuesdayHours: e.target.value })}
+                                    placeholder="08:00 - 20:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Среда</label>
+                                <input
+                                    type="text"
+                                    value={config.wednesdayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, wednesdayHours: e.target.value })}
+                                    placeholder="08:00 - 20:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Четверг</label>
+                                <input
+                                    type="text"
+                                    value={config.thursdayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, thursdayHours: e.target.value })}
+                                    placeholder="08:00 - 20:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Пятница</label>
+                                <input
+                                    type="text"
+                                    value={config.fridayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, fridayHours: e.target.value })}
+                                    placeholder="08:00 - 20:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Суббота</label>
+                                <input
+                                    type="text"
+                                    value={config.saturdayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, saturdayHours: e.target.value })}
+                                    placeholder="09:00 - 18:00"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
+
+                            <div className="form-group">
+                                <label>Воскресенье</label>
+                                <input
+                                    type="text"
+                                    value={config.sundayHours || ''}
+                                    onChange={(e) => setConfig({ ...config, sundayHours: e.target.value })}
+                                    placeholder="Выходной"
+                                />
+                                <small className="form-hint">Можно указать "Выходной"</small>
+                            </div>
                         </div>
 
                         <div className="form-group">

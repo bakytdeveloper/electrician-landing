@@ -769,3 +769,86 @@
 .contact-map-action-btn.contact-secondary:hover {
     background: #c0392b;
 }
+
+
+
+/* Переключатель карт */
+.contact-map-switcher {
+    display: flex;
+    gap: 8px;
+    background: #f0f2f5;
+    padding: 4px;
+    border-radius: 12px;
+}
+
+.map-switcher-btn {
+    padding: 6px 16px;
+    border: none;
+    background: transparent;
+    border-radius: 8px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    color: #666;
+}
+
+.map-switcher-btn.active {
+    background: var(--primary-color, #f8b739);
+    color: white;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.map-switcher-btn:not(.active):hover {
+    background: rgba(248, 183, 57, 0.1);
+    color: var(--primary-color, #f8b739);
+}
+
+.map-switcher-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.contact-map-open-btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background: #3498db;
+    color: white;
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    margin-top: 10px;
+    transition: all 0.3s ease;
+}
+
+.contact-map-open-btn:hover {
+    background: #2980b9;
+    transform: translateY(-2px);
+}
+
+/* Адаптивность для переключателя на мобильных */
+@media (max-width: 768px) {
+    .contact-map-header-top {
+        flex-direction: column;
+        gap: 12px;
+        align-items: flex-start;
+    }
+
+    .contact-map-switcher {
+        width: 100%;
+        justify-content: stretch;
+    }
+
+    .map-switcher-btn {
+        flex: 1;
+        text-align: center;
+    }
+}
+
+@media (max-width: 480px) {
+    .map-switcher-btn {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+    }
+}

@@ -31,14 +31,24 @@ const getContactConfig = asyncHandler(async (req, res) => {
             addressPostalCode: process.env.REACT_APP_ADDRESS_POSTAL_CODE || '050000',
             officeDescription: process.env.REACT_APP_OFFICE_DESCRIPTION || 'БЦ Нурлы Тау, офис 123',
 
-            // Яндекс Карта (формируем из координат, если есть)
+            // Яндекс Карта
             yandexMapUrl: `https://yandex.kz/maps/?ll=${process.env.REACT_APP_GEO_LNG || '76.8512'}%2C${process.env.REACT_APP_GEO_LAT || '43.2220'}&z=17&mode=search&text=${encodeURIComponent(process.env.REACT_APP_OFFICE_DESCRIPTION || 'БЦ Нурлы Тау Алматы')}`,
             yandexMapEmbedUrl: `https://yandex.kz/map-widget/v1/?ll=${process.env.REACT_APP_GEO_LNG || '76.8512'}%2C${process.env.REACT_APP_GEO_LAT || '43.2220'}&z=17&l=map&pt=${process.env.REACT_APP_GEO_LNG || '76.8512'}%2C${process.env.REACT_APP_GEO_LAT || '43.2220'}`,
+
+            // Google Карта - используем простой embed URL без API ключа
+            googleMapUrl: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(process.env.REACT_APP_OFFICE_DESCRIPTION || 'БЦ Нурлы Тау Алматы')}`,
+            googleMapEmbedUrl: `https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2906.123456789!2d${process.env.REACT_APP_GEO_LNG || '76.8512'}!3d${process.env.REACT_APP_GEO_LAT || '43.2220'}!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2z0J3Rg9GA0LvRiyDQotCw0Y8!5e0!3m2!1sru!2skz!4v1!5m2!1sru!2skz`,
+
             map2GisUrl: process.env.REACT_APP_2GIS_URL || 'https://2gis.kz/almaty/search/Нурлы%20Тау',
 
-            // Рабочие часы
-            weekdayHours: process.env.REACT_APP_WEEKDAY_HOURS || '08:00 - 20:00',
-            weekendHours: process.env.REACT_APP_WEEKEND_HOURS || '09:00 - 18:00',
+            // Рабочие часы для каждого дня
+            mondayHours: process.env.REACT_APP_MONDAY_HOURS || '08:00 - 20:00',
+            tuesdayHours: process.env.REACT_APP_TUESDAY_HOURS || '08:00 - 20:00',
+            wednesdayHours: process.env.REACT_APP_WEDNESDAY_HOURS || '08:00 - 20:00',
+            thursdayHours: process.env.REACT_APP_THURSDAY_HOURS || '08:00 - 20:00',
+            fridayHours: process.env.REACT_APP_FRIDAY_HOURS || '08:00 - 20:00',
+            saturdayHours: process.env.REACT_APP_SATURDAY_HOURS || '09:00 - 18:00',
+            sundayHours: process.env.REACT_APP_SUNDAY_HOURS || 'Выходной',
 
             // Дополнительные настройки
             responseTime: '15 минут',
@@ -68,8 +78,8 @@ const updateContactConfig = asyncHandler(async (req, res) => {
         'phoneDisplay', 'phoneRaw', 'phoneForWhatsapp', 'email',
         'telegramUsername', 'instagramUsername',
         'addressStreet', 'addressCity', 'addressRegion', 'addressPostalCode', 'officeDescription',
-        'yandexMapUrl', 'yandexMapEmbedUrl', 'map2GisUrl',
-        'weekdayHours', 'weekendHours',
+        'yandexMapUrl', 'yandexMapEmbedUrl', 'googleMapUrl', 'googleMapEmbedUrl', 'map2GisUrl',
+        'mondayHours', 'tuesdayHours', 'wednesdayHours', 'thursdayHours', 'fridayHours', 'saturdayHours', 'sundayHours',
         'responseTime', 'emergencyAvailable', 'emergencyText'
     ];
 

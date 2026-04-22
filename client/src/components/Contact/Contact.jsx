@@ -32,7 +32,8 @@ const Contact = () => {
     const [formErrors, setFormErrors] = useState({});
     const [formStatus, setFormStatus] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
-    const [todayHours, setTodayHours] = useState([]);
+    const [todayDay, setTodayDay] = useState('');
+    const [activeMap, setActiveMap] = useState('yandex'); // 'yandex' или 'google'
 
     // Загрузка конфигурации с сервера
     useEffect(() => {
@@ -62,29 +63,76 @@ const Contact = () => {
         { value: 'other', label: 'Другое' }
     ], []);
 
-    // Формирование контактных кнопок из конфигурации
+    // Формирование контактных кнопок из конфигурации (только для существующих ссылок)
     const contactButtons = useMemo(() => {
         if (!config) return [];
-        return [
-            { icon: <FaPhone />, label: 'Позвонить', href: `tel:${config.phoneRaw?.replace(/\D/g, '') || ''}`, color: '#27ae60' },
-            { icon: <FaWhatsapp />, label: 'WhatsApp', href: `https://wa.me/${config.phoneForWhatsapp || ''}`, color: '#25D366' },
-            { icon: <FaTelegram />, label: 'Telegram', href: `https://t.me/${config.telegramUsername || ''}`, color: '#0088cc' },
-            { icon: <FaEnvelope />, label: 'Email', href: `mailto:${config.email || ''}`, color: '#EA4335' },
-            { icon: <FaInstagram />, label: 'Instagram', href: `https://instagram.com/${config.instagramUsername || ''}`, color: '#E4405F' }
-        ];
+
+        const buttons = [];
+
+        // Телефон
+        if (config.phoneRaw) {
+            buttons.push({
+                icon: <FaPhone />,
+                label: 'Позвонить',
+                href: `tel:${config.phoneRaw.replace(/\D/g, '')}`,
+                color: '#27ae60'
+            });
+        }
+
+        // WhatsApp
+        if (config.phoneForWhatsapp) {
+            buttons.push({
+                icon: <FaWhatsapp />,
+                label: 'WhatsApp',
+                href: `https://wa.me/${config.phoneForWhatsapp}`,
+                color: '#25D366'
+            });
+        }
+
+        // Telegram
+        if (config.telegramUsername) {
+            buttons.push({
+                icon: <FaTelegram />,
+                label: 'Telegram',
+                href: `https://t.me/${config.telegramUsername}`,
+                color: '#0088cc'
+            });
+        }
+
+        // Email
+        if (config.email) {
+            buttons.push({
+                icon: <FaEnvelope />,
+                label: 'Email',
+                href: `mailto:${config.email}`,
+                color: '#EA4335'
+            });
+        }
+
+        // Instagram
+        if (config.instagramUsername) {
+            buttons.push({
+                icon: <FaInstagram />,
+                label: 'Instagram',
+                href: `https://instagram.com/${config.instagramUsername}`,
+                color: '#E4405F'
+            });
+        }
+
+        return buttons;
     }, [config]);
 
-    // Формирование часов работы
+    // Формирование часов работы для всех дней недели
     const workingHours = useMemo(() => {
         if (!config) return [];
         return [
-            { day: 'Понедельник', hours: config.weekdayHours },
-            { day: 'Вторник', hours: config.weekdayHours },
-            { day: 'Среда', hours: config.weekdayHours },
-            { day: 'Четверг', hours: config.weekdayHours },
-            { day: 'Пятница', hours: config.weekdayHours },
-            { day: 'Суббота', hours: config.weekendHours },
-            { day: 'Воскресенье', hours: config.weekendHours }
+            { day: 'Понедельник', hours: config.mondayHours || '08:00 - 20:00' },
+            { day: 'Вторник', hours: config.tuesdayHours || '08:00 - 20:00' },
+            { day: 'Среда', hours: config.wednesdayHours || '08:00 - 20:00' },
+            { day: 'Четверг', hours: config.thursdayHours || '08:00 - 20:00' },
+            { day: 'Пятница', hours: config.fridayHours || '08:00 - 20:00' },
+            { day: 'Суббота', hours: config.saturdayHours || '09:00 - 18:00' },
+            { day: 'Воскресенье', hours: config.sundayHours || 'Выходной' }
         ];
     }, [config]);
 
@@ -94,44 +142,84 @@ const Contact = () => {
         return `${config.addressStreet}, ${config.addressCity}, ${config.officeDescription}`;
     }, [config]);
 
+    // Определяем сегодняшний день
     useEffect(() => {
-        if (!workingHours.length) return;
         const days = ['Воскресенье', 'Понедельник', 'Вторник', 'Среда', 'Четверг', 'Пятница', 'Суббота'];
         const today = days[new Date().getDay()];
-
-        const updatedHours = workingHours.map(wh => ({
-            ...wh,
-            isToday: wh.day === today
-        }));
-
-        setTodayHours(updatedHours);
-    }, [workingHours]);
+        setTodayDay(today);
+    }, []);
 
     // Проверка работает ли сейчас
     const isWorkingNow = useCallback(() => {
         if (!config) return false;
+
         const now = new Date();
-        const day = now.getDay();
+        const dayIndex = now.getDay(); // 0 - воскресенье, 1 - понедельник, ..., 6 - суббота
         const hour = now.getHours();
         const minute = now.getMinutes();
         const currentTime = hour + minute / 60;
 
+        // Получаем часы для текущего дня
+        let hoursStr = '';
+        switch(dayIndex) {
+            case 1: hoursStr = config.mondayHours; break;
+            case 2: hoursStr = config.tuesdayHours; break;
+            case 3: hoursStr = config.wednesdayHours; break;
+            case 4: hoursStr = config.thursdayHours; break;
+            case 5: hoursStr = config.fridayHours; break;
+            case 6: hoursStr = config.saturdayHours; break;
+            case 0: hoursStr = config.sundayHours; break;
+            default: return false;
+        }
+
+        // Если нет данных или выходной
+        if (!hoursStr || hoursStr.toLowerCase() === 'выходной') {
+            return false;
+        }
+
         // Парсим часы
         const parseHours = (hoursStr) => {
-            const [start, end] = hoursStr.split('-').map(s => s.trim());
-            const startHour = parseInt(start.split(':')[0]);
-            const endHour = parseInt(end.split(':')[0]);
-            return { startHour, endHour };
+            // Проверяем формат "HH:MM - HH:MM"
+            const parts = hoursStr.split('-').map(s => s.trim());
+            if (parts.length !== 2) return null;
+
+            const startTime = parts[0];
+            const endTime = parts[1];
+
+            const startHour = parseInt(startTime.split(':')[0]);
+            const startMinute = parseInt(startTime.split(':')[1] || 0);
+            const endHour = parseInt(endTime.split(':')[0]);
+            const endMinute = parseInt(endTime.split(':')[1] || 0);
+
+            const startTotal = startHour + startMinute / 60;
+            const endTotal = endHour + endMinute / 60;
+
+            return { startHour: startTotal, endHour: endTotal };
         };
 
-        if (day === 0 || day === 6) {
-            const { startHour, endHour } = parseHours(config.weekendHours || '09:00 - 18:00');
-            return currentTime >= startHour && currentTime < endHour;
-        } else {
-            const { startHour, endHour } = parseHours(config.weekdayHours || '08:00 - 20:00');
-            return currentTime >= startHour && currentTime < endHour;
-        }
+        const times = parseHours(hoursStr);
+        if (!times) return false;
+
+        return currentTime >= times.startHour && currentTime < times.endHour;
     }, [config]);
+
+    // Получение текущей карты (embed URL)
+    const getCurrentMapEmbedUrl = useCallback(() => {
+        if (activeMap === 'yandex') {
+            return config?.yandexMapEmbedUrl;
+        } else {
+            return config?.googleMapEmbedUrl;
+        }
+    }, [activeMap, config]);
+
+    // Получение текущей карты (полный URL)
+    const getCurrentMapUrl = useCallback(() => {
+        if (activeMap === 'yandex') {
+            return config?.yandexMapUrl;
+        } else {
+            return config?.googleMapUrl;
+        }
+    }, [activeMap, config]);
 
     const validateForm = () => {
         const errors = {};
@@ -240,12 +328,13 @@ const Contact = () => {
     };
 
     const handleCopyMapLink = () => {
-        if (config?.yandexMapUrl) {
-            navigator.clipboard.writeText(config.yandexMapUrl)
+        const currentUrl = getCurrentMapUrl();
+        if (currentUrl) {
+            navigator.clipboard.writeText(currentUrl)
                 .then(() => {
                     const notification = document.createElement('div');
-                    notification.textContent = '📍 Ссылка на карту скопирована';
-                    notification.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:white;padding:10px 20px;border-radius:8px;z-index:9999;font-family:sans-serif;';
+                    notification.textContent = `📍 Ссылка на ${activeMap === 'yandex' ? 'Яндекс' : 'Google'} карту скопирована`;
+                    notification.style.cssText = 'position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:#27ae60;color:white;padding:10px 20px;border-radius:8px;z-index:9999;font-family:sans-serif;z-index:10000;';
                     document.body.appendChild(notification);
                     setTimeout(() => notification.remove(), 2000);
                 })
@@ -327,21 +416,23 @@ const Contact = () => {
                                     График работы
                                 </h3>
                                 <div className="contact-hours-table">
-                                    {todayHours.map((day, index) => (
-                                        <div
-                                            key={index}
-                                            className={`contact-hours-row ${day.isToday ? 'contact-today' : ''}`}
-                                        >
-                                            <span className="contact-day-name">
-                                                {day.isToday && '🟢 '}{day.day}
-                                            </span>
-                                            {day.isToday && (
-                                                <span className={`contact-day-status ${isWorkingNow() ? 'status-open' : 'status-closed'}`}>
-                                                    <span className="contact-day-hours">{day.hours}</span>
+                                    {workingHours.map((day, index) => {
+                                        const isToday = day.day === todayDay;
+                                        const isClosed = day.hours && day.hours.toLowerCase() === 'выходной';
+                                        return (
+                                            <div
+                                                key={index}
+                                                className={`contact-hours-row ${isToday ? 'contact-today' : ''}`}
+                                            >
+                                                <span className="contact-day-name">
+                                                    {isToday && '🟢 '}{day.day}
                                                 </span>
-                                            )}
-                                        </div>
-                                    ))}
+                                                <span className={`contact-day-hours ${isToday && !isClosed ? (isWorkingNow() ? 'status-open' : 'status-closed') : ''}`}>
+                                                    {day.hours || 'Выходной'}
+                                                </span>
+                                            </div>
+                                        );
+                                    })}
                                 </div>
                                 {config.emergencyAvailable && (
                                     <p className="contact-hours-note">
@@ -359,14 +450,30 @@ const Contact = () => {
                                         <FaMapMarkerAlt className="section-icon" />
                                         Мы на карте {config.addressCity}
                                     </h3>
+                                    <div className="contact-map-switcher">
+                                        <button
+                                            className={`map-switcher-btn ${activeMap === 'yandex' ? 'active' : ''}`}
+                                            onClick={() => setActiveMap('yandex')}
+                                            disabled={!config.yandexMapEmbedUrl}
+                                        >
+                                            📍 Яндекс
+                                        </button>
+                                        <button
+                                            className={`map-switcher-btn ${activeMap === 'google' ? 'active' : ''}`}
+                                            onClick={() => setActiveMap('google')}
+                                            disabled={!config.googleMapEmbedUrl}
+                                        >
+                                            🌍 Google
+                                        </button>
+                                    </div>
                                 </div>
                                 <p>{fullAddress}</p>
                             </div>
                             <div className="contact-map-container">
-                                {config.yandexMapEmbedUrl ? (
+                                {getCurrentMapEmbedUrl() ? (
                                     <iframe
-                                        title={`Карта проезда к офису ${config.companyName} в ${config.addressCity}`}
-                                        src={config.yandexMapEmbedUrl}
+                                        title={`Карта проезда к офису ${config.companyName} в ${config.addressCity} (${activeMap === 'yandex' ? 'Яндекс' : 'Google'})`}
+                                        src={getCurrentMapEmbedUrl()}
                                         width="100%"
                                         height="100%"
                                         style={{ border: 0, borderRadius: '8px' }}
@@ -376,29 +483,54 @@ const Contact = () => {
                                     />
                                 ) : (
                                     <div className="contact-map-error">
-                                        <p>⚠️ Карта временно недоступна</p>
+                                        <p>⚠️ Карта ({activeMap === 'yandex' ? 'Яндекс' : 'Google'}) временно недоступна</p>
+                                        {getCurrentMapUrl() && (
+                                            <a
+                                                href={getCurrentMapUrl()}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="contact-map-open-btn"
+                                            >
+                                                Открыть в {activeMap === 'yandex' ? 'Яндекс.Картах' : 'Google Maps'}
+                                            </a>
+                                        )}
                                     </div>
                                 )}
                             </div>
                             <div className="contact-map-actions">
-                                <a
-                                    href={config.yandexMapUrl}
-                                    className="contact-map-action-btn"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="Открыть в Яндекс.Картах"
-                                >
-                                    🗺️ Яндекс.Карты
-                                </a>
-                                <a
-                                    href={config.map2GisUrl}
-                                    className="contact-map-action-btn"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label="Открыть на 2GIS"
-                                >
-                                    🗺️ 2GIS
-                                </a>
+                                {config.yandexMapUrl && (
+                                    <a
+                                        href={config.yandexMapUrl}
+                                        className="contact-map-action-btn"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="Открыть в Яндекс.Картах"
+                                    >
+                                        🗺️ Яндекс.Карты
+                                    </a>
+                                )}
+                                {config.googleMapUrl && (
+                                    <a
+                                        href={config.googleMapUrl}
+                                        className="contact-map-action-btn"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="Открыть в Google Maps"
+                                    >
+                                        🌍 Google Maps
+                                    </a>
+                                )}
+                                {config.map2GisUrl && (
+                                    <a
+                                        href={config.map2GisUrl}
+                                        className="contact-map-action-btn"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label="Открыть на 2GIS"
+                                    >
+                                        📍 2GIS
+                                    </a>
+                                )}
                                 <button
                                     className="contact-map-action-btn contact-secondary"
                                     onClick={handleCopyMapLink}
@@ -567,22 +699,24 @@ const Contact = () => {
                                     Нажимая на кнопку, вы соглашаетесь с политикой обработки персональных данных
                                 </p>
 
-                                <div className="contact-quick-buttons" aria-label="Быстрая связь">
-                                    {contactButtons.map((btn, index) => (
-                                        <a
-                                            key={index}
-                                            href={btn.href}
-                                            className="contact-quick-btn"
-                                            target={btn.href.startsWith('http') ? '_blank' : '_self'}
-                                            rel="noopener noreferrer"
-                                            style={{ backgroundColor: btn.color }}
-                                            title={btn.label}
-                                            aria-label={`Связаться через ${btn.label}`}
-                                        >
-                                            {btn.icon}
-                                        </a>
-                                    ))}
-                                </div>
+                                {contactButtons.length > 0 && (
+                                    <div className="contact-quick-buttons" aria-label="Быстрая связь">
+                                        {contactButtons.map((btn, index) => (
+                                            <a
+                                                key={index}
+                                                href={btn.href}
+                                                className="contact-quick-btn"
+                                                target={btn.href.startsWith('http') ? '_blank' : '_self'}
+                                                rel="noopener noreferrer"
+                                                style={{ backgroundColor: btn.color }}
+                                                title={btn.label}
+                                                aria-label={`Связаться через ${btn.label}`}
+                                            >
+                                                {btn.icon}
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
                             </form>
                         </div>
                     </div>
