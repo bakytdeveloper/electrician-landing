@@ -254,3 +254,155 @@
 .hours-grid .form-group {
     margin-bottom: 0;
 }
+
+/* Защищенные поля */
+.protected-field {
+    position: relative;
+    margin-bottom: 25px;
+}
+
+.protected-field-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+    gap: 10px;
+}
+
+.protected-field-header label {
+    margin-bottom: 0;
+    font-weight: 600;
+    color: #333;
+}
+
+.protected-field-actions {
+    display: flex;
+    gap: 8px;
+}
+
+.field-unlock-btn,
+.field-confirm-btn,
+.field-cancel-btn {
+    padding: 4px 12px;
+    border: none;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.field-unlock-btn {
+    background: #3498db;
+    color: white;
+}
+
+.field-unlock-btn:hover {
+    background: #2980b9;
+    transform: translateY(-1px);
+}
+
+.field-confirm-btn {
+    background: #27ae60;
+    color: white;
+}
+
+.field-confirm-btn:hover {
+    background: #219a52;
+    transform: translateY(-1px);
+}
+
+.field-cancel-btn {
+    background: #e74c3c;
+    color: white;
+}
+
+.field-cancel-btn:hover {
+    background: #c0392b;
+    transform: translateY(-1px);
+}
+
+.protected-field-disabled,
+.protected-field-enabled {
+    width: 100%;
+    padding: 10px;
+    border: 2px solid #e0e0e0;
+    border-radius: 5px;
+    font-size: 14px;
+    transition: all 0.3s;
+    font-family: monospace;
+    background: #f9f9f9;
+}
+
+.protected-field-disabled {
+    background: #f5f5f5;
+    color: #888;
+    cursor: not-allowed;
+    border-color: #e0e0e0;
+}
+
+.protected-field-enabled {
+    background: #fff;
+    border-color: #3498db;
+}
+
+.protected-field-enabled:focus {
+    outline: none;
+    border-color: #27ae60;
+    box-shadow: 0 0 0 3px rgba(39, 174, 96, 0.1);
+}
+
+.protected-field {
+    position: relative;
+}
+
+.protected-field-overlay {
+    position: absolute;
+    top: 38px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(255, 255, 255, 0.85);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    border-radius: 5px;
+    font-size: 13px;
+    color: #666;
+    backdrop-filter: blur(2px);
+    pointer-events: none;
+}
+
+.protected-field-overlay .overlay-icon {
+    font-size: 16px;
+    color: #3498db;
+}
+
+/* Адаптивность для защищенных полей */
+@media (max-width: 768px) {
+    .protected-field-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .protected-field-actions {
+        width: 100%;
+    }
+
+    .field-unlock-btn,
+    .field-confirm-btn,
+    .field-cancel-btn {
+        flex: 1;
+        justify-content: center;
+    }
+
+    .protected-field-overlay {
+        top: 76px;
+        font-size: 11px;
+    }
+}

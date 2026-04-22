@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import './ContactsEditor.css';
-import { FaSave, FaUndo, FaPlus, FaTrash, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock } from 'react-icons/fa';
+import { FaSave, FaUndo, FaMapMarkerAlt, FaPhone, FaEnvelope, FaClock, FaCheck, FaTimes, FaLock, FaLockOpen } from 'react-icons/fa';
 
 const ContactsEditor = () => {
     const [config, setConfig] = useState(null);
@@ -10,6 +10,15 @@ const ContactsEditor = () => {
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const [activeTab, setActiveTab] = useState('general');
+
+    // Состояния для блокировки полей карт
+    const [lockedFields, setLockedFields] = useState({
+        yandexMapUrl: true,
+        yandexMapEmbedUrl: true,
+        googleMapUrl: true,
+        googleMapEmbedUrl: true,
+        map2GisUrl: true
+    });
 
     useEffect(() => {
         fetchConfig();
@@ -80,6 +89,99 @@ const ContactsEditor = () => {
         }
     };
 
+    // Функция для разблокировки поля
+    const unlockField = (fieldName) => {
+        setLockedFields(prev => ({ ...prev, [fieldName]: false }));
+    };
+
+    // Функция для блокировки поля (отмена изменений)
+    const lockField = (fieldName) => {
+        // Восстанавливаем исходное значение
+        if (originalConfig) {
+            setConfig(prev => ({ ...prev, [fieldName]: originalConfig[fieldName] }));
+        }
+        setLockedFields(prev => ({ ...prev, [fieldName]: true }));
+        setSuccess(`Изменения поля отменены`);
+        setTimeout(() => setSuccess(''), 2000);
+    };
+
+    // Функция для подтверждения изменений поля
+    const confirmField = (fieldName) => {
+        setLockedFields(prev => ({ ...prev, [fieldName]: true }));
+        setSuccess(`Изменения сохранены локально. Не забудьте нажать "Сохранить" вверху страницы!`);
+        setTimeout(() => setSuccess(''), 3000);
+    };
+
+    // Компонент защищенного поля ввода
+    const ProtectedField = ({ fieldName, label, value, onChange, placeholder, hint, rows = null, isTextarea = false }) => {
+        const isLocked = lockedFields[fieldName];
+
+        return (
+            <div className="protected-field">
+                <div className="protected-field-header">
+                    <label>{label}</label>
+                    <div className="protected-field-actions">
+                        {isLocked ? (
+                            <button
+                                type="button"
+                                className="field-unlock-btn"
+                                onClick={() => unlockField(fieldName)}
+                                title="Редактировать поле"
+                            >
+                                <FaLock /> <span>Заблокировано</span>
+                            </button>
+                        ) : (
+                            <>
+                                <button
+                                    type="button"
+                                    className="field-confirm-btn"
+                                    onClick={() => confirmField(fieldName)}
+                                    title="Подтвердить изменения"
+                                >
+                                    <FaCheck /> <span>Подтвердить</span>
+                                </button>
+                                <button
+                                    type="button"
+                                    className="field-cancel-btn"
+                                    onClick={() => lockField(fieldName)}
+                                    title="Отменить изменения"
+                                >
+                                    <FaTimes /> <span>Отменить</span>
+                                </button>
+                            </>
+                        )}
+                    </div>
+                </div>
+                {isTextarea ? (
+                    <textarea
+                        value={value || ''}
+                        onChange={(e) => onChange(e.target.value)}
+                        rows={rows || 3}
+                        placeholder={placeholder}
+                        disabled={isLocked}
+                        className={isLocked ? 'protected-field-disabled' : 'protected-field-enabled'}
+                    />
+                ) : (
+                    <input
+                        type="text"
+                        value={value || ''}
+                        onChange={(e) => onChange(e.target.value)}
+                        placeholder={placeholder}
+                        disabled={isLocked}
+                        className={isLocked ? 'protected-field-disabled' : 'protected-field-enabled'}
+                    />
+                )}
+                {hint && <small className="form-hint">{hint}</small>}
+                {isLocked && (
+                    <div className="protected-field-overlay">
+                        <FaLockOpen className="overlay-icon" />
+                        <span>Нажмите "Редактировать" для изменения</span>
+                    </div>
+                )}
+            </div>
+        );
+    };
+
     if (loading) return <div className="contacts-editor-loading">Загрузка...</div>;
     if (!config) return <div className="contacts-editor-error">Ошибка загрузки</div>;
 
@@ -104,7 +206,7 @@ const ContactsEditor = () => {
 
             {hasChanges() && (
                 <div className="unsaved-changes-warning">
-                    ⚠️ Есть несохраненные изменения
+                    ⚠️ Есть несохраненные изменения. Не забудьте нажать "Сохранить"!
                 </div>
             )}
 
@@ -297,63 +399,62 @@ const ContactsEditor = () => {
 
                         <h3 style={{ marginTop: '30px' }}>🗺️ Яндекс Карта</h3>
 
-                        <div className="form-group">
-                            <label>URL Яндекс Карты (полная версия)</label>
-                            <textarea
-                                value={config.yandexMapUrl}
-                                onChange={(e) => setConfig({ ...config, yandexMapUrl: e.target.value })}
-                                rows="3"
-                                placeholder="https://yandex.kz/maps/..."
-                            />
-                            <small className="form-hint">Ссылка на карту для перехода</small>
-                        </div>
+                        <ProtectedField
+                            fieldName="yandexMapUrl"
+                            label="URL Яндекс Карты (полная версия)"
+                            value={config.yandexMapUrl}
+                            onChange={(val) => setConfig({ ...config, yandexMapUrl: val })}
+                            placeholder="https://yandex.kz/maps/..."
+                            hint="Ссылка на карту для перехода"
+                            isTextarea={true}
+                            rows={3}
+                        />
 
-                        <div className="form-group">
-                            <label>URL для встраивания (Embed)</label>
-                            <textarea
-                                value={config.yandexMapEmbedUrl}
-                                onChange={(e) => setConfig({ ...config, yandexMapEmbedUrl: e.target.value })}
-                                rows="3"
-                                placeholder="https://yandex.kz/map-widget/v1/..."
-                            />
-                            <small className="form-hint">Ссылка для iframe - ОСНОВНАЯ карта на сайте</small>
-                        </div>
+                        <ProtectedField
+                            fieldName="yandexMapEmbedUrl"
+                            label="URL для встраивания (Embed)"
+                            value={config.yandexMapEmbedUrl}
+                            onChange={(val) => setConfig({ ...config, yandexMapEmbedUrl: val })}
+                            placeholder="https://yandex.kz/map-widget/v1/..."
+                            hint="Ссылка для iframe - ОСНОВНАЯ карта на сайте"
+                            isTextarea={true}
+                            rows={3}
+                        />
 
                         <h3 style={{ marginTop: '30px' }}>🌍 Google Карта (международная)</h3>
 
-                        <div className="form-group">
-                            <label>URL Google Карты (полная версия)</label>
-                            <textarea
-                                value={config.googleMapUrl}
-                                onChange={(e) => setConfig({ ...config, googleMapUrl: e.target.value })}
-                                rows="3"
-                                placeholder="https://www.google.com/maps/search/..."
-                            />
-                            <small className="form-hint">Ссылка на карту для перехода</small>
-                        </div>
+                        <ProtectedField
+                            fieldName="googleMapUrl"
+                            label="URL Google Карты (полная версия)"
+                            value={config.googleMapUrl}
+                            onChange={(val) => setConfig({ ...config, googleMapUrl: val })}
+                            placeholder="https://www.google.com/maps/search/..."
+                            hint="Ссылка на карту для перехода"
+                            isTextarea={true}
+                            rows={3}
+                        />
 
-                        <div className="form-group">
-                            <label>URL для встраивания (Embed)</label>
-                            <textarea
-                                value={config.googleMapEmbedUrl}
-                                onChange={(e) => setConfig({ ...config, googleMapEmbedUrl: e.target.value })}
-                                rows="3"
-                                placeholder="https://www.google.com/maps/embed?pb=..."
-                            />
-                            <small className="form-hint">Ссылка для iframe (опционально)</small>
-                        </div>
+                        <ProtectedField
+                            fieldName="googleMapEmbedUrl"
+                            label="URL для встраивания (Embed)"
+                            value={config.googleMapEmbedUrl}
+                            onChange={(val) => setConfig({ ...config, googleMapEmbedUrl: val })}
+                            placeholder="https://www.google.com/maps/embed?pb=..."
+                            hint="Ссылка для iframe (опционально)"
+                            isTextarea={true}
+                            rows={3}
+                        />
 
                         <h3 style={{ marginTop: '30px' }}>📍 2GIS</h3>
 
-                        <div className="form-group">
-                            <label>Ссылка на 2GIS</label>
-                            <input
-                                type="text"
-                                value={config.map2GisUrl}
-                                onChange={(e) => setConfig({ ...config, map2GisUrl: e.target.value })}
-                                placeholder="https://2gis.kz/almaty/..."
-                            />
-                        </div>
+                        <ProtectedField
+                            fieldName="map2GisUrl"
+                            label="Ссылка на 2GIS"
+                            value={config.map2GisUrl}
+                            onChange={(val) => setConfig({ ...config, map2GisUrl: val })}
+                            placeholder="https://2gis.kz/almaty/..."
+                            hint="Ссылка на карту 2GIS"
+                        />
 
                         {/* Предпросмотр Яндекс карты */}
                         {config.yandexMapEmbedUrl && (

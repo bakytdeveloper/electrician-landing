@@ -9,8 +9,7 @@ import {
     FaTelegram,
     FaInstagram,
     FaMapMarkerAlt,
-    FaRegClock,
-    FaSpinner
+    FaRegClock
 } from 'react-icons/fa';
 import {
     MdOutlineSupportAgent,
