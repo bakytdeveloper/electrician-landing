@@ -13,7 +13,7 @@ const getContactConfig = asyncHandler(async (req, res) => {
         config = await ContactConfig.create({
             // Основная информация
             companyName: process.env.REACT_APP_COMPANY_NAME || 'ЭлектроМастер',
-            companyAlternateName: process.env.REACT_APP_COMPANY_ALTERNATE_NAME || 'Услуги электрика в Алматы',
+            companyAlternateName: process.env.REACT_APP_COMPANY_ALTERNATE_NAME || 'Профессиональные услуги электрика в Алматы',
             companyDescription: process.env.REACT_APP_COMPANY_DESCRIPTION || 'Профессиональные услуги электрика в Алматы: монтаж, ремонт электропроводки, установка электрооборудования, замеры, консультации. Выезд по всему городу.',
 
             // Контакты
@@ -51,7 +51,7 @@ const getContactConfig = asyncHandler(async (req, res) => {
             sundayHours: process.env.REACT_APP_SUNDAY_HOURS || 'Выходной',
 
             // Дополнительные настройки
-            responseTime: '15 минут',
+            responseTime: '30 минут',
             emergencyAvailable: true,
             emergencyText: 'Аварийный выезд - круглосуточно'
         });

@@ -9,7 +9,7 @@ const contactConfigSchema = new mongoose.Schema({
     },
     companyAlternateName: {
         type: String,
-        default: 'Услуги электрика в Алматы'
+        default: 'Профессиональные услуги электрика в Алматы'
     },
     companyDescription: {
         type: String,

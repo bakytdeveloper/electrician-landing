@@ -5,29 +5,30 @@ import { MdElectricBolt } from 'react-icons/md';
 import './Header.css';
 import Button from '../common/Button/Button';
 
-// Функция для получения переменных окружения с fallback
-const getEnv = (key, fallback = '') => process.env[key] || fallback;
-
 const Header = ({ openModal }) => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const [isScrolled, setIsScrolled] = useState(false);
+    // eslint-disable-next-line
     const [isMobile, setIsMobile] = useState(false);
     const [isClosing, setIsClosing] = useState(false);
+    const [config, setConfig] = useState(null);
+    const [loading, setLoading] = useState(true);
 
-    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
-    const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
-    const phoneRaw = getEnv('REACT_APP_PHONE_RAW', '+77271234567');
-    const emailAddress = getEnv('REACT_APP_EMAIL', 'info@electromaster.kz');
-    const whatsappNumber = getEnv('REACT_APP_PHONE_FOR_WHATSAPP', '77071234567');
-    const telegramUsername = getEnv('REACT_APP_TELEGRAM_USERNAME', 'electromaster_almaty');
-    const companyName = getEnv('REACT_APP_COMPANY_NAME', 'ЭлектроМастер Алматы');
-    const city = getEnv('REACT_APP_ADDRESS_CITY', 'Алматы');
-    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00-20:00');
-    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00-18:00');
-
-    // Форматируем часы для отображения
-    const weekdayDisplay = weekdayHours.replace('-', ' - ');
-    const weekendDisplay = weekendHours.replace('-', ' - ');
+    // Загрузка конфигурации с сервера
+    useEffect(() => {
+        const fetchConfig = async () => {
+            try {
+                const response = await fetch(`${process.env.REACT_APP_API_URL}/api/contacts/config`);
+                const data = await response.json();
+                setConfig(data);
+            } catch (err) {
+                console.error('Error fetching contact config:', err);
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchConfig();
+    }, []);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -112,7 +113,45 @@ const Header = ({ openModal }) => {
     };
 
     const handleCallClick = () => {
-        window.location.href = `tel:${phoneRaw.replace(/\D/g, '')}`;
+        if (config?.phoneRaw) {
+            window.location.href = `tel:${config.phoneRaw.replace(/\D/g, '')}`;
+        }
+    };
+
+    // Функция для форматирования часов работы для отображения в хедере
+    const getWorkingHoursDisplay = () => {
+        if (!config) return { weekday: '08:00 - 20:00', weekend: '09:00 - 18:00', isWeekendWorking: true };
+
+        // Определяем, работают ли выходные дни
+        const saturdayIsWorking = config.saturdayHours && config.saturdayHours.toLowerCase() !== 'выходной';
+        const sundayIsWorking = config.sundayHours && config.sundayHours.toLowerCase() !== 'выходной';
+
+        // Форматируем будние дни (берем понедельник как основу)
+        let weekdayHours = config.mondayHours || '08:00 - 20:00';
+
+        // Форматируем выходные
+        let weekendDisplay = '';
+        if (saturdayIsWorking && sundayIsWorking) {
+            // Оба дня работают
+            if (config.saturdayHours === config.sundayHours) {
+                // Если время одинаковое - показываем одно
+                weekendDisplay = `${config.saturdayHours}`;
+            } else {
+                // Если разное - показываем оба дня отдельно
+                weekendDisplay = `Сб: ${config.saturdayHours}, Вс: ${config.sundayHours}`;
+            }
+        } else if (saturdayIsWorking && !sundayIsWorking) {
+            // Только суббота работает
+            weekendDisplay = `Сб: ${config.saturdayHours}`;
+        } else if (!saturdayIsWorking && sundayIsWorking) {
+            // Только воскресенье работает
+            weekendDisplay = `Вс: ${config.sundayHours}`;
+        } else {
+            // Оба дня выходные
+            weekendDisplay = 'Выходной';
+        }
+
+        return { weekday: weekdayHours, weekend: weekendDisplay, isWeekendWorking: saturdayIsWorking || sundayIsWorking };
     };
 
     const navItems = [
@@ -122,10 +161,53 @@ const Header = ({ openModal }) => {
         { id: 'contact', label: 'Контакты', icon: '📞' },
     ];
 
-    const socialLinks = [
-        { icon: <FaWhatsapp />, href: `https://wa.me/${whatsappNumber}`, label: 'WhatsApp', color: '#25D366' },
-        { icon: <FaTelegram />, href: `https://t.me/${telegramUsername}`, label: 'Telegram', color: '#26A5E4' },
-    ];
+    // Социальные ссылки из конфигурации
+    const getSocialLinks = () => {
+        const links = [];
+
+        if (config?.phoneForWhatsapp) {
+            links.push({
+                icon: <FaWhatsapp />,
+                href: `https://wa.me/${config.phoneForWhatsapp}`,
+                label: 'WhatsApp',
+                color: '#25D366'
+            });
+        }
+
+        if (config?.telegramUsername) {
+            links.push({
+                icon: <FaTelegram />,
+                href: `https://t.me/${config.telegramUsername}`,
+                label: 'Telegram',
+                color: '#26A5E4'
+            });
+        }
+
+        return links;
+    };
+
+    const workingHours = getWorkingHoursDisplay();
+    const socialLinks = getSocialLinks();
+
+    if (loading) {
+        return (
+            <header className="header">
+                <div className="container">
+                    <div className="header-content">
+                        <div className="logo">
+                            <div className="logo-icon-box-md-electric-bolt">
+                                <MdElectricBolt className="logo-icon" />
+                            </div>
+                            <div className="logo-text">
+                                <div className="logo-title">ЭлектроМастер</div>
+                                <p className="logo-subtitle">Загрузка...</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+        );
+    }
 
     return (
         <>
@@ -134,35 +216,42 @@ const Header = ({ openModal }) => {
                 <div className="container">
                     <div className="contact-bar-content">
                         <div className="contact-info">
-                            <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="contact-item" aria-label="Позвонить">
-                                <FaPhone className="contact-icon" aria-hidden="true" />
-                                <span>{phoneNumber}</span>
-                            </a>
-                            <a href={`mailto:${emailAddress}`} className="contact-item" aria-label="Написать email">
-                                <FaEnvelope className="contact-icon" aria-hidden="true" />
-                                <span>{emailAddress}</span>
-                            </a>
+                            {config?.phoneRaw && (
+                                <a href={`tel:${config.phoneRaw.replace(/\D/g, '')}`} className="contact-item" aria-label="Позвонить">
+                                    <FaPhone className="contact-icon" aria-hidden="true" />
+                                    <span>{config.phoneDisplay || config.phoneRaw}</span>
+                                </a>
+                            )}
+                            {config?.email && (
+                                <a href={`mailto:${config.email}`} className="contact-item" aria-label="Написать email">
+                                    <FaEnvelope className="contact-icon" aria-hidden="true" />
+                                    <span>{config.email}</span>
+                                </a>
+                            )}
                             <div className="work-hours">
-                                <span>Пн-Пт: {weekdayDisplay}</span>
+                                <span>Пн-Пт: {workingHours.weekday}</span>
                                 <span className="work-hours-span-slash">/</span>
-                                <span>Сб-Вс: {weekendDisplay}</span>
+                                <span>{workingHours.weekend}</span>
                             </div>
                         </div>
 
-                        <div className="social-links">
-                            {socialLinks.map((link, index) => (
-                                <a
-                                    key={index}
-                                    href={link.href}
-                                    className="social-link"
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    aria-label={link.label}
-                                >
-                                    {link.icon}
-                                </a>
-                            ))}
-                        </div>
+                        {socialLinks.length > 0 && (
+                            <div className="social-links">
+                                {socialLinks.map((link, index) => (
+                                    <a
+                                        key={index}
+                                        href={link.href}
+                                        className="social-link"
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        aria-label={link.label}
+                                        style={{ '--social-color': link.color }}
+                                    >
+                                        {link.icon}
+                                    </a>
+                                ))}
+                            </div>
+                        )}
                     </div>
                 </div>
             </div>
@@ -184,8 +273,10 @@ const Header = ({ openModal }) => {
                                 <MdElectricBolt className="logo-icon" aria-hidden="true" />
                             </div>
                             <div className="logo-text">
-                                <div className="logo-title">{companyName}</div>
-                                <p className="logo-subtitle">Профессиональные услуги электрика в {city}</p>
+                                <div className="logo-title">{config?.companyName || 'ЭлектроМастер'}</div>
+                                <p className="logo-subtitle">
+                                    {config?.companyAlternateName || `Профессиональные услуги электрика в ${config?.addressCity || 'Алматы'}`}
+                                </p>
                             </div>
                         </div>
 
@@ -240,7 +331,7 @@ const Header = ({ openModal }) => {
                             <div className="header-modal-header">
                                 <div className="header-modal-logo">
                                     <MdElectricBolt />
-                                    <span>{companyName}</span>
+                                    <span>{config?.companyName || 'ЭлектроМастер'}</span>
                                 </div>
                                 <button
                                     className="header-modal-close"
@@ -271,36 +362,42 @@ const Header = ({ openModal }) => {
                             <div className="header-modal-contact-section">
                                 <h4 className="header-modal-section-title">Контакты</h4>
                                 <div className="header-modal-contact-info">
-                                    <a href={`tel:${phoneRaw.replace(/\D/g, '')}`} className="header-modal-contact-item">
-                                        <FaPhone />
-                                        <span>{phoneNumber}</span>
-                                    </a>
-                                    <a href={`mailto:${emailAddress}`} className="header-modal-contact-item">
-                                        <FaEnvelope />
-                                        <span>{emailAddress}</span>
-                                    </a>
+                                    {config?.phoneRaw && (
+                                        <a href={`tel:${config.phoneRaw.replace(/\D/g, '')}`} className="header-modal-contact-item">
+                                            <FaPhone />
+                                            <span>{config.phoneDisplay || config.phoneRaw}</span>
+                                        </a>
+                                    )}
+                                    {config?.email && (
+                                        <a href={`mailto:${config.email}`} className="header-modal-contact-item">
+                                            <FaEnvelope />
+                                            <span>{config.email}</span>
+                                        </a>
+                                    )}
                                 </div>
                             </div>
 
-                            <div className="header-modal-social-section">
-                                <h4 className="header-modal-section-title">Мы в соцсетях</h4>
-                                <div className="header-modal-social-links">
-                                    {socialLinks.map((link, index) => (
-                                        <a
-                                            key={index}
-                                            href={link.href}
-                                            className="header-modal-social-link"
-                                            target="_blank"
-                                            rel="noopener noreferrer"
-                                            aria-label={link.label}
-                                            style={{ '--social-color': link.color }}
-                                        >
-                                            {link.icon}
-                                            <span className="header-modal-social-label">{link.label}</span>
-                                        </a>
-                                    ))}
+                            {socialLinks.length > 0 && (
+                                <div className="header-modal-social-section">
+                                    <h4 className="header-modal-section-title">Мы в соцсетях</h4>
+                                    <div className="header-modal-social-links">
+                                        {socialLinks.map((link, index) => (
+                                            <a
+                                                key={index}
+                                                href={link.href}
+                                                className="header-modal-social-link"
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                aria-label={link.label}
+                                                style={{ '--social-color': link.color }}
+                                            >
+                                                {link.icon}
+                                                <span className="header-modal-social-label">{link.label}</span>
+                                            </a>
+                                        ))}
+                                    </div>
                                 </div>
-                            </div>
+                            )}
 
                             <div className="header-modal-actions">
                                 <Button
