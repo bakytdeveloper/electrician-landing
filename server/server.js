@@ -4,6 +4,7 @@ const cors = require('cors');
 const authRoutes = require('./routes/authRoutes');
 const heroRoutes = require('./routes/heroRoutes');
 const contactRoutes = require('./routes/contactRoutes');
+const contactConfigRoutes = require('./routes/contactConfigRoutes');
 const servicesRoutes = require('./routes/servicesRoutes');
 const portfolioRoutes = require('./routes/portfolioRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
@@ -38,6 +39,7 @@ app.use('/api/price', priceRoutes);
 app.use('/api/about', aboutRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/orders', orderRoutes);
+app.use('/api/contacts', contactConfigRoutes);
 
 
 app.get('/', (req, res) => {

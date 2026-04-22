@@ -8,6 +8,7 @@ import AboutEditor from '../AboutEditor/AboutEditor';
 import { FaSignOutAlt, FaCog, FaHome } from 'react-icons/fa';
 import PriceEditor from "../PriceEditor/PriceEditor";
 import OrdersTable from "../OrdersTable/OrdersTable";
+import ContactsEditor from "../ContactsEditor/ContactsEditor";
 
 const AdminPanel = ({ onLogout, onClose }) => {
     const [activeTab, setActiveTab] = useState('hero');
@@ -76,6 +77,13 @@ const AdminPanel = ({ onLogout, onClose }) => {
                     </button>
 
                     <button
+                        className={activeTab === 'contacts' ? 'active' : ''}
+                        onClick={() => setActiveTab('contacts')}
+                    >
+                        Контакты
+                    </button>
+
+                    <button
                         className={activeTab === 'price' ? 'active' : ''}
                         onClick={() => setActiveTab('price')}
                     >
@@ -108,6 +116,7 @@ const AdminPanel = ({ onLogout, onClose }) => {
                 {activeTab === 'services' && <ServicesEditor />}
                 {activeTab === 'portfolio' && <PortfolioEditor />}
                 {activeTab === 'about' && <AboutEditor />}
+                {activeTab === 'contacts' && <ContactsEditor />}
                 {activeTab === 'price' && <PriceEditor />}
                 {activeTab === 'OrdersTable' && <OrdersTable />}
                 {/* Другие редакторы будут добавлены позже */}
