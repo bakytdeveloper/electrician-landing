@@ -61,9 +61,20 @@ function App() {
         setIsModalOpen(false);
     };
 
+    // Определяем текущую страницу для SEO
+    const getCurrentPage = () => {
+        const hash = location.hash;
+        if (hash === '#services') return 'services';
+        if (hash === '#contact') return 'contact';
+        if (hash === '#portfolio') return 'portfolio';
+        if (hash === '#about') return 'about';
+        return 'home';
+    };
+
+
     return (
         <div className="App">
-            <SEO />
+            <SEO page={getCurrentPage()} />
             <SchemaMarkup />
             <Header openModal={openModal} />
             <Hero openModal={openModal} />

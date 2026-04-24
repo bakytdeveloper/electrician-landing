@@ -10,6 +10,7 @@ const portfolioRoutes = require('./routes/portfolioRoutes');
 const aboutRoutes = require('./routes/aboutRoutes');
 const priceRoutes = require('./routes/priceRoutes');
 const orderRoutes = require('./routes/orderRoutes');
+const sitemapRoutes = require('./routes/sitemapRoutes'); // ✅ Добавляем импорт sitemap
 
 const path = require('path');
 const connectDB = require('./config/db');
@@ -40,13 +41,14 @@ app.use('/api/about', aboutRoutes);
 app.use('/api/contact', contactRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/contacts', contactConfigRoutes);
+app.use('/', sitemapRoutes); // ✅ Подключаем sitemap маршруты (будет доступен по /sitemap.xml)
 
 
 app.get('/', (req, res) => {
     res.send('API is running...');
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT = process.env.PORT || 5003;
 
 app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);

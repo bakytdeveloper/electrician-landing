@@ -139,7 +139,7 @@ const getPortfolioContent = async (req, res) => {
                 if (item.images) {
                     item.images = item.images.map(img => {
                         if (img.type === 'file' && img.url && !img.url.startsWith('http')) {
-                            img.url = `${process.env.API_URL || 'http://localhost:5000'}${img.url}`;
+                            img.url = `${process.env.API_URL || 'http://localhost:5003'}${img.url}`;
                         }
                         return img;
                     });

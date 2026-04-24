@@ -62,7 +62,7 @@ const getHeroContent = async (req, res) => {
             contentWithUrls.slides = contentWithUrls.slides.map(slide => {
                 if (slide.bgType === 'file' && slide.bgValue && !slide.bgValue.startsWith('http')) {
                     // Добавляем полный URL для локальных файлов
-                    slide.bgValue = `${process.env.API_URL || 'http://localhost:5000'}${slide.bgValue}`;
+                    slide.bgValue = `${process.env.API_URL || 'http://localhost:5003'}${slide.bgValue}`;
                 }
                 return slide;
             });
@@ -136,7 +136,7 @@ const updateHeroContent = async (req, res) => {
         if (savedContent.slides) {
             savedContent.slides = savedContent.slides.map(slide => {
                 if (slide.bgType === 'file' && slide.bgValue && !slide.bgValue.startsWith('http')) {
-                    slide.bgValue = `${process.env.API_URL || 'http://localhost:5000'}${slide.bgValue}`;
+                    slide.bgValue = `${process.env.API_URL || 'http://localhost:5003'}${slide.bgValue}`;
                 }
                 return slide;
             });
@@ -223,7 +223,7 @@ const uploadSlideImage = async (req, res) => {
 
         // Формируем ответ с полным URL
         const updatedSlide = content.slides[slideIndex].toObject ? content.slides[slideIndex].toObject() : content.slides[slideIndex];
-        const fullImageUrl = `${process.env.API_URL || 'http://localhost:5000'}${imageUrl}`;
+        const fullImageUrl = `${process.env.API_URL || 'http://localhost:5003'}${imageUrl}`;
 
         res.json({
             message: 'Изображение загружено',
