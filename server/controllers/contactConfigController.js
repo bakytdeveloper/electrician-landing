@@ -56,7 +56,6 @@ const getContactConfig = asyncHandler(async (req, res) => {
             emergencyText: 'Аварийный выезд - круглосуточно'
         });
 
-        console.log('✅ Создана конфигурация контактов с значениями по умолчанию');
     }
 
     res.json(config);

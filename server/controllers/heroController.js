@@ -13,19 +13,15 @@ const ensureUploadDirectories = async () => {
         // Проверяем и создаем основную папку uploads
         try {
             await fs.access(uploadsDir);
-            console.log('Uploads directory exists:', uploadsDir);
         } catch {
             await fs.mkdir(uploadsDir, { recursive: true });
-            console.log('Created uploads directory:', uploadsDir);
         }
 
         // Проверяем и создаем папку slides
         try {
             await fs.access(slidesDir);
-            console.log('Slides directory exists:', slidesDir);
         } catch {
             await fs.mkdir(slidesDir, { recursive: true });
-            console.log('Created slides directory:', slidesDir);
         }
 
         return { uploadsDir, slidesDir };
@@ -114,7 +110,6 @@ const updateHeroContent = async (req, res) => {
                         try {
                             await fs.access(filePath);
                             await fs.unlink(filePath);
-                            console.log('File deleted after type change:', filePath);
                         } catch (err) {
                             console.log('Error deleting file or file not found:', err);
                         }
@@ -159,7 +154,6 @@ const uploadSlideImage = async (req, res) => {
         }
 
         tempFilePath = req.file.path;
-        console.log('File uploaded to temp location:', tempFilePath);
 
         // Создаем необходимые директории
         const { slidesDir } = await ensureUploadDirectories();
@@ -181,7 +175,6 @@ const uploadSlideImage = async (req, res) => {
             try {
                 await fs.access(oldPath);
                 await fs.unlink(oldPath);
-                console.log('Old file deleted:', oldPath);
             } catch (err) {
                 console.log('Old file not found or error deleting:', err);
             }
@@ -192,16 +185,14 @@ const uploadSlideImage = async (req, res) => {
 
         // Перемещаем файл
         await fs.rename(tempFilePath, newPath);
-        console.log('File moved to:', newPath);
 
         // Проверяем, что файл действительно перемещен
         try {
             await fs.access(newPath);
-            console.log('File verified at new location');
 
             // Проверим, есть ли файл в папке slides
-            const files = await fs.readdir(slidesDir);
-            console.log('Files in slides directory:', files);
+            await fs.readdir(slidesDir);
+
         } catch (err) {
             throw new Error('File was not moved successfully');
         }
@@ -219,8 +210,6 @@ const uploadSlideImage = async (req, res) => {
         };
 
         await content.save();
-        console.log('Database updated with path:', imageUrl);
-
         // Формируем ответ с полным URL
         const updatedSlide = content.slides[slideIndex].toObject ? content.slides[slideIndex].toObject() : content.slides[slideIndex];
         const fullImageUrl = `${process.env.API_URL || 'http://localhost:5003'}${imageUrl}`;
@@ -238,7 +227,6 @@ const uploadSlideImage = async (req, res) => {
         if (tempFilePath) {
             try {
                 await fs.unlink(tempFilePath);
-                console.log('Temp file deleted after error');
             } catch (unlinkError) {
                 console.error('Error deleting temp file:', unlinkError);
             }
@@ -268,7 +256,6 @@ const deleteSlideImage = async (req, res) => {
             try {
                 await fs.access(filePath);
                 await fs.unlink(filePath);
-                console.log('File deleted:', filePath);
             } catch (err) {
                 console.log('File not found or error deleting:', err);
             }

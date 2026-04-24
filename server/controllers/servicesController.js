@@ -117,8 +117,6 @@ const getServicesContent = async (req, res) => {
 const updateServicesContent = async (req, res) => {
     try {
         const updates = req.body;
-        console.log('Received updates:', updates);
-
         // Находим документ по ID
         const content = await ServicesContent.findById(updates._id);
 

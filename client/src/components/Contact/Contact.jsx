@@ -265,7 +265,7 @@ const Contact = () => {
         e.preventDefault();
 
         if (typeof navigator !== 'undefined' && navigator.userAgent.includes('HeadlessChrome')) {
-            console.log('Сборка статики, пропускаем отправку формы');
+            // console.log('Сборка статики, пропускаем отправку формы');
             setFormStatus({
                 type: 'success',
                 message: '✅ Демо-режим: форма не отправлена при сборке сайта'

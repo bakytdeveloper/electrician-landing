@@ -140,8 +140,6 @@ const ServicesEditor = () => {
                 })() : {}
             };
 
-            console.log('Saving content:', saveContent); // Для отладки
-
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/services/content`, {
                 method: 'PUT',
                 headers: {

@@ -119,8 +119,6 @@ const getPriceContent = async (req, res) => {
 const updatePriceContent = async (req, res) => {
     try {
         const updates = req.body;
-        console.log('Received updates:', updates);
-
         const content = await PriceContent.findById(updates._id);
 
         if (!content) {

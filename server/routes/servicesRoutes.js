@@ -15,7 +15,5 @@ router.get('/content', getServicesContent);
 router.put('/content', authMiddleware, updateServicesContent);
 router.post('/services', authMiddleware, createService);
 router.delete('/services/:id', authMiddleware, deleteService);
-// router.post('/categories', authMiddleware, createCategory);
-// router.delete('/categories/:id', authMiddleware, deleteCategory);
 
 module.exports = router;

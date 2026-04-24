@@ -18,7 +18,6 @@ const PriceModal = ({ isOpen, onClose }) => {
     const fetchContent = async () => {
         // Защита от react-snap
         if (typeof navigator !== 'undefined' && navigator.userAgent.includes('HeadlessChrome')) {
-            console.log('Сборка статики, пропускаем загрузку цен');
             setLoading(false);
             return;
         }

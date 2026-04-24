@@ -76,7 +76,6 @@ const PortfolioEditor = () => {
                 if (upload.temp) {
                     // Здесь можно добавить запрос на сервер для удаления временного файла
                     // Но пока просто логируем
-                    console.log('Would delete temp file:', upload.filename);
                 }
             } catch (err) {
                 console.error('Error cleaning up pending upload:', err);
@@ -162,8 +161,6 @@ const PortfolioEditor = () => {
                     return itemData;
                 })
             };
-
-            console.log('Saving content:', JSON.stringify(saveContent, null, 2));
 
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/portfolio/content`, {
                 method: 'PUT',

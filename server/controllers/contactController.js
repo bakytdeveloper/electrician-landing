@@ -47,7 +47,6 @@ const isDatabaseConnected = () => {
     try {
         return mongoose.connection.readyState === 1;
     } catch (error) {
-        console.log('❌ Не удалось проверить подключение к БД:', error.message);
         return false;
     }
 };
@@ -55,13 +54,11 @@ const isDatabaseConnected = () => {
 // Функция для безопасного сохранения в БД (ИСПРАВЛЕНА)
 const saveToDatabase = async (data) => {
     if (!isDatabaseConnected()) {
-        console.log('⚠️ База данных не подключена, пропускаем сохранение');
         return null;
     }
 
     try {
         if (!Contact || typeof Contact.create !== 'function') {
-            console.log('⚠️ Модель Contact не загружена');
             return null;
         }
 
@@ -88,8 +85,6 @@ const saveToDatabase = async (data) => {
             }
         }
 
-        console.log(`💾 Сохраняем в БД: serviceType = "${serviceTypeForDB}"`);
-
         const contact = await Contact.create({
             name: data.name,
             phone: data.phone,
@@ -100,7 +95,6 @@ const saveToDatabase = async (data) => {
             notes: ''
         });
 
-        console.log('✅ Заявка сохранена в базе данных:', contact._id);
         return contact;
     } catch (dbError) {
         console.error('❌ Ошибка при сохранении в базу данных:', dbError.message);
@@ -447,8 +441,6 @@ const submitContactForm = asyncHandler(async (req, res) => {
     // Получаем русское название для БД (без эмодзи)
     const serviceTypeForDB = SERVICE_TYPE_MAPPING[service] || 'Другое';
 
-    console.log(`📝 Обработка заявки: ${name}, услуга: ${service} -> ${serviceTypeForDB}`);
-
     let savedContact = null;
 
     // Пробуем сохранить в БД
@@ -460,12 +452,6 @@ const submitContactForm = asyncHandler(async (req, res) => {
             message,
             serviceTypeRussian: serviceTypeForDB
         });
-
-        if (savedContact) {
-            console.log(`✅ Заявка сохранена в БД с ID: ${savedContact._id}`);
-        } else {
-            console.log('⚠️ Заявка не сохранена в БД');
-        }
     } catch (error) {
         console.error('❌ Ошибка при сохранении в БД:', error.message);
     }
@@ -484,7 +470,6 @@ const submitContactForm = asyncHandler(async (req, res) => {
                     serviceType: service
                 })
             });
-            console.log(`✅ Подтверждение отправлено клиенту на ${email}`);
         } catch (emailError) {
             console.error('❌ Ошибка отправки email клиенту:', emailError);
         }
@@ -505,7 +490,6 @@ const submitContactForm = asyncHandler(async (req, res) => {
                 serviceType: service
             })
         });
-        console.log(`✅ Уведомление отправлено админу на ${adminEmail}`);
     } catch (emailError) {
         console.error('❌ Ошибка отправки email админу:', emailError);
     }
@@ -540,7 +524,6 @@ const getContacts = asyncHandler(async (req, res) => {
         }
 
         const contacts = await Contact.find().sort('-createdAt');
-        console.log(`📊 Получено ${contacts.length} контактов из БД`);
 
         res.status(200).json({
             success: true,

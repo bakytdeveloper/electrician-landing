@@ -16,17 +16,10 @@ const serverDir = path.join(__dirname, '..');
 const uploadsDir = path.join(serverDir, 'uploads');
 const slidesDir = path.join(uploadsDir, 'slides');
 
-console.log('Server directory:', serverDir);
-console.log('Uploads directory:', uploadsDir);
-console.log('Slides directory:', slidesDir);
-
 // Создаем директории при старте
 [uploadsDir, slidesDir].forEach(dir => {
     if (!fs.existsSync(dir)) {
         fs.mkdirSync(dir, { recursive: true });
-        console.log('Created directory:', dir);
-    } else {
-        console.log('Directory exists:', dir);
     }
 });
 

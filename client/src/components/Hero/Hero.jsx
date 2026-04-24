@@ -33,7 +33,6 @@ const Hero = ({ openModal }) => {
         try {
             const response = await fetch(`${process.env.REACT_APP_API_URL}/api/hero/content`);
             const data = await response.json();
-            console.log('Fetched hero content:', data); // Для отладки
             setContent(data);
         } catch (error) {
             console.error('Error fetching hero content:', error);
@@ -50,7 +49,7 @@ const Hero = ({ openModal }) => {
 
         const interval = setInterval(() => {
             setCurrentSlide((prev) => (prev + 1) % activeSlides.length);
-        }, 10000);
+        }, 25000);
 
         return () => clearInterval(interval);
     }, [content?.slides]);
@@ -60,7 +59,6 @@ const Hero = ({ openModal }) => {
     };
 
     const handleImageError = (slideIndex) => {
-        console.log('Image error for slide:', slideIndex);
         setImageErrors(prev => ({ ...prev, [slideIndex]: true }));
     };
 

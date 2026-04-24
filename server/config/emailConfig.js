@@ -43,13 +43,7 @@ const sendEmail = async (options) => {
             html: options.html,
         };
 
-        console.log('📨 Отправка письма:');
-        console.log('   От:', fromField);
-        console.log('   Кому:', options.to);
-        console.log('   Тема:', options.subject);
-
         const info = await transporter.sendMail(mailOptions);
-        console.log('✅ Email отправлен:', info.messageId);
         return { success: true, messageId: info.messageId };
     } catch (error) {
         console.error('❌ Ошибка отправки email:');

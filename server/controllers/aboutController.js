@@ -114,7 +114,6 @@ const getAboutContent = async (req, res) => {
 const updateAboutContent = async (req, res) => {
     try {
         const updates = req.body;
-        console.log('Received updates:', updates);
 
         const content = await AboutContent.findById(updates._id);
 
