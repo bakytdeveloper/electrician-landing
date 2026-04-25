@@ -90,6 +90,7 @@ const Footer = () => {
     ];
 
     // Функция для построения списка контактов из данных БД
+// Функция для построения списка контактов из данных БД
     const buildContactInfo = () => {
         if (!contactConfig) return [];
 
@@ -149,35 +150,71 @@ const Footer = () => {
             });
         }
 
-        // Часы работы - собираем из отдельных дней
-        const workingHours = [];
-        if (contactConfig.mondayHours && contactConfig.mondayHours !== 'Выходной') {
-            workingHours.push(`Пн: ${contactConfig.mondayHours}`);
-        }
-        if (contactConfig.tuesdayHours && contactConfig.tuesdayHours !== 'Выходной') {
-            workingHours.push(`Вт: ${contactConfig.tuesdayHours}`);
-        }
-        if (contactConfig.wednesdayHours && contactConfig.wednesdayHours !== 'Выходной') {
-            workingHours.push(`Ср: ${contactConfig.wednesdayHours}`);
-        }
-        if (contactConfig.thursdayHours && contactConfig.thursdayHours !== 'Выходной') {
-            workingHours.push(`Чт: ${contactConfig.thursdayHours}`);
-        }
-        if (contactConfig.fridayHours && contactConfig.fridayHours !== 'Выходной') {
-            workingHours.push(`Пт: ${contactConfig.fridayHours}`);
-        }
-        if (contactConfig.saturdayHours && contactConfig.saturdayHours !== 'Выходной') {
-            workingHours.push(`Сб: ${contactConfig.saturdayHours}`);
-        }
-        if (contactConfig.sundayHours && contactConfig.sundayHours !== 'Выходной') {
-            workingHours.push(`Вс: ${contactConfig.sundayHours}`);
-        }
+        // Часы работы - форматируем как в шапке сайта
+        const getWorkingHoursDisplay = () => {
+            // Определяем, работают ли выходные дни
+            const saturdayIsWorking = contactConfig.saturdayHours &&
+                contactConfig.saturdayHours.toLowerCase() !== 'выходной' &&
+                contactConfig.saturdayHours.trim() !== '';
+            const sundayIsWorking = contactConfig.sundayHours &&
+                contactConfig.sundayHours.toLowerCase() !== 'выходной' &&
+                contactConfig.sundayHours.trim() !== '';
 
-        // Если есть хотя бы одни часы работы
-        if (workingHours.length > 0) {
+            // Форматируем будние дни (берем понедельник как основу)
+            let weekdayHours = contactConfig.mondayHours || '08:00 - 20:00';
+
+            // Проверяем, что будни не выходные и есть значение
+            const weekdayIsWorking = contactConfig.mondayHours &&
+                contactConfig.mondayHours.toLowerCase() !== 'выходной' &&
+                contactConfig.mondayHours.trim() !== '';
+
+            // Форматируем выходные
+            let weekendDisplay = '';
+
+            if (saturdayIsWorking && sundayIsWorking) {
+                // Оба дня работают
+                if (contactConfig.saturdayHours === contactConfig.sundayHours) {
+                    // Если время одинаковое - показываем одно
+                    weekendDisplay = `${contactConfig.saturdayHours}`;
+                } else {
+                    // Если разное - показываем оба дня отдельно
+                    weekendDisplay = `Сб: ${contactConfig.saturdayHours}, Вс: ${contactConfig.sundayHours}`;
+                }
+            } else if (saturdayIsWorking && !sundayIsWorking) {
+                // Только суббота работает
+                weekendDisplay = `Сб: ${contactConfig.saturdayHours}`;
+            } else if (!saturdayIsWorking && sundayIsWorking) {
+                // Только воскресенье работает
+                weekendDisplay = `Вс: ${contactConfig.sundayHours}`;
+            } else if (!weekdayIsWorking && !saturdayIsWorking && !sundayIsWorking) {
+                // Если все дни выходные - не показываем часы работы вообще
+                return null;
+            } else {
+                // Оба дня выходные
+                weekendDisplay = 'Выходной';
+            }
+
+            // Формируем итоговую строку
+            if (weekdayIsWorking && weekendDisplay !== 'Выходной') {
+                return `Пн-Пт: ${weekdayHours} / ${weekendDisplay}`;
+            } else if (weekdayIsWorking && weekendDisplay === 'Выходной') {
+                return `Пн-Пт: ${weekdayHours}`;
+            } else if (!weekdayIsWorking && weekendDisplay && weekendDisplay !== 'Выходной') {
+                return weekendDisplay;
+            } else if (!weekdayIsWorking && weekendDisplay === 'Выходной') {
+                return null;
+            }
+
+            return `Пн-Пт: ${weekdayHours} / ${weekendDisplay}`;
+        };
+
+        const workingHoursText = getWorkingHoursDisplay();
+
+        // Показываем часы работы только если есть что показать
+        if (workingHoursText) {
             contacts.push({
                 icon: <FaClock />,
-                text: workingHours.join(', '),
+                text: workingHoursText,
                 link: '#contact'
             });
         } else if (contactConfig.responseTime) {
@@ -199,6 +236,7 @@ const Footer = () => {
         return contacts;
     };
 
+    
     const contactInfo = buildContactInfo();
 
     const handleAdminLogin = (token) => {
