@@ -1,12 +1,11 @@
 // client/src/components/Footer/Footer.jsx
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
     FaPhone,
     FaEnvelope,
     FaMapMarkerAlt,
     FaClock,
     FaChevronRight,
-    FaLock,
     FaRegCopyright,
     FaWhatsapp,
     FaTelegram,
@@ -23,6 +22,10 @@ const Footer = () => {
     const [contactConfig, setContactConfig] = useState(null);
     const [loading, setLoading] = useState(true);
     const currentYear = new Date().getFullYear();
+
+    // Для отслеживания тройного клика
+    const clickCountRef = useRef(0);
+    const clickTimeoutRef = useRef(null);
 
     // Загрузка конфигурации контактов из БД
     useEffect(() => {
@@ -70,6 +73,38 @@ const Footer = () => {
         }
     };
 
+    // Обработчик тройного клика для открытия админ-панели
+    const handleTripleClick = () => {
+        // Очищаем предыдущий таймаут
+        if (clickTimeoutRef.current) {
+            clearTimeout(clickTimeoutRef.current);
+        }
+
+        // Увеличиваем счетчик кликов
+        clickCountRef.current += 1;
+
+        // Устанавливаем таймаут для сброса счетчика (500ms между кликами)
+        clickTimeoutRef.current = setTimeout(() => {
+            clickCountRef.current = 0;
+        }, 700);
+
+        // Если сделано 5 клика, открываем форму авторизации
+        if (clickCountRef.current === 5) {
+            clickCountRef.current = 0;
+            if (clickTimeoutRef.current) {
+                clearTimeout(clickTimeoutRef.current);
+            }
+
+            const token = localStorage.getItem('adminToken');
+            if (token) {
+                verifyToken(token);
+                setIsAdmin(true);
+            } else {
+                setShowAdminLogin(true);
+            }
+        }
+    };
+
     const quickLinks = [
         { label: 'Главная', href: '#home' },
         { label: 'Услуги', href: '#services' },
@@ -90,7 +125,6 @@ const Footer = () => {
     ];
 
     // Функция для построения списка контактов из данных БД
-// Функция для построения списка контактов из данных БД
     const buildContactInfo = () => {
         if (!contactConfig) return [];
 
@@ -226,17 +260,10 @@ const Footer = () => {
             });
         }
 
-        // Админ-панель (всегда показываем)
-        contacts.push({
-            icon: <FaLock />,
-            text: 'Админ-панель',
-            link: 'admin'
-        });
-
+        // Убираем админ-панель из списка контактов
         return contacts;
     };
 
-    
     const contactInfo = buildContactInfo();
 
     const handleAdminLogin = (token) => {
@@ -251,16 +278,7 @@ const Footer = () => {
     };
 
     const handleContactClick = (e, contact) => {
-        if (contact.text === 'Админ-панель') {
-            e.preventDefault();
-            const token = localStorage.getItem('adminToken');
-            if (token) {
-                verifyToken(token);
-                setIsAdmin(true);
-            } else {
-                setShowAdminLogin(true);
-            }
-        } else if (contact.link === '#contact') {
+        if (contact.link === '#contact') {
             e.preventDefault();
             const element = document.getElementById('contact');
             if (element) {
@@ -332,7 +350,7 @@ const Footer = () => {
                                         <a
                                             key={index}
                                             href={contact.link}
-                                            className={`footer-contact-item ${contact.text === 'Админ-панель' ? 'admin-link' : ''}`}
+                                            className="footer-contact-item"
                                             target={contact.link.startsWith('http') || contact.link.startsWith('mailto') || contact.link.startsWith('tel') ? '_blank' : '_self'}
                                             rel="noopener noreferrer"
                                             onClick={(e) => handleContactClick(e, contact)}
@@ -392,7 +410,20 @@ const Footer = () => {
                         <div className="footer-bottom-content">
                             <div className="footer-copyright">
                                 <FaRegCopyright className="footer-copyright-icon" aria-hidden="true" />
-                                <span>{currentYear} {companyName}. Все права защищены.</span>
+                                <span
+                                    className="copyright-text"
+                                    onClick={handleTripleClick}
+                                    onKeyDown={(e) => {
+                                        if (e.key === 'Enter' || e.key === ' ') {
+                                            handleTripleClick();
+                                        }
+                                    }}
+                                    tabIndex={0}
+                                    role="button"
+                                    aria-label="Информация о правах (тройной клик для администратора)"
+                                >
+                                    {currentYear} {companyName}. Все права защищены.
+                                </span>
                             </div>
 
                             <div className="footer-developer-info">
