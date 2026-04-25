@@ -17,24 +17,31 @@ import './Footer.css';
 import AdminLogin from '../Admin/AdminLogin/AdminLogin';
 import AdminPanel from '../Admin/AdminPanel/AdminPanel';
 
-const getEnv = (key, fallback = '') => process.env[key] || fallback;
-
 const Footer = () => {
     const [showAdminLogin, setShowAdminLogin] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
+    const [contactConfig, setContactConfig] = useState(null);
+    const [loading, setLoading] = useState(true);
     const currentYear = new Date().getFullYear();
 
-    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
-    const phoneNumber = getEnv('REACT_APP_PHONE_DISPLAY', '+7 (727) 123-45-67');
-    const emailAddress = getEnv('REACT_APP_EMAIL', 'info@electromaster.kz');
-    const whatsappNumber = getEnv('REACT_APP_PHONE_FOR_WHATSAPP', '77071234567');
-    const telegramUsername = getEnv('REACT_APP_TELEGRAM_USERNAME', 'electromaster_almaty');
-    const instagramUsername = getEnv('REACT_APP_INSTAGRAM_USERNAME', 'electromaster_almaty');
-    const officeAddress = getEnv('REACT_APP_OFFICE_DESCRIPTION', 'г. Алматы, БЦ Нурлы Тау, офис 123');
-    const mapLink = getEnv('REACT_APP_MAP_DIRECT_URL', 'https://goo.gl/maps/NurlyTauAlmaty');
-    const companyName = getEnv('REACT_APP_COMPANY_NAME', 'ЭлектроМастер Алматы');
-    const weekdayHours = getEnv('REACT_APP_WEEKDAY_HOURS', '08:00-20:00');
-    const weekendHours = getEnv('REACT_APP_WEEKEND_HOURS', '09:00-18:00');
+    // Загрузка конфигурации контактов из БД
+    useEffect(() => {
+        fetchContactConfig();
+    }, []);
+
+    const fetchContactConfig = async () => {
+        try {
+            const response = await fetch(`${process.env.REACT_APP_API_URL}/api/contacts/config`);
+            if (response.ok) {
+                const data = await response.json();
+                setContactConfig(data);
+            }
+        } catch (err) {
+            console.error('Ошибка загрузки контактов:', err);
+        } finally {
+            setLoading(false);
+        }
+    };
 
     useEffect(() => {
         const token = localStorage.getItem('adminToken');
@@ -82,17 +89,117 @@ const Footer = () => {
         { label: 'Установка систем защиты', href: '#services' }
     ];
 
-    // КОНТАКТНЫЕ ДАННЫЕ ИЗ .env
-    const contactInfo = [
-        { icon: <FaPhone />, text: phoneNumber, link: `tel:${phoneNumber.replace(/\D/g, '')}` },
-        { icon: <FaWhatsapp />, text: 'WhatsApp', link: `https://wa.me/${whatsappNumber}` },
-        { icon: <FaTelegram />, text: 'Telegram', link: `https://t.me/${telegramUsername}` },
-        { icon: <FaInstagram />, text: 'Instagram', link: `https://instagram.com/${instagramUsername}` },
-        { icon: <FaEnvelope />, text: emailAddress, link: `mailto:${emailAddress}` },
-        { icon: <FaMapMarkerAlt />, text: officeAddress, link: mapLink },
-        { icon: <FaClock />, text: `Пн-Пт: ${weekdayHours}, Сб-Вс: ${weekendHours}`, link: '#contact' },
-        { icon: <FaLock />, text: 'Админ-панель', link: 'admin' }
-    ];
+    // Функция для построения списка контактов из данных БД
+    const buildContactInfo = () => {
+        if (!contactConfig) return [];
+
+        const contacts = [];
+
+        // Телефон (показываем только если есть значение)
+        if (contactConfig.phoneDisplay) {
+            contacts.push({
+                icon: <FaPhone />,
+                text: contactConfig.phoneDisplay,
+                link: `tel:${contactConfig.phoneRaw || contactConfig.phoneDisplay.replace(/\D/g, '')}`
+            });
+        }
+
+        // WhatsApp (только если есть номер)
+        if (contactConfig.phoneForWhatsapp) {
+            contacts.push({
+                icon: <FaWhatsapp />,
+                text: 'WhatsApp',
+                link: `https://wa.me/${contactConfig.phoneForWhatsapp}`
+            });
+        }
+
+        // Telegram (только если есть username)
+        if (contactConfig.telegramUsername) {
+            contacts.push({
+                icon: <FaTelegram />,
+                text: 'Telegram',
+                link: `https://t.me/${contactConfig.telegramUsername}`
+            });
+        }
+
+        // Instagram (только если есть username)
+        if (contactConfig.instagramUsername) {
+            contacts.push({
+                icon: <FaInstagram />,
+                text: 'Instagram',
+                link: `https://instagram.com/${contactConfig.instagramUsername}`
+            });
+        }
+
+        // Email (только если есть)
+        if (contactConfig.email) {
+            contacts.push({
+                icon: <FaEnvelope />,
+                text: contactConfig.email,
+                link: `mailto:${contactConfig.email}`
+            });
+        }
+
+        // Адрес (только если есть)
+        if (contactConfig.officeDescription) {
+            contacts.push({
+                icon: <FaMapMarkerAlt />,
+                text: contactConfig.officeDescription,
+                link: contactConfig.googleMapUrl || '#contact'
+            });
+        }
+
+        // Часы работы - собираем из отдельных дней
+        const workingHours = [];
+        if (contactConfig.mondayHours && contactConfig.mondayHours !== 'Выходной') {
+            workingHours.push(`Пн: ${contactConfig.mondayHours}`);
+        }
+        if (contactConfig.tuesdayHours && contactConfig.tuesdayHours !== 'Выходной') {
+            workingHours.push(`Вт: ${contactConfig.tuesdayHours}`);
+        }
+        if (contactConfig.wednesdayHours && contactConfig.wednesdayHours !== 'Выходной') {
+            workingHours.push(`Ср: ${contactConfig.wednesdayHours}`);
+        }
+        if (contactConfig.thursdayHours && contactConfig.thursdayHours !== 'Выходной') {
+            workingHours.push(`Чт: ${contactConfig.thursdayHours}`);
+        }
+        if (contactConfig.fridayHours && contactConfig.fridayHours !== 'Выходной') {
+            workingHours.push(`Пт: ${contactConfig.fridayHours}`);
+        }
+        if (contactConfig.saturdayHours && contactConfig.saturdayHours !== 'Выходной') {
+            workingHours.push(`Сб: ${contactConfig.saturdayHours}`);
+        }
+        if (contactConfig.sundayHours && contactConfig.sundayHours !== 'Выходной') {
+            workingHours.push(`Вс: ${contactConfig.sundayHours}`);
+        }
+
+        // Если есть хотя бы одни часы работы
+        if (workingHours.length > 0) {
+            contacts.push({
+                icon: <FaClock />,
+                text: workingHours.join(', '),
+                link: '#contact'
+            });
+        } else if (contactConfig.responseTime) {
+            // Или показываем время ответа как альтернативу
+            contacts.push({
+                icon: <FaClock />,
+                text: `Ответ: ${contactConfig.responseTime}`,
+                link: '#contact'
+            });
+        }
+
+        // Админ-панель (всегда показываем)
+        contacts.push({
+            icon: <FaLock />,
+            text: 'Админ-панель',
+            link: 'admin'
+        });
+
+        return contacts;
+    };
+
+    const contactInfo = buildContactInfo();
 
     const handleAdminLogin = (token) => {
         localStorage.setItem('adminToken', token);
@@ -147,6 +254,23 @@ const Footer = () => {
         }
     };
 
+    // Показываем скелетон или ничего пока данные загружаются
+    if (loading) {
+        return (
+            <footer className="footer">
+                <div className="footer-main">
+                    <div className="container">
+                        <div className="footer-content">
+                            <div className="footer-column">Загрузка...</div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        );
+    }
+
+    const companyName = contactConfig?.companyName || 'ЭлектроМастер';
+
     return (
         <>
             <footer className="footer">
@@ -159,7 +283,9 @@ const Footer = () => {
                                     <MdElectricalServices className="footer-logo-icon" aria-hidden="true" />
                                     <div className="footer-logo-text">
                                         <div className="footer-logo-title">{companyName}</div>
-                                        <p className="footer-logo-subtitle">Профессиональные услуги электрика</p>
+                                        <p className="footer-logo-subtitle">
+                                            {contactConfig?.companyAlternateName || 'Профессиональные услуги электрика'}
+                                        </p>
                                     </div>
                                 </div>
 
@@ -169,7 +295,7 @@ const Footer = () => {
                                             key={index}
                                             href={contact.link}
                                             className={`footer-contact-item ${contact.text === 'Админ-панель' ? 'admin-link' : ''}`}
-                                            target={contact.link.startsWith('http') ? '_blank' : '_self'}
+                                            target={contact.link.startsWith('http') || contact.link.startsWith('mailto') || contact.link.startsWith('tel') ? '_blank' : '_self'}
                                             rel="noopener noreferrer"
                                             onClick={(e) => handleContactClick(e, contact)}
                                             aria-label={contact.text}
