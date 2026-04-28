@@ -41,7 +41,7 @@ const iconMap = {
 const About = () => {
     const [content, setContent] = useState(null);
     const [loading, setLoading] = useState(true);
-    const [activeTab, setActiveTab] = useState('services');
+    // const [activeTab, setActiveTab] = useState('services');
     const [stats, setStats] = useState({});
     const [touchStart, setTouchStart] = useState(null);
     const [touchEnd, setTouchEnd] = useState(null);
@@ -168,8 +168,8 @@ const About = () => {
         return null;
     }
 
-    const activeServices = content.services.filter(s => s.active);
-    const activeTimeline = content.timeline.sort((a, b) => a.order - b.order);
+    // const activeServices = content.services.filter(s => s.active);
+    // const activeTimeline = content.timeline.sort((a, b) => a.order - b.order);
     const activeTestimonials = content.testimonials.filter(t => t.active).sort((a, b) => a.order - b.order);
 
     return (
@@ -221,61 +221,61 @@ const About = () => {
                         })}
                     </div>
 
-                    {/* Вкладки */}
-                    <div className="about-tabs-section">
-                        <div className="about-tabs-header">
-                            <button
-                                className={`about-tab-button ${activeTab === 'services' ? 'about-active' : ''}`}
-                                onClick={() => setActiveTab('services')}
-                            >
-                                Услуги
-                            </button>
-                            <button
-                                className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}
-                                onClick={() => setActiveTab('experience')}
-                            >
-                                Опыт работы
-                            </button>
-                        </div>
+                    {/*/!* Вкладки *!/*/}
+                    {/*<div className="about-tabs-section">*/}
+                    {/*    <div className="about-tabs-header">*/}
+                    {/*        <button*/}
+                    {/*            className={`about-tab-button ${activeTab === 'services' ? 'about-active' : ''}`}*/}
+                    {/*            onClick={() => setActiveTab('services')}*/}
+                    {/*        >*/}
+                    {/*            Услуги*/}
+                    {/*        </button>*/}
+                    {/*        <button*/}
+                    {/*            className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}*/}
+                    {/*            onClick={() => setActiveTab('experience')}*/}
+                    {/*        >*/}
+                    {/*            Опыт работы*/}
+                    {/*        </button>*/}
+                    {/*    </div>*/}
 
-                        <div className="about-tabs-content">
-                            {activeTab === 'experience' && (
-                                <div className="about-timeline">
-                                    {activeTimeline.map((item, index) => {
-                                        const IconComponent = iconMap[item.icon] || FaGraduationCap;
-                                        return (
-                                            <div key={index} className="about-timeline-item">
-                                                <div className="about-timeline-year">{item.year}</div>
-                                                <div className="about-timeline-content">
-                                                    <div className="about-timeline-icon">
-                                                        <IconComponent />
-                                                    </div>
-                                                    <div className="about-timeline-text">
-                                                        <h4>{item.title}</h4>
-                                                        <p>{item.description}</p>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        );
-                                    })}
-                                </div>
-                            )}
+                    {/*    <div className="about-tabs-content">*/}
+                    {/*        {activeTab === 'experience' && (*/}
+                    {/*            <div className="about-timeline">*/}
+                    {/*                {activeTimeline.map((item, index) => {*/}
+                    {/*                    const IconComponent = iconMap[item.icon] || FaGraduationCap;*/}
+                    {/*                    return (*/}
+                    {/*                        <div key={index} className="about-timeline-item">*/}
+                    {/*                            <div className="about-timeline-year">{item.year}</div>*/}
+                    {/*                            <div className="about-timeline-content">*/}
+                    {/*                                <div className="about-timeline-icon">*/}
+                    {/*                                    <IconComponent />*/}
+                    {/*                                </div>*/}
+                    {/*                                <div className="about-timeline-text">*/}
+                    {/*                                    <h4>{item.title}</h4>*/}
+                    {/*                                    <p>{item.description}</p>*/}
+                    {/*                                </div>*/}
+                    {/*                            </div>*/}
+                    {/*                        </div>*/}
+                    {/*                    );*/}
+                    {/*                })}*/}
+                    {/*            </div>*/}
+                    {/*        )}*/}
 
-                            {activeTab === 'services' && (
-                                <div className="about-services-list">
-                                    <h4>Полный перечень услуг</h4>
-                                    <ul className="about-services-ul">
-                                        {activeServices.map((service, index) => (
-                                            <li key={index} className="about-service-item">
-                                                <FaCheckCircle className="about-check-icon" />
-                                                <span>{service.text}</span>
-                                            </li>
-                                        ))}
-                                    </ul>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    {/*        {activeTab === 'services' && (*/}
+                    {/*            <div className="about-services-list">*/}
+                    {/*                <h4>Полный перечень услуг</h4>*/}
+                    {/*                <ul className="about-services-ul">*/}
+                    {/*                    {activeServices.map((service, index) => (*/}
+                    {/*                        <li key={index} className="about-service-item">*/}
+                    {/*                            <FaCheckCircle className="about-check-icon" />*/}
+                    {/*                            <span>{service.text}</span>*/}
+                    {/*                        </li>*/}
+                    {/*                    ))}*/}
+                    {/*                </ul>*/}
+                    {/*            </div>*/}
+                    {/*        )}*/}
+                    {/*    </div>*/}
+                    {/*</div>*/}
 
                     {/* Отзывы - горизонтальный скролл с функцией "Читать далее" */}
                     {activeTestimonials.length > 0 && (

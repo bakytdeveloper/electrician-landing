@@ -21,23 +21,6 @@ const getAboutContent = async (req, res) => {
                     { label: 'Лет опыта', value: 12, suffix: '', icon: 'FaBriefcase', order: 3 },
                     { label: 'Месяцев гарантии', value: 36, suffix: '', icon: 'FaShieldAlt', order: 4 }
                 ],
-                services: [
-                    { text: 'Монтаж и замена электропроводки', active: true, order: 1 },
-                    { text: 'Установка и сборка электрощитов', active: true, order: 2 },
-                    { text: 'Монтаж розеток, выключателей, светильников', active: true, order: 3 },
-                    { text: 'Установка систем защиты (УЗО, стабилизаторы)', active: true, order: 4 },
-                    { text: 'Ремонт бытовой техники', active: true, order: 5 },
-                    { text: 'Обслуживание электрооборудования', active: true, order: 6 },
-                    { text: 'Проектирование электроснабжения', active: true, order: 7 },
-                    { text: 'Аварийные работы 24/7', active: true, order: 8 }
-                ],
-                timeline: [
-                    { year: '2012', title: 'Начало карьеры', description: 'Окончил профессиональное училище по специальности "Электромонтажник"', icon: 'FaGraduationCap', order: 1 },
-                    { year: '2014', title: 'Первая компания', description: 'Работа в строительной компании электромонтажником', icon: 'FaBriefcase', order: 2 },
-                    { year: '2017', title: 'Собственное дело', description: 'Открытие индивидуального предпринимательства', icon: 'MdEngineering', order: 3 },
-                    { year: '2020', title: 'Расширение услуг', description: 'Добавление услуг по ремонту бытовой техники', icon: 'MdElectricalServices', order: 4 },
-                    { year: '2023', title: 'Современные технологии', description: 'Обучение работе с системами умного дома', icon: 'FaStar', order: 5 }
-                ],
                 testimonials: [
                     {
                         name: 'Анна Петрова',
@@ -139,24 +122,6 @@ const updateAboutContent = async (req, res) => {
             updates.stats.forEach(stat => {
                 const { _id, ...statData } = stat;
                 content.stats.push(statData);
-            });
-        }
-
-        // Обновляем услуги
-        if (updates.services) {
-            content.services = [];
-            updates.services.forEach(service => {
-                const { _id, ...serviceData } = service;
-                content.services.push(serviceData);
-            });
-        }
-
-        // Обновляем таймлайн
-        if (updates.timeline) {
-            content.timeline = [];
-            updates.timeline.forEach(item => {
-                const { _id, ...itemData } = item;
-                content.timeline.push(itemData);
             });
         }
 

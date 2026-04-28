@@ -2,13 +2,7 @@ import React, { useState, useEffect } from 'react';
 import './AboutEditor.css';
 import {
     FaPlus, FaTrash,
-    // FaUser, FaAward, FaCertificate, FaTools, FaShieldAlt,
-    // FaClock, FaCheckCircle, FaGraduationCap, FaBriefcase,
-    // FaStar, FaQuoteLeft
 } from 'react-icons/fa';
-// import {
-//     MdElectricalServices, MdEngineering, MdSupportAgent
-// } from 'react-icons/md';
 
 const AboutEditor = () => {
     const [content, setContent] = useState(null);
@@ -120,50 +114,50 @@ const AboutEditor = () => {
         const newStats = content.stats.filter((_, i) => i !== index);
         setContent({ ...content, stats: newStats });
     };
+    //
+    // // Управление услугами
+    // const handleServiceChange = (index, field, value) => {
+    //     const newServices = [...content.services];
+    //     newServices[index] = { ...newServices[index], [field]: value };
+    //     setContent({ ...content, services: newServices });
+    // };
+    //
+    // const handleAddService = () => {
+    //     const newService = {
+    //         text: '',
+    //         active: true,
+    //         order: content.services.length + 1
+    //     };
+    //     setContent({ ...content, services: [...content.services, newService] });
+    // };
 
-    // Управление услугами
-    const handleServiceChange = (index, field, value) => {
-        const newServices = [...content.services];
-        newServices[index] = { ...newServices[index], [field]: value };
-        setContent({ ...content, services: newServices });
-    };
-
-    const handleAddService = () => {
-        const newService = {
-            text: '',
-            active: true,
-            order: content.services.length + 1
-        };
-        setContent({ ...content, services: [...content.services, newService] });
-    };
-
-    const handleDeleteService = (index) => {
-        const newServices = content.services.filter((_, i) => i !== index);
-        setContent({ ...content, services: newServices });
-    };
-
-    // Управление таймлайном
-    const handleTimelineChange = (index, field, value) => {
-        const newTimeline = [...content.timeline];
-        newTimeline[index] = { ...newTimeline[index], [field]: value };
-        setContent({ ...content, timeline: newTimeline });
-    };
-
-    const handleAddTimeline = () => {
-        const newItem = {
-            year: new Date().getFullYear().toString(),
-            title: '',
-            description: '',
-            icon: 'FaGraduationCap',
-            order: content.timeline.length + 1
-        };
-        setContent({ ...content, timeline: [...content.timeline, newItem] });
-    };
-
-    const handleDeleteTimeline = (index) => {
-        const newTimeline = content.timeline.filter((_, i) => i !== index);
-        setContent({ ...content, timeline: newTimeline });
-    };
+    // const handleDeleteService = (index) => {
+    //     const newServices = content.services.filter((_, i) => i !== index);
+    //     setContent({ ...content, services: newServices });
+    // };
+    //
+    // // Управление таймлайном
+    // const handleTimelineChange = (index, field, value) => {
+    //     const newTimeline = [...content.timeline];
+    //     newTimeline[index] = { ...newTimeline[index], [field]: value };
+    //     setContent({ ...content, timeline: newTimeline });
+    // };
+    //
+    // const handleAddTimeline = () => {
+    //     const newItem = {
+    //         year: new Date().getFullYear().toString(),
+    //         title: '',
+    //         description: '',
+    //         icon: 'FaGraduationCap',
+    //         order: content.timeline.length + 1
+    //     };
+    //     setContent({ ...content, timeline: [...content.timeline, newItem] });
+    // };
+    //
+    // const handleDeleteTimeline = (index) => {
+    //     const newTimeline = content.timeline.filter((_, i) => i !== index);
+    //     setContent({ ...content, timeline: newTimeline });
+    // };
 
     // Управление отзывами
     const handleTestimonialChange = (index, field, value) => {
@@ -241,18 +235,18 @@ const AboutEditor = () => {
                 >
                     Статистика
                 </button>
-                <button
-                    className={`editor-tab-btn ${activeTab === 'services' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('services')}
-                >
-                    Услуги
-                </button>
-                <button
-                    className={`editor-tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}
-                    onClick={() => setActiveTab('timeline')}
-                >
-                    Опыт работы
-                </button>
+                {/*<button*/}
+                {/*    className={`editor-tab-btn ${activeTab === 'services' ? 'active' : ''}`}*/}
+                {/*    onClick={() => setActiveTab('services')}*/}
+                {/*>*/}
+                {/*    Услуги*/}
+                {/*</button>*/}
+                {/*<button*/}
+                {/*    className={`editor-tab-btn ${activeTab === 'timeline' ? 'active' : ''}`}*/}
+                {/*    onClick={() => setActiveTab('timeline')}*/}
+                {/*>*/}
+                {/*    Опыт работы*/}
+                {/*</button>*/}
                 <button
                     className={`editor-tab-btn ${activeTab === 'testimonials' ? 'active' : ''}`}
                     onClick={() => setActiveTab('testimonials')}
@@ -394,102 +388,102 @@ const AboutEditor = () => {
                     </div>
                 )}
 
-                {/* Услуги */}
-                {activeTab === 'services' && (
-                    <div className="editor-section">
-                        <div className="section-header">
-                            <h3>Услуги</h3>
-                            <button className="add-btn" onClick={handleAddService}>
-                                <FaPlus /> Добавить услугу
-                            </button>
-                        </div>
+                {/*/!* Услуги *!/*/}
+                {/*{activeTab === 'services' && (*/}
+                {/*    <div className="editor-section">*/}
+                {/*        <div className="section-header">*/}
+                {/*            <h3>Услуги</h3>*/}
+                {/*            <button className="add-btn" onClick={handleAddService}>*/}
+                {/*                <FaPlus /> Добавить услугу*/}
+                {/*            </button>*/}
+                {/*        </div>*/}
 
-                        <div className="services-list">
-                            {content.services.map((service, index) => (
-                                <div key={index} className="service-item">
-                                    <div className="service-fields">
-                                        <input
-                                            type="text"
-                                            value={service.text}
-                                            onChange={(e) => handleServiceChange(index, 'text', e.target.value)}
-                                            placeholder="Название услуги"
-                                        />
-                                        <label className="checkbox-label">
-                                            <input
-                                                type="checkbox"
-                                                checked={service.active}
-                                                onChange={(e) => handleServiceChange(index, 'active', e.target.checked)}
-                                            />
-                                            Активно
-                                        </label>
-                                    </div>
-                                    <button
-                                        className="delete-btn"
-                                        onClick={() => handleDeleteService(index)}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
+                {/*        <div className="services-list">*/}
+                {/*            {content.services.map((service, index) => (*/}
+                {/*                <div key={index} className="service-item">*/}
+                {/*                    <div className="service-fields">*/}
+                {/*                        <input*/}
+                {/*                            type="text"*/}
+                {/*                            value={service.text}*/}
+                {/*                            onChange={(e) => handleServiceChange(index, 'text', e.target.value)}*/}
+                {/*                            placeholder="Название услуги"*/}
+                {/*                        />*/}
+                {/*                        <label className="checkbox-label">*/}
+                {/*                            <input*/}
+                {/*                                type="checkbox"*/}
+                {/*                                checked={service.active}*/}
+                {/*                                onChange={(e) => handleServiceChange(index, 'active', e.target.checked)}*/}
+                {/*                            />*/}
+                {/*                            Активно*/}
+                {/*                        </label>*/}
+                {/*                    </div>*/}
+                {/*                    <button*/}
+                {/*                        className="delete-btn"*/}
+                {/*                        onClick={() => handleDeleteService(index)}*/}
+                {/*                    >*/}
+                {/*                        <FaTrash />*/}
+                {/*                    </button>*/}
+                {/*                </div>*/}
+                {/*            ))}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
                 )}
 
-                {/* Таймлайн (Опыт работы) */}
-                {activeTab === 'timeline' && (
-                    <div className="editor-section">
-                        <div className="section-header">
-                            <h3>Опыт работы</h3>
-                            <button className="add-btn" onClick={handleAddTimeline}>
-                                <FaPlus /> Добавить событие
-                            </button>
-                        </div>
+                {/*/!* Таймлайн (Опыт работы) *!/*/}
+                {/*{activeTab === 'timeline' && (*/}
+                {/*    <div className="editor-section">*/}
+                {/*        <div className="section-header">*/}
+                {/*            <h3>Опыт работы</h3>*/}
+                {/*            <button className="add-btn" onClick={handleAddTimeline}>*/}
+                {/*                <FaPlus /> Добавить событие*/}
+                {/*            </button>*/}
+                {/*        </div>*/}
 
-                        <div className="timeline-list">
-                            {content.timeline.map((item, index) => (
-                                <div key={index} className="timeline-item">
-                                    <div className="timeline-fields">
-                                        <input
-                                            type="text"
-                                            value={item.year}
-                                            onChange={(e) => handleTimelineChange(index, 'year', e.target.value)}
-                                            placeholder="Год"
-                                            style={{ width: '80px' }}
-                                        />
-                                        <input
-                                            type="text"
-                                            value={item.title}
-                                            onChange={(e) => handleTimelineChange(index, 'title', e.target.value)}
-                                            placeholder="Название"
-                                        />
-                                        <textarea
-                                            value={item.description}
-                                            onChange={(e) => handleTimelineChange(index, 'description', e.target.value)}
-                                            placeholder="Описание"
-                                            rows="2"
-                                        />
-                                        <select
-                                            value={item.icon}
-                                            onChange={(e) => handleTimelineChange(index, 'icon', e.target.value)}
-                                        >
-                                            <option value="FaGraduationCap">Образование</option>
-                                            <option value="FaBriefcase">Работа</option>
-                                            <option value="MdEngineering">Инженерия</option>
-                                            <option value="MdElectricalServices">Электрика</option>
-                                            <option value="FaStar">Достижение</option>
-                                        </select>
-                                    </div>
-                                    <button
-                                        className="delete-btn"
-                                        onClick={() => handleDeleteTimeline(index)}
-                                    >
-                                        <FaTrash />
-                                    </button>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-                )}
+                {/*        <div className="timeline-list">*/}
+                {/*            {content.timeline.map((item, index) => (*/}
+                {/*                <div key={index} className="timeline-item">*/}
+                {/*                    <div className="timeline-fields">*/}
+                {/*                        <input*/}
+                {/*                            type="text"*/}
+                {/*                            value={item.year}*/}
+                {/*                            onChange={(e) => handleTimelineChange(index, 'year', e.target.value)}*/}
+                {/*                            placeholder="Год"*/}
+                {/*                            style={{ width: '80px' }}*/}
+                {/*                        />*/}
+                {/*                        <input*/}
+                {/*                            type="text"*/}
+                {/*                            value={item.title}*/}
+                {/*                            onChange={(e) => handleTimelineChange(index, 'title', e.target.value)}*/}
+                {/*                            placeholder="Название"*/}
+                {/*                        />*/}
+                {/*                        <textarea*/}
+                {/*                            value={item.description}*/}
+                {/*                            onChange={(e) => handleTimelineChange(index, 'description', e.target.value)}*/}
+                {/*                            placeholder="Описание"*/}
+                {/*                            rows="2"*/}
+                {/*                        />*/}
+                {/*                        <select*/}
+                {/*                            value={item.icon}*/}
+                {/*                            onChange={(e) => handleTimelineChange(index, 'icon', e.target.value)}*/}
+                {/*                        >*/}
+                {/*                            <option value="FaGraduationCap">Образование</option>*/}
+                {/*                            <option value="FaBriefcase">Работа</option>*/}
+                {/*                            <option value="MdEngineering">Инженерия</option>*/}
+                {/*                            <option value="MdElectricalServices">Электрика</option>*/}
+                {/*                            <option value="FaStar">Достижение</option>*/}
+                {/*                        </select>*/}
+                {/*                    </div>*/}
+                {/*                    <button*/}
+                {/*                        className="delete-btn"*/}
+                {/*                        onClick={() => handleDeleteTimeline(index)}*/}
+                {/*                    >*/}
+                {/*                        <FaTrash />*/}
+                {/*                    </button>*/}
+                {/*                </div>*/}
+                {/*            ))}*/}
+                {/*        </div>*/}
+                {/*    </div>*/}
+                {/*)}*/}
 
                 {/* Отзывы */}
                 {activeTab === 'testimonials' && (

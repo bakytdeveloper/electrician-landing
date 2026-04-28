@@ -1,28 +1,5 @@
 const mongoose = require('mongoose');
 
-const timelineItemSchema = new mongoose.Schema({
-    year: {
-        type: String,
-        required: true
-    },
-    title: {
-        type: String,
-        required: true
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    icon: {
-        type: String,
-        default: 'FaGraduationCap'
-    },
-    order: {
-        type: Number,
-        default: 0
-    }
-});
-
 const testimonialSchema = new mongoose.Schema({
     name: {
         type: String,
@@ -83,21 +60,6 @@ const statSchema = new mongoose.Schema({
     }
 });
 
-const serviceSchema = new mongoose.Schema({
-    text: {
-        type: String,
-        required: true
-    },
-    active: {
-        type: Boolean,
-        default: true
-    },
-    order: {
-        type: Number,
-        default: 0
-    }
-});
-
 const aboutContentSchema = new mongoose.Schema({
     // Заголовок секции
     sectionTitle: {
@@ -135,12 +97,6 @@ const aboutContentSchema = new mongoose.Schema({
 
     // Статистика
     stats: [statSchema],
-
-    // Услуги (список)
-    services: [serviceSchema],
-
-    // Опыт работы (таймлайн)
-    timeline: [timelineItemSchema],
 
     // Отзывы
     testimonials: [testimonialSchema],
