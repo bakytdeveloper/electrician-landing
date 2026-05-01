@@ -17,11 +17,11 @@ const slideSchema = new mongoose.Schema({
 const heroContentSchema = new mongoose.Schema({
     title: {
         type: String,
-        default: 'Профессиональные услуги электрика'
+        default: 'Электрик в Алматы с выездом на дом'
     },
     subtitle: {
         type: String,
-        default: 'Монтаж, обслуживание и ремонт электрооборудования любой сложности. Гарантия качества, доступные цены, оперативный выезд.'
+        default: 'Профессиональные услуги электрика: ремонт, монтаж, замена проводки и устранение неисправностей'
     },
     features: [{
         text: String,

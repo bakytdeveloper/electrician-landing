@@ -133,9 +133,9 @@ const Hero = ({ openModal }) => {
                             {content?.title || seoFallback.title}
                         </h1>
 
-                        <p className="hero-subtitle">
+                        <h2 className="hero-subtitle">
                             {content?.subtitle || seoFallback.subtitle}
-                        </p>
+                        </h2>
 
                         <div className="hero-features-list">
                             {activeFeatures.map((feature, index) => (
@@ -154,7 +154,7 @@ const Hero = ({ openModal }) => {
                                 className="hero-btn"
                                 aria-label="Заказать услугу электрика"
                             >
-                                Заказать услугу
+                                Вызвать электрика
                                 <FaArrowRight />
                             </Button>
 
