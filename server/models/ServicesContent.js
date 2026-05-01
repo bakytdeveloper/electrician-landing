@@ -88,7 +88,7 @@ const ctaSchema = new mongoose.Schema({
 const servicesContentSchema = new mongoose.Schema({
     sectionTitle: {
         type: String,
-        default: 'Наши услуги'
+        default: 'Услуги электрика Алматы'
     },
     sectionSubtitle: {
         type: String,
