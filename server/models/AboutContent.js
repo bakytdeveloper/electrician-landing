@@ -64,7 +64,7 @@ const aboutContentSchema = new mongoose.Schema({
     // Заголовок секции
     sectionTitle: {
         type: String,
-        default: 'О нас'
+        default: 'ЭлектроМастер'
     },
     sectionSubtitle: {
         type: String,
