@@ -273,7 +273,7 @@ const Services = () => {
                 {/* CTA блок */}
                 <div className="services-services-cta">
                     <div className="services-cta-content">
-                        <h3>{content.cta?.title}</h3>
+                        <h2>{content.cta?.title}</h2>
                         <p>{content.cta?.description}</p>
                     </div>
                     <div className="services-cta-actions">
