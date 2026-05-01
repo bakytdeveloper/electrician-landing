@@ -1537,3 +1537,22 @@
         font-size: 0.95rem;
     }
 }
+
+/* Сохранение форматирования текста (переносы строк, пробелы) */
+.about-greeting-paragraph {
+    white-space: pre-wrap;    /* Сохраняет пробелы и переносит строки */
+    word-break: break-word;   /* Переносит длинные слова при необходимости */
+    text-align: left;         /* Левое выравнивание (не по центру) */
+    line-height: 1.7;
+    color: var(--gray-color);
+    font-size: 1.1rem;
+    margin: 0;
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 768px) {
+    .about-greeting-paragraph {
+        font-size: 0.9rem;
+        line-height: 1.6;
+    }
+}

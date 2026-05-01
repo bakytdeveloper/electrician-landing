@@ -196,8 +196,7 @@ const About = () => {
                         </div>
 
                         <div className="about-greeting-body">
-                            <p>{content.greetingText1}</p>
-                            <p>{content.greetingText2}</p>
+                            <p className="about-greeting-paragraph">{content.greetingText}</p>
                         </div>
                     </div>
 
@@ -221,61 +220,6 @@ const About = () => {
                         })}
                     </div>
 
-                    {/*/!* Вкладки *!/*/}
-                    {/*<div className="about-tabs-section">*/}
-                    {/*    <div className="about-tabs-header">*/}
-                    {/*        <button*/}
-                    {/*            className={`about-tab-button ${activeTab === 'services' ? 'about-active' : ''}`}*/}
-                    {/*            onClick={() => setActiveTab('services')}*/}
-                    {/*        >*/}
-                    {/*            Услуги*/}
-                    {/*        </button>*/}
-                    {/*        <button*/}
-                    {/*            className={`about-tab-button ${activeTab === 'experience' ? 'about-active' : ''}`}*/}
-                    {/*            onClick={() => setActiveTab('experience')}*/}
-                    {/*        >*/}
-                    {/*            Опыт работы*/}
-                    {/*        </button>*/}
-                    {/*    </div>*/}
-
-                    {/*    <div className="about-tabs-content">*/}
-                    {/*        {activeTab === 'experience' && (*/}
-                    {/*            <div className="about-timeline">*/}
-                    {/*                {activeTimeline.map((item, index) => {*/}
-                    {/*                    const IconComponent = iconMap[item.icon] || FaGraduationCap;*/}
-                    {/*                    return (*/}
-                    {/*                        <div key={index} className="about-timeline-item">*/}
-                    {/*                            <div className="about-timeline-year">{item.year}</div>*/}
-                    {/*                            <div className="about-timeline-content">*/}
-                    {/*                                <div className="about-timeline-icon">*/}
-                    {/*                                    <IconComponent />*/}
-                    {/*                                </div>*/}
-                    {/*                                <div className="about-timeline-text">*/}
-                    {/*                                    <h4>{item.title}</h4>*/}
-                    {/*                                    <p>{item.description}</p>*/}
-                    {/*                                </div>*/}
-                    {/*                            </div>*/}
-                    {/*                        </div>*/}
-                    {/*                    );*/}
-                    {/*                })}*/}
-                    {/*            </div>*/}
-                    {/*        )}*/}
-
-                    {/*        {activeTab === 'services' && (*/}
-                    {/*            <div className="about-services-list">*/}
-                    {/*                <h4>Полный перечень услуг</h4>*/}
-                    {/*                <ul className="about-services-ul">*/}
-                    {/*                    {activeServices.map((service, index) => (*/}
-                    {/*                        <li key={index} className="about-service-item">*/}
-                    {/*                            <FaCheckCircle className="about-check-icon" />*/}
-                    {/*                            <span>{service.text}</span>*/}
-                    {/*                        </li>*/}
-                    {/*                    ))}*/}
-                    {/*                </ul>*/}
-                    {/*            </div>*/}
-                    {/*        )}*/}
-                    {/*    </div>*/}
-                    {/*</div>*/}
 
                     {/* Отзывы - горизонтальный скролл с функцией "Читать далее" */}
                     {activeTestimonials.length > 0 && (

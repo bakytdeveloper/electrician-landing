@@ -61,7 +61,7 @@ const SEO = ({
                 keywords: `работы электрика ${city}, фото электромонтажа, портфолио электрика, примеры работ, электромонтаж фото`
             },
             about: {
-                title: `О нас | Профессиональный электрик в ${city}`,
+                title: `О компании | Профессиональный электрик в ${city}`,
                 description: `ℹ️ Профессиональный электрик в ${city}. Опыт более 10 лет, гарантия качества, доступные цены. Лицензии и сертификаты.`,
                 keywords: `о нас электрик ${city}, опыт электрика, гарантия электромонтажа, сертификаты электрика`
             }
@@ -92,6 +92,7 @@ const SEO = ({
             <meta name="author" content={companyName} />
             <meta name="geo.placename" content={config?.addressCity || defaultCity} />
             <meta name="geo.region" content="KZ" />
+
             <meta name="yandex-verification" content="ваш-код-верификации" />
             <meta name="google-site-verification" content="ваш-код-верификации" />
 
