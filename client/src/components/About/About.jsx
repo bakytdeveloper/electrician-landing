@@ -280,7 +280,7 @@ const About = () => {
                     {/* Отзывы - горизонтальный скролл с функцией "Читать далее" */}
                     {activeTestimonials.length > 0 && (
                         <div className="about-testimonials-section">
-                            <h3 className="about-testimonials-title">Отзывы клиентов</h3>
+                            <h2 className="about-testimonials-title">Отзывы наших клиентов</h2>
 
                             <div className="about-testimonials-container-wrapper">
                                 <div
