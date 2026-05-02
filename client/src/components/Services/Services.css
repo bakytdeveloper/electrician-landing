@@ -126,7 +126,7 @@
 }
 
 .services-service-card-header {
-    padding: 25px;
+    padding: 25px 25px 15px;
     display: flex;
     align-items: stretch; /* Изменено с flex-start на stretch */
     gap: 20px;
@@ -179,7 +179,7 @@
     overflow-wrap: break-word;
     height: auto;
     gap: 0;
-    margin: 10px 0 10px 0; /* auto сверху и снизу центрирует */
+    margin: 10px 0 20px 0; /* auto сверху и снизу центрирует */
 }
 
 .services-service-meta {
@@ -187,6 +187,8 @@
     gap: 12px;
     flex-wrap: wrap;
     align-items: center;
+    justify-content: center;
+    text-align: center;
     margin: 0;
 }
 
@@ -617,7 +619,7 @@
 /* Для очень широких экранов */
 @media (min-width: 1600px) {
     .services-grid {
-        grid-template-columns: repeat(4, 1fr);
+        grid-template-columns: repeat(3, 1fr);
     }
 }
 
